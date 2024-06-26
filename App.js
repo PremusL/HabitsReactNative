@@ -1,20 +1,315 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, View, TouchableOpacity, Button, TextInput } from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {NavigationContainer} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
-export default function App() {
+// import HomeScreen from './HomeScreen'; // Assume this is your current App component
+// import DetailScreen from './DetailScreen'; // This is the new scene you want to navigate to
+
+const App = () => {
+
+  const Stack = createNativeStackNavigator();
+
+  return(
+
+    <NavigationContainer>
+      {/* <Stack.Navigator screenOptions={{ headerShown: false }}> */}
+      <Stack.Navigator
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: '#f4511e', // Set your desired color
+        },
+        headerTintColor: '#fff', // Set the color of the back button and title
+        headerTitleStyle: {
+          fontWeight: 'bold',
+        },
+      }}>
+        <Stack.Screen
+          name="Home"
+          component={HomeScreen}
+          options={{title: 'Welcome'}}
+        />
+        <Stack.Screen name="Habit" component={HabitsScreen} />
+        <Stack.Screen name="HabitScreen"  component={HabitScreen} />
+
+
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+};
+
+const HomeScreen = ({navigation, route}) => {
+  const [habits, setHabits] = useState([]);
+  const [currentKey, setCurrentKey] = useState(0);
+  // currentKey = 0;
+  const addHabit = (habitName) => {
+    setHabits([...habits, [habitName, currentKey]])
+    setCurrentKey(currentKey + 1)
+    console.log(habits)
+  };
+
+  useEffect(() => {
+    if (route.params) {
+      const description = route.params.description.text;
+      addHabit(description);
+      console.log("route.params: ", description);
+    } else {
+      console.log("no route.params");
+    }
+    
+  }, [route.params]); 
+  
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
+  <View style={styles.mainPage}>
+    <Text style={{fontSize: 20, padding: 10}}>I will quit:</Text>
+    <AddButton navigation={navigation} whereTo={'Habit'}/>
+    <HabitList habits={habits} navigation={navigation}/>
+
     </View>
   );
-}
+};
+
+const AddButton = ({navigation, whereTo, disabled=false, data={}}) => (
+  <TouchableOpacity
+    style={[styles.addButton, disabled ? {backgroundColor: 'grey'} : {backgroundColor: 'darkblue'}]}
+    onPress={() => navigation.navigate(whereTo, data)}
+    disabled={disabled}
+  >
+    <Text style={{color:"white", fontWeight:"normal", fontSize: 24}}>+</Text>
+  </TouchableOpacity>
+);
+
+const RemoveButton = ({navigation, whereTo, data={}}) => (
+  <TouchableOpacity
+    style={[styles.removeButton]}
+    onPress={() => console.log("REMOVE")}
+  >
+    <Text style={{color:"white", fontWeight:"normal", fontSize: 24}}>-</Text>
+  </TouchableOpacity>
+);
+
+
+const HabitsScreen = ({navigation}) => {
+  const [text, onChangeText] = useState('');
+  const [settable, setSettable] = useState(true);
+
+  const onChangeAction = (text) => {
+    onChangeText(text);
+    if (text && text.length > 0) {
+      setSettable(false);
+    } else {
+      setSettable(true);
+    }
+  }
+
+  return (
+    <View style={styles.habit_view}>
+      <Text style={{fontSize: 17}}>What addiction or habit do you want to quit?</Text>
+      <TextInput
+        style={styles.input}
+        onChangeText={onChangeAction}
+        value={text}
+        placeholder="Enter here"
+        keyboardType="default"
+      />
+
+      <AddButton navigation={navigation} whereTo='Home' disabled={settable} data={{description: {text}}}/>
+    </View>
+  );
+};
+const HabitScreen = ({navigation, route}) => {
+  return (
+    <View style={styles.habit_view}>
+      <Text style={{fontSize: 24}}>Habit: {route.params[0]}</Text>
+      <RemoveButton navigation={navigation} whereTo='Home' data={{description: {text: route.params[0]}}}/>
+    </View>
+  );
+};
+
+const HabitList = ({
+  habits,
+  navigation,
+}) => (
+    <View>
+      {habits.map(habit => (
+        <Habit key={habit[1]} value={habit} navigation={navigation}/>
+      ))}
+    </View>
+  );
+
+const Habit = ({value, navigation}) => (
+  <TouchableOpacity
+  onPress={() => navigation.navigate("HabitScreen", value)}
+  >
+    <View style={styles.habit_card}>
+      
+    <Text style={{fontSize: 24}}>{value[0]}</Text>
+    
+  </View>
+  </TouchableOpacity>
+);
+
+
+
+// const PreviewLayout = ({
+//   label, 
+//   children, 
+//   values, 
+//   selectedValue,
+//   setSelectedValue,
+// }) => (
+//   <View style={{padding: 10, flex: 1}}>
+//     <Text>{label}</Text>
+//     <View style={styles.grid_container}>
+//     {values.map(value => (
+//         <TouchableOpacity
+//         key={value}
+//         onPress={() => setSelectedValue(value)}
+//         >
+//           <Text>
+//             {value}
+//           </Text>
+
+//         </TouchableOpacity>
+//       ))}
+//     </View>
+//     <View style={[styles.container, {[label]: selectedValue}]}>{children}</View>
+//   </View>
+// );
+
 
 const styles = StyleSheet.create({
+  navigationBar: {
+    backgroundColor: 'darkblue',
+    height: 70,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOpacity: 0.45,
+    shadowRadius: 5.84,
+  },
+  mainPage: {
+    flex: 1,
+    flexDirection: 'column',
+    backgroundColor: '#99a8bf',
+  },
+  addButton: {
+    backgroundColor: 'darkblue',
+    width: 50,
+    height: 50,
+    borderRadius: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    // shadowColor: '#000',
+    shadowOpacity: 0.45,
+    shadowRadius: 3.84,
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
+    elevation: 5,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+  },
+  removeButton: {
+    backgroundColor: 'darkred',
+    width: 50,
+    height: 50,
+    borderRadius: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    // shadowColor: '#000',
+    shadowOpacity: 0.45,
+    shadowRadius: 3.84,
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
+    elevation: 5,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+  },
+  habit_card: {
+    backgroundColor: 'white',
+    margin: 10,
+    padding: 10,
+    borderRadius: 10,
+    shadowColor: '#000',
+    shadowOpacity: 0.45,
+    shadowRadius: 3.84,
+    elevation: 5,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  habit_view: {
+    // alignContent: 'center',
+    alignItems: 'center',
+    // justifyContent: 'center', // center vertically
+    backgroundColor: '#99a8bf',
+    paddingTop: 20,
+    flex: 1,
+
+  },
+  input: {
+    height: 40,
+    width: 230,
+    margin: 12,
+    borderBottomColor: 'black',
+    borderBottomWidth: 1,
+    // padding: 10,
+  },
+
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#ff00',
     alignItems: 'center',
     justifyContent: 'center',
+    height: 400,
+
   },
+  grid_container: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-around', 
+    alignItems: 'flex-start',
+    // backgroundColor: '#f00',
+    height: 500,
+    marginTop: 50,
+  },
+  set_button: {
+    width: 100,
+    height: 90,
+    backgroundColor: 'red',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+    color: '#fff',
+  },  
+
+  grid_item: {
+    width: '50%',
+    aspectRatio: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    // backgroundColor: 'orange',
+    // margin: 2,
+  },
+  grid_text: {
+    fontSize: 24,
+    marginTop: 10,
+  },
+  box:{
+    width: 40,
+    height: 40,
+  }
+
 });
+
+export default App;
