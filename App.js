@@ -32,8 +32,6 @@ const App = () => {
         />
         <Stack.Screen name="Habit" component={HabitsScreen} />
         <Stack.Screen name="HabitScreen"  component={HabitScreen} />
-
-
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -48,14 +46,25 @@ const HomeScreen = ({navigation, route}) => {
     setCurrentKey(currentKey + 1)
     console.log(habits)
   };
+  const removeHabit = (habitKey) => {
+    const updatedHabits = habits.filter(habit => habit[1] != habitKey);
+
+    setHabits(updatedHabits);
+  };
 
   useEffect(() => {
-    if (route.params) {
+    print("route.params: ", route.params)
+    if (route.params && route.params.description) {
       const description = route.params.description.text;
       addHabit(description);
-      console.log("route.params: ", description);
-    } else {
-      console.log("no route.params");
+      console.log("route.params.description: ", description);
+    }
+    else if (route.params && route.params.remove) {
+      const remove = route.params.remove.habit_key;
+      removeHabit(remove)
+    }
+    else{
+      console.log("no params")
     }
     
   }, [route.params]); 
@@ -80,15 +89,18 @@ const AddButton = ({navigation, whereTo, disabled=false, data={}}) => (
   </TouchableOpacity>
 );
 
-const RemoveButton = ({navigation, whereTo, data={}}) => (
+const RemoveButton = ({navigation, whereTo='Home', data={}}) => {
+  console.log("RemoveButton data: ", data)
+  return(
   <TouchableOpacity
     style={[styles.removeButton]}
-    onPress={() => console.log("REMOVE")}
+    
+    onPress={() => navigation.navigate(whereTo, data)}
   >
     <Text style={{color:"white", fontWeight:"normal", fontSize: 24}}>-</Text>
   </TouchableOpacity>
 );
-
+};
 
 const HabitsScreen = ({navigation}) => {
   const [text, onChangeText] = useState('');
@@ -119,10 +131,12 @@ const HabitsScreen = ({navigation}) => {
   );
 };
 const HabitScreen = ({navigation, route}) => {
+  let habit_key = route.params[1]; 
+
   return (
     <View style={styles.habit_view}>
-      <Text style={{fontSize: 24}}>Habit: {route.params[0]}</Text>
-      <RemoveButton navigation={navigation} whereTo='Home' data={{description: {text: route.params[0]}}}/>
+      <Text style={{fontSize: 24}}>Habit key: {habit_key}</Text>
+      <RemoveButton navigation={navigation} whereTo='Home' data={{remove: {habit_key}}}/>
     </View>
   );
 };
@@ -149,34 +163,6 @@ const Habit = ({value, navigation}) => (
   </View>
   </TouchableOpacity>
 );
-
-
-
-// const PreviewLayout = ({
-//   label, 
-//   children, 
-//   values, 
-//   selectedValue,
-//   setSelectedValue,
-// }) => (
-//   <View style={{padding: 10, flex: 1}}>
-//     <Text>{label}</Text>
-//     <View style={styles.grid_container}>
-//     {values.map(value => (
-//         <TouchableOpacity
-//         key={value}
-//         onPress={() => setSelectedValue(value)}
-//         >
-//           <Text>
-//             {value}
-//           </Text>
-
-//         </TouchableOpacity>
-//       ))}
-//     </View>
-//     <View style={[styles.container, {[label]: selectedValue}]}>{children}</View>
-//   </View>
-// );
 
 
 const styles = StyleSheet.create({
