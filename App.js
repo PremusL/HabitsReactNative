@@ -3,7 +3,10 @@ import { ScrollView, StyleSheet, Text, View, TouchableOpacity, Button, TextInput
 import React, {useState, useEffect} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import { Calendar } from 'react-native-calendars';
 
+import { format } from 'date-fns';
+import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 // import HomeScreen from './HomeScreen'; // Assume this is your current App component
 // import DetailScreen from './DetailScreen'; // This is the new scene you want to navigate to
 
@@ -25,11 +28,7 @@ const App = () => {
           fontWeight: 'bold',
         },
       }}>
-        <Stack.Screen
-          name="Home"
-          component={HomeScreen}
-          options={{title: 'Welcome'}}
-        />
+        <Stack.Screen name="Home" component={HomeScreen} options={{title: 'Welcome'}}/>
         <Stack.Screen name="Habit" component={HabitsScreen} />
         <Stack.Screen name="HabitScreen"  component={HabitScreen} />
       </Stack.Navigator>
@@ -53,7 +52,6 @@ const HomeScreen = ({navigation, route}) => {
   };
 
   useEffect(() => {
-    print("route.params: ", route.params)
     if (route.params && route.params.description) {
       const description = route.params.description.text;
       addHabit(description);
@@ -74,7 +72,6 @@ const HomeScreen = ({navigation, route}) => {
     <Text style={{fontSize: 20, padding: 10}}>I will quit:</Text>
     <AddButton navigation={navigation} whereTo={'Habit'}/>
     <HabitList habits={habits} navigation={navigation}/>
-
     </View>
   );
 };
@@ -106,6 +103,11 @@ const HabitsScreen = ({navigation}) => {
   const [text, onChangeText] = useState('');
   const [settable, setSettable] = useState(true);
 
+  const [selected, setSelected] = useState('');
+  const usableDate = new Date(selected)
+  
+
+
   const onChangeAction = (text) => {
     onChangeText(text);
     if (text && text.length > 0) {
@@ -114,6 +116,15 @@ const HabitsScreen = ({navigation}) => {
       setSettable(true);
     }
   }
+  const getTodaysDate = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    // getMonth() returns 0-11; add 1 to get 1-12 and pad with 0 if needed
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
 
   return (
     <View style={styles.habit_view}>
@@ -125,14 +136,48 @@ const HabitsScreen = ({navigation}) => {
         placeholder="Enter here"
         keyboardType="default"
       />
+      <Text 
+        style={{fontSize: 17, margin: 20, fontWeight: '600'}}>
+          Choose the last date of occurance:
+      </Text>
 
       <AddButton navigation={navigation} whereTo='Home' disabled={settable} data={{description: {text}}}/>
+
+      <Calendar
+      onDayPress={day => {
+        console.log(getTodaysDate());
+        setSelected(day.dateString);
+      }}
+      hideExtraDays={true}
+
+      firstDay={1}
+      markedDates={{
+        [selected]: {selected: true, selectedDotColor: 'orange'},
+  
+        '2024-07-08': {startingDay: true, color: '#50cebb', textColor: 'white'},
+        '2024-07-13': {endingDay: true, color: '#50cebb', textColor: 'white'}
+
+      }}
+      theme={{
+        backgroundColor: '#00000',
+        calendarBackground: '#00000',
+        textSectionTitleColor: 'black',
+        selectedDayBackgroundColor: 'orange',
+        selectedDayTextColor: 'black',
+        selectedDayTextWeight: '700',
+        todayTextColor: 'green',
+        dayTextColor: 'black',
+        textDisabledColor: 'gray',
+      }}
+      markingType={'period'}
+    
+    />
+    {selected ? <Text style={{fontSize: 17, margin: 20}}>Selected date: {selected}</Text> : null}
     </View>
   );
 };
 const HabitScreen = ({navigation, route}) => {
   let habit_key = route.params[1]; 
-
   return (
     <View style={styles.habit_view}>
       <Text style={{fontSize: 24}}>Habit key: {habit_key}</Text>
