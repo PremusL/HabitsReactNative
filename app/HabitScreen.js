@@ -14,7 +14,7 @@ const HabitScreen = ({ navigation, route }) => {
   const markedDates = generateMarkedDates(currentDate, getTodaysDate());
   return (
     <View style={styles.habit_view}>
-      <Text style={{ fontSize: 24 }}>Habit key:</Text>
+      <Text style={{ fontSize: 24 }}>Habit: {currentParams.name}</Text>
       <Calendar
         markingType={"period"}
         hideExtraDays={true}
@@ -38,9 +38,8 @@ const HabitScreen = ({ navigation, route }) => {
         whereTo="Home"
         data={{ remove: currentParams.habitKey }}
       />
-      <Text>
-        You have been shackles free for:{" "}
-        {calculateDaysDifference(currentDate, getTodaysDate())} days
+      <Text style={{ fontSize: 22 }}>
+        Free for: {calculateDaysDifference(currentDate, getTodaysDate())} days
       </Text>
     </View>
   );

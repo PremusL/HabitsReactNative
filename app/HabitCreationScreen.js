@@ -4,7 +4,7 @@ import { Calendar } from "react-native-calendars";
 import { AddButton } from "./Buttons";
 import { formatDate, getTodaysDate, generateMarkedDates } from "./Util";
 
-const HabitsScreen = ({ navigation }) => {
+const HabitCreationScreen = ({ navigation }) => {
   const [text, onChangeText] = useState("");
   const [settable, setSettable] = useState(true);
 
@@ -79,4 +79,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default HabitsScreen;
+export default HabitCreationScreen;

@@ -12,7 +12,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import HomeScreen from "./HomeScreen";
 import HabitScreen from "./HabitScreen";
-import HabitsScreen from "./HabitsScreen";
+import HabitCreationScreen from "./HabitCreationScreen";
 import { formatDate } from "./Util";
 
 const App = () => {
@@ -37,7 +37,7 @@ const App = () => {
           component={HomeScreen}
           options={{ title: "Welcome" }}
         />
-        <Stack.Screen name="Habit" component={HabitsScreen} />
+        <Stack.Screen name="Habit" component={HabitCreationScreen} />
         <Stack.Screen name="HabitScreen" component={HabitScreen} />
       </Stack.Navigator>
     </NavigationContainer>
