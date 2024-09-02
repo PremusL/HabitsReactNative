@@ -14,10 +14,14 @@ import HomeScreen from "./HomeScreen";
 import HabitScreen from "./HabitScreen";
 import HabitCreationScreen from "./HabitCreationScreen";
 import { formatDate } from "./Util";
+import { getData } from "./LocalStorageUtil";
 
 const App = () => {
   const Stack = createNativeStackNavigator();
 
+  useEffect(() => {
+    getData("habitData").then((data) => {}, []);
+  }, []);
   return (
     <NavigationContainer>
       {/* <Stack.Navigator screenOptions={{ headerShown: false }}> */}

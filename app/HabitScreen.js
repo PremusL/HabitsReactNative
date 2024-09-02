@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { RemoveButton } from "./Buttons"; // Adjust the path as necessary
 import { Calendar } from "react-native-calendars";
@@ -7,11 +7,18 @@ import {
   getTodaysDate,
   calculateDaysDifference,
 } from "./Util"; // Adjust the path as necessary
+import { saveData } from "./LocalStorageUtil"; // Adjust the path as necessary
 
 const HabitScreen = ({ navigation, route }) => {
   const currentParams = route.params;
   const currentDate = currentParams.date;
   const markedDates = generateMarkedDates(currentDate, getTodaysDate());
+
+  useEffect(() => {
+    // Save habit data when the component mounts
+    saveData("habitData", JSON.stringify(currentParams));
+  }, []);
+
   return (
     <View style={styles.habit_view}>
       <Text style={{ fontSize: 24 }}>Habit: {currentParams.name}</Text>
