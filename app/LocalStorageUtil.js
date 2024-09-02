@@ -8,6 +8,29 @@ const saveData = async (key, value) => {
     console.error("Failed to save data", error);
   }
 };
+// 1. opcija mergeData function
+// 2. opcija getAll keys in pol multiget
+
+// Function to get all keys from AsyncStorage
+const getAllKeys = async () => {
+  try {
+    const keys = await AsyncStorage.getAllKeys();
+    console.log("All keys:", keys);
+    return keys;
+  } catch (error) {
+    console.error("Failed to get all keys", error);
+  }
+};
+
+const multiGet = async (keys) => {
+  try {
+    const values = await AsyncStorage.multiGet(keys);
+    console.log("Values:", values);
+    return values;
+  } catch (error) {
+    console.error("Failed to get data", error);
+  }
+};
 
 const getData = async (key) => {
   try {
@@ -30,4 +53,4 @@ const removeData = async (key) => {
   }
 };
 
-export { saveData, getData, removeData };
+export { saveData, getData, removeData, getAllKeys, multiGet };

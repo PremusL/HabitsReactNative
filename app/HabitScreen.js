@@ -14,11 +14,6 @@ const HabitScreen = ({ navigation, route }) => {
   const currentDate = currentParams.date;
   const markedDates = generateMarkedDates(currentDate, getTodaysDate());
 
-  useEffect(() => {
-    // Save habit data when the component mounts
-    saveData("habitData", JSON.stringify(currentParams));
-  }, []);
-
   return (
     <View style={styles.habit_view}>
       <Text style={{ fontSize: 24 }}>Habit: {currentParams.name}</Text>

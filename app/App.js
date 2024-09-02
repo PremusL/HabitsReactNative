@@ -19,9 +19,6 @@ import { getData } from "./LocalStorageUtil";
 const App = () => {
   const Stack = createNativeStackNavigator();
 
-  useEffect(() => {
-    getData("habitData").then((data) => {}, []);
-  }, []);
   return (
     <NavigationContainer>
       {/* <Stack.Navigator screenOptions={{ headerShown: false }}> */}
