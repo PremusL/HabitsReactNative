@@ -25,7 +25,7 @@ const getAllKeys = async () => {
 const multiGet = async (keys) => {
   try {
     const values = await AsyncStorage.multiGet(keys);
-    console.log("Values:", values);
+    // console.log("Values:", values);
     return values;
   } catch (error) {
     console.error("Failed to get data", error);
@@ -53,4 +53,13 @@ const removeData = async (key) => {
   }
 };
 
-export { saveData, getData, removeData, getAllKeys, multiGet };
+const clearAll = async () => {
+  try {
+    await AsyncStorage.clear();
+    console.log("All data cleared");
+  } catch (error) {
+    console.error("Failed to clear data", error);
+  }
+};
+
+export { saveData, getData, removeData, getAllKeys, multiGet, clearAll };

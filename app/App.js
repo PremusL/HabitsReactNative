@@ -25,11 +25,13 @@ const App = () => {
       <Stack.Navigator
         screenOptions={{
           headerStyle: {
-            backgroundColor: "#f4511e", // Set your desired color
+            backgroundColor: "#1a1a1a", // Set your desired color
           },
           headerTintColor: "#fff", // Set the color of the back button and title
           headerTitleStyle: {
             fontWeight: "bold",
+            position: "absolute",
+            bottom: 30,
           },
         }}
       >
@@ -78,7 +80,7 @@ const styles = StyleSheet.create({
   mainPage: {
     flex: 1,
     flexDirection: "column",
-    backgroundColor: "#99a8bf",
+    backgroundColor: "#303030",
   },
   addButton: {
     backgroundColor: "darkblue",
