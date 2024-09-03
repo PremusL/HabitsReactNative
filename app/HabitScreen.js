@@ -27,12 +27,13 @@ const HabitScreen = ({ navigation, route }) => {
           backgroundColor: "#00000",
           calendarBackground: "#00000",
           textSectionTitleColor: "black",
-          selectedDayBackgroundColor: "orange",
+          selectedDayBackgroundColor: "black",
           selectedDayTextColor: "black",
           selectedDayTextWeight: "700",
           todayTextColor: "green",
           dayTextColor: "black",
           textDisabledColor: "gray",
+          arrowColor: "black",
         }}
       />
       <RemoveButton
@@ -51,7 +52,7 @@ const styles = StyleSheet.create({
   habit_view: {
     flex: 1,
     padding: 20,
-    backgroundColor: "#fff",
+    backgroundColor: "#cccccc",
   },
 });
 

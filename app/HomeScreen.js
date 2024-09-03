@@ -9,8 +9,14 @@ import {
   TextInput,
 } from "react-native";
 import { AddButton } from "./Buttons";
-import { HabitList } from "./App";
-import { getAllKeys, multiGet, saveData, clearAll } from "./LocalStorageUtil";
+import { HabitList } from "./HabitObject";
+import {
+  getAllKeys,
+  multiGet,
+  saveData,
+  clearAll,
+  removeData,
+} from "./LocalStorageUtil";
 import { useFocusEffect } from "@react-navigation/native";
 
 const HomeScreen = ({ navigation, route }) => {
@@ -34,7 +40,6 @@ const HomeScreen = ({ navigation, route }) => {
           habitKey: curKeyValue,
         };
       });
-      removeHabits(keys);
       setHabits(fetchedHabits);
       setCurrentKey(fetchedHabits.length);
       // You can use the keys to fetch and set habits if needed
@@ -48,12 +53,8 @@ const HomeScreen = ({ navigation, route }) => {
     }, [])
   );
 
-  const removeHabits = (habitKeys) => {
-    const updatedHabits = habits.filter(
-      (habit) => !habitKeys.includes(habit.habitKey)
-    );
-
-    setHabits(updatedHabits);
+  const removeHabit = (habitKey) => {
+    removeData(habitKey);
   };
 
   useEffect(() => {

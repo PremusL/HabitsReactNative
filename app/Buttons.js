@@ -5,7 +5,7 @@ const AddButton = ({ navigation, whereTo, disabled = false, data = {} }) => (
   <TouchableOpacity
     style={[
       styles.addButton,
-      disabled ? { backgroundColor: "grey" } : { backgroundColor: "darkblue" },
+      disabled ? { backgroundColor: "grey" } : { backgroundColor: "darkgreen" },
     ]}
     onPress={() => navigation.navigate(whereTo, data)}
     disabled={disabled}

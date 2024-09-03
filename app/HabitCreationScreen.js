@@ -14,7 +14,11 @@ const HabitCreationScreen = ({ navigation }) => {
 
   return (
     <View style={styles.habit_view}>
-      <Text style={{ fontSize: 17 }}>What habit do you want to quit?</Text>
+      {/* <View style={{ ustifyContent: "center", alignItems: "center" }}> */}
+      <Text style={{ fontSize: 22, textAlign: "center", fontWeight: 650 }}>
+        What habit do you want to quit?
+      </Text>
+      {/* </View> */}
       <TextInput
         style={styles.input}
         onChangeText={onChangeText}
@@ -22,10 +26,18 @@ const HabitCreationScreen = ({ navigation }) => {
         placeholder="Enter here"
         keyboardType="default"
       />
-      <Text style={{ fontSize: 17, margin: 20, fontWeight: "600" }}>
-        Choose the last date of occurrence:
-      </Text>
-
+      <View>
+        <Text
+          style={{
+            fontSize: 17,
+            margin: 20,
+            fontWeight: "600",
+            textAlign: "center",
+          }}
+        >
+          Choose the last date of occurrence:
+        </Text>
+      </View>
       <AddButton
         navigation={navigation}
         whereTo="Home"
@@ -35,24 +47,24 @@ const HabitCreationScreen = ({ navigation }) => {
 
       <Calendar
         onDayPress={(day) => {
-          console.log(markedDates);
           setSelectedDate(day.dateString);
         }}
         markingType={"period"}
         hideExtraDays={true}
         firstDay={1}
-        markedDates={markedDates}
         maxDate={getTodaysDate()}
         theme={{
           backgroundColor: "#00000",
           calendarBackground: "#00000",
           textSectionTitleColor: "black",
-          selectedDayBackgroundColor: "orange",
+          selectedDayBackgroundColor: "black",
           selectedDayTextColor: "black",
           selectedDayTextWeight: "700",
           todayTextColor: "green",
           dayTextColor: "black",
           textDisabledColor: "gray",
+          arrowColor: "black",
+          arrowColor: "black",
         }}
       />
       {selected ? (
@@ -68,11 +80,11 @@ const styles = StyleSheet.create({
   habit_view: {
     flex: 1,
     padding: 20,
-    backgroundColor: "#fff",
+    backgroundColor: "#cccccc",
   },
   input: {
     height: 40,
-    borderColor: "gray",
+    borderColor: "black",
     borderWidth: 1,
     marginTop: 20,
     paddingLeft: 10,
