@@ -13,7 +13,6 @@ export type RootStackParamList = {
   
 export type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
-
 export interface HabitCreationScreenProps {
     navigation: NavigationProp
   };
@@ -27,7 +26,6 @@ export interface HomeScreenProps {
     navigation: NavigationProp, 
     route?: { params: { description?: string, remove?: number, date?: string} } | any |  undefined
   };
-
   
-  export type HomeScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Home'>;
-  export type HabitScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'HabitScreen'>;
+export type HomeScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Home'>;
+export type HabitScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'HabitScreen'>;

@@ -18,7 +18,9 @@ import { HabitInterface, HabitListInterface } from "./types/habit.d";
 // );
 // }
 
-export const Habit: React.FC<HabitInterface> = ({ habit, navigation, isSelected, onPress }) => (
+export const Habit: React.FC<HabitInterface> = ({ habit, navigation, isSelected, onPress }) => {
+  const daysFree = habit.date ? calculateDaysDifference(habit.date, getTodaysDate()) : "N/A";
+  return (
   <TouchableOpacity onPress={onPress}>
     <View style={[styles.habitCard, isSelected && styles.selectedHabitCard]}>
       <Text style={{ fontSize: 24 }}>
@@ -26,7 +28,10 @@ export const Habit: React.FC<HabitInterface> = ({ habit, navigation, isSelected,
       </Text>
         {isSelected && (
           <View>
-            <Text>Details</Text>
+            <Text>Details:</Text>
+            <Text>Last occurance: {habit.date}</Text>
+            <Text>Days since: {daysFree}</Text>
+
             <TouchableOpacity style={{ backgroundColor: 'darkgreen', padding: 5, borderRadius: 5, marginTop: 5, width: 80, alignItems: 'center' }}
             onPress={() => navigation.navigate("HabitScreen", { name: habit.name, habitKey: habit.habitKey, date: habit.date })}
             >
@@ -38,7 +43,8 @@ export const Habit: React.FC<HabitInterface> = ({ habit, navigation, isSelected,
         )}
     </View>
   </TouchableOpacity>
-);
+  );
+};
 
 export const HabitList: React.FC<HabitListInterface> = ({ habits, navigation, selectedHabit, setSelectedHabit }) => (
   <View>
