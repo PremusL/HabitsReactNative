@@ -6,6 +6,7 @@ export interface HabitType {
   habitKey: number | null;
   name: string | undefined;
   date: string | undefined;
+  time: Date | undefined;
 }
 
 export interface HabitInterface {

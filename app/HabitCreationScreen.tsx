@@ -66,7 +66,7 @@ const HabitCreationScreen: React.FC<HabitCreationScreenProps> = ({ navigation })
         navigation={navigation}
         whereTo="Home"
         disabled={!selected || !text || text.length < 1 || selected.length < 1}
-        data={{ description: text, date: selected }}
+        data={{ description: text, date: selected, time: currentTime }}
       />
 
       <Calendar
@@ -102,7 +102,7 @@ const HabitCreationScreen: React.FC<HabitCreationScreenProps> = ({ navigation })
       
       {currentTime ? (
         <Text style={{ fontSize: 17, marginTop: 20 }}>
-          Selected time: <Text style={{ fontWeight: 'bold' }}>{currentTime.getHours()}:{currentTime.getMinutes()}</Text> 
+          Selected time: <Text style={{ fontWeight: 'bold' }}>{currentTime.getHours() < 10 ? '0' + currentTime.getHours(): currentTime.getHours()}:{currentTime.getMinutes() < 10 ? '0' + currentTime.getMinutes(): currentTime.getMinutes()}</Text> 
         </Text>
       ) : null}
     </View>

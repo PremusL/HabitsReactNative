@@ -22,13 +22,14 @@ import { HomeScreenProps } from "./types/screen.d";
 import styles from "./style/styles";
 import { HabitType } from "./types/habit.d";
 
-const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }) => {
+
+const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route })  => {
   const [habits, setHabits] = useState<HabitType[]>([]);
   const [currentKey, setCurrentKey] = useState(0);
   const [selectedHabit, setSelectedHabit] = useState<number | null>(null);
 
   // get all keys and data from AsyncStorage
-  const fetchData = async () => {
+  const fetchData = async () => { // here is missing the return type
     try {
       const keys = await getAllKeys();
       if (!keys) {
@@ -44,6 +45,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }) => {
         return {
           name: jsonData.description,
           date: jsonData.date,
+          time: jsonData.time,
           habitKey: curKeyValue,
         };
       });
@@ -73,6 +75,8 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }) => {
       const currentParams = route.params;
       const paramDescription = currentParams.description;
       const paramDate = currentParams.date;
+      const paramTime = currentParams.time;
+      console.log("paramTime", paramTime);
       // addHabit(paramDescription, paramDate);
       // Save habit data when the component mounts
       saveData(currentKey.toString(), JSON.stringify(currentParams));
