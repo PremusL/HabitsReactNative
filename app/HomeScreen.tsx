@@ -25,6 +25,7 @@ import { HabitType } from "./types/habit.d";
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }) => {
   const [habits, setHabits] = useState<HabitType[]>([]);
   const [currentKey, setCurrentKey] = useState(0);
+  const [selectedHabit, setSelectedHabit] = useState<number | null>(null);
 
   // get all keys and data from AsyncStorage
   const fetchData = async () => {
@@ -87,7 +88,12 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }) => {
   return (
     <View style={styles.mainPage}>
       <AddButton navigation={navigation} whereTo="HabitCreationScreen" />
-      <HabitList habits={habits} navigation={navigation as any} />
+      <HabitList
+        habits={habits}
+        navigation={navigation as any}
+        selectedHabit={selectedHabit}
+        setSelectedHabit={(habitKey) => setSelectedHabit(habitKey ?? null)}
+      />
     </View>
   );
 };

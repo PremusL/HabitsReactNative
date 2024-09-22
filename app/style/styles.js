@@ -53,21 +53,20 @@ const styles = StyleSheet.create({
       height: 2,
     },
   },
-  habit_card: {
-    backgroundColor: "white",
-    margin: 10,
+  habitCard: {
     padding: 10,
-    borderRadius: 10,
+    margin: 10,
+    backgroundColor: "#fff",
+    borderRadius: 5,
     shadowColor: "#000",
-    shadowOpacity: 0.45,
-    shadowRadius: 3.84,
-    elevation: 5,
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    justifyContent: "center",
-    alignItems: "center",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 1,
+  },
+  selectedHabitCard: {
+    padding: 20, // Increase padding to extend the card size
+    backgroundColor: "#f0f0f0", // Optional: change background color for selected card
   },
   habit_view: {
     // alignContent: 'center',

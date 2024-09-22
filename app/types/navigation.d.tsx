@@ -3,9 +3,9 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RouteProp } from '@react-navigation/native';
 
 export type RootStackParamList = {
-  Home: { description?: { text: string }; date?: string; remove?: { habit_key: number } };
-  HabitCreationScreen: { description?: { text: string }; remove?: { habit_key: number } };
-  HabitScreen: { name: string; date: string; habitKey: number };
+  Home: { description?: { text: string }; date?: string; remove?: { habitKey: number | undefined;} };
+  HabitCreationScreen: { description?: { text: string }; remove?: { habitKey: number | undefined; } };
+  HabitScreen: { name: string; date: string; habitKey: number | undefined;};
 };
 
 export type HomeScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Home'>;
