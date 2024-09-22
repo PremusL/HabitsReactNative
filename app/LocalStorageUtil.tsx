@@ -1,6 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { KeyValuePair } from "@react-native-async-storage/async-storage/lib/typescript/types";
 
-const saveData = async (key, value) => {
+const saveData = async (key: string, value: string): Promise<void> => {
   try {
     await AsyncStorage.setItem(key, value);
     console.log("Saved: ", key, value);
@@ -8,11 +9,13 @@ const saveData = async (key, value) => {
     console.error("Failed to save data", error);
   }
 };
+
+export default saveData;
 // 1. opcija mergeData function
 // 2. opcija getAll keys in pol multiget
 
 // Function to get all keys from AsyncStorage
-const getAllKeys = async () => {
+const getAllKeys = async (): Promise<readonly string[]| undefined> => {
   try {
     const keys = await AsyncStorage.getAllKeys();
     console.log("All keys:", keys);
@@ -22,7 +25,7 @@ const getAllKeys = async () => {
   }
 };
 
-const multiGet = async (keys) => {
+const multiGet = async (keys: readonly string[]): Promise<readonly KeyValuePair[] | undefined> => {
   try {
     const values = await AsyncStorage.multiGet(keys);
     // console.log("Values:", values);
@@ -32,7 +35,7 @@ const multiGet = async (keys) => {
   }
 };
 
-const getData = async (key) => {
+const getData = async (key: string): Promise<string | undefined> => {
   try {
     const value = await AsyncStorage.getItem(key);
     if (value !== null) {
@@ -44,7 +47,7 @@ const getData = async (key) => {
   }
 };
 
-const removeData = async (key) => {
+const removeData = async (key: string) => {
   try {
     await AsyncStorage.removeItem(key);
     console.log("Data removed successfully");

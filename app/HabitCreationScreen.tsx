@@ -3,19 +3,17 @@ import { View, Text, TextInput, StyleSheet } from "react-native";
 import { Calendar } from "react-native-calendars";
 import { AddButton } from "./Buttons";
 import { formatDate, getTodaysDate, generateMarkedDates } from "./Util";
+import { RootStackParamList, HabitCreationScreenProps } from "./types/screen.d";
 
-const HabitCreationScreen = ({ navigation }) => {
+
+const HabitCreationScreen: React.FC<HabitCreationScreenProps> = ({ navigation }) => {
   const [text, onChangeText] = useState("");
-  const [settable, setSettable] = useState(true);
-
   const [selected, setSelectedDate] = useState("");
-
-  const markedDates = generateMarkedDates("2024-08-21", getTodaysDate());
 
   return (
     <View style={styles.habit_view}>
       {/* <View style={{ ustifyContent: "center", alignItems: "center" }}> */}
-      <Text style={{ fontSize: 22, textAlign: "center", fontWeight: 650 }}>
+      <Text style={{ fontSize: 22, textAlign: "center", fontWeight: 600 }}>
         What habit do you want to quit?
       </Text>
       {/* </View> */}
@@ -46,7 +44,7 @@ const HabitCreationScreen = ({ navigation }) => {
       />
 
       <Calendar
-        onDayPress={(day) => {
+        onDayPress={(day: any) => {
           setSelectedDate(day.dateString);
         }}
         markingType={"period"}
@@ -63,7 +61,6 @@ const HabitCreationScreen = ({ navigation }) => {
           todayTextColor: "green",
           dayTextColor: "black",
           textDisabledColor: "gray",
-          arrowColor: "black",
           arrowColor: "black",
         }}
       />

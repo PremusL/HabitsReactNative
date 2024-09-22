@@ -8,15 +8,16 @@ import {
   calculateDaysDifference,
 } from "./Util"; // Adjust the path as necessary
 import { saveData } from "./LocalStorageUtil"; // Adjust the path as necessary
+import { HabitScreenProps } from "./types/screen.d";
 
-const HabitScreen = ({ navigation, route }) => {
-  const currentParams = route.params;
-  const currentDate = currentParams.date;
+const HabitScreen: React.FC<HabitScreenProps> = ({ navigation, route }) => {
+  const currentParams = route?.params;
+  const currentDate = currentParams?.date;
   const markedDates = generateMarkedDates(currentDate, getTodaysDate());
 
   return (
     <View style={styles.habit_view}>
-      <Text style={{ fontSize: 24 }}>Habit: {currentParams.name}</Text>
+      <Text style={{ fontSize: 24 }}>Habit: {currentParams?.name}</Text>
       <Calendar
         markingType={"period"}
         hideExtraDays={true}
@@ -39,7 +40,7 @@ const HabitScreen = ({ navigation, route }) => {
       <RemoveButton
         navigation={navigation}
         whereTo="Home"
-        data={{ remove: currentParams.habitKey }}
+        data={{ remove: currentParams?.habitKey }}
       />
       <Text style={{ fontSize: 22 }}>
         Free for: {calculateDaysDifference(currentDate, getTodaysDate())} days
