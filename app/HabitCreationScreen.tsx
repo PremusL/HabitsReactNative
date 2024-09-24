@@ -12,6 +12,7 @@ const HabitCreationScreen: React.FC<HabitCreationScreenProps> = ({ navigation })
   const [text, onChangeText] = useState("");
   const [selected, setSelectedDate] = useState("");
   const [currentTime, setCurrentTime] = useState(new Date());
+
   const onChange = (event: DateTimePickerEvent, selectedTime?: Date | undefined ): void => {
     if (selectedTime) {
       setCurrentTime(selectedTime);
@@ -61,7 +62,13 @@ const HabitCreationScreen: React.FC<HabitCreationScreenProps> = ({ navigation })
         navigation={navigation}
         whereTo="Home"
         disabled={!selected || !text || text.length < 1 || selected.length < 1}
-        data={{ description: text, date: selected, time: currentTime.getHours() + ":" + currentTime.getMinutes() }}
+        data={{
+            description: text, date: selected,
+           time: (currentTime.getHours() < 10 ? "0" + currentTime.getHours() : currentTime.getHours()) +
+           ":" +
+           (currentTime.getMinutes() < 10 ? "0" + currentTime.getMinutes() : currentTime.getMinutes()) +
+            ":00"
+          }}
       />
 
       <Calendar
@@ -97,16 +104,7 @@ const HabitCreationScreen: React.FC<HabitCreationScreenProps> = ({ navigation })
       
       {currentTime ? (
         <Text style={{ fontSize: 17, marginTop: 20 }}>
-          Selected time: <Text style={{ fontWeight: 'bold' }}>{currentTime.getHours() < 10 ? '0' + currentTime.getHours(): currentTime.getHours()}:{currentTime.getMinutes() < 10 ? '0' + currentTime.getMinutes(): currentTime.getMinutes()}</Text> 
-        </Text>
-      ) : null}
-      <TouchableOpacity onPress={showTimepicker} style={{ marginTop: 20, backgroundColor: '#1a1a1a', borderRadius: 5, alignItems: 'center'}}>
-        <Text style={{ fontSize: 20, margin: 10, color: 'white'}}>Choose time</Text>
-      </TouchableOpacity>
-      
-      {currentTime ? (
-        <Text style={{ fontSize: 17, marginTop: 20 }}>
-          Selected time: <Text style={{ fontWeight: 'bold' }}>{currentTime.getHours()}:{currentTime.getMinutes()}</Text> 
+          Selected time: <Text style={{ fontWeight: 'bold' }}>{}</Text> 
         </Text>
       ) : null}
     </View>

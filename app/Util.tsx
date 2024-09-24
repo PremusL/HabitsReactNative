@@ -1,4 +1,7 @@
-const formatDate = (dateString: string) => {
+const formatDate = (dateString: string | undefined) => {
+  if (!dateString) {
+    return "Date is not defined";
+  }
   const date = new Date(dateString);
   const day = String(date.getDate()).padStart(2, "0");
   const month = String(date.getMonth() + 1).padStart(2, "0"); // getMonth() returns 0-11
@@ -24,6 +27,30 @@ const calculateDaysDifference = (startDate: string | undefined, endDate: string)
   const differenceInTime = Math.abs(end.getTime() - start.getTime()); // Difference in milliseconds
   const differenceInDays = differenceInTime / (1000 * 3600 * 24); // Convert milliseconds to days
   return Math.round(differenceInDays); // Round to the nearest whole number
+};
+const calculateTimeDifference = (
+  startDateTime: string,
+  endDateTime: string
+): string => {
+  const start = new Date(startDateTime);
+  const end = new Date(endDateTime);
+
+  if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+    throw new Error("Invalid date format");
+  }
+
+  const differenceInMilliseconds = Math.abs(end.getTime() - start.getTime());
+
+  const days = Math.floor(differenceInMilliseconds / (1000 * 60 * 60 * 24));
+  const hours = Math.floor(
+    (differenceInMilliseconds % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+  );
+  const minutes = Math.floor(
+    (differenceInMilliseconds % (1000 * 60 * 60)) / (1000 * 60)
+  );
+  const seconds = Math.floor((differenceInMilliseconds % (1000 * 60)) / 1000);
+
+  return days + " days, " + hours + " hours, " + minutes + " minutes, " + seconds + " seconds";
 };
 
 
@@ -61,4 +88,5 @@ export {
   getTodaysDate,
   generateMarkedDates,
   calculateDaysDifference,
+  calculateTimeDifference
 };
