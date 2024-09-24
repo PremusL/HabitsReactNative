@@ -18,7 +18,7 @@ export default saveData;
 const getAllKeys = async (): Promise<readonly string[]| undefined> => {
   try {
     const keys = await AsyncStorage.getAllKeys();
-    console.log("All keys:", keys);
+    
     return keys;
   } catch (error) {
     console.error("Failed to get all keys", error);

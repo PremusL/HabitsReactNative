@@ -18,7 +18,6 @@ const AddButton: React.FC<AddButtonProps> = ({ navigation, whereTo, disabled = f
 );
 
 const RemoveButton: React.FC<RemoveButtonProps> = ({ navigation, whereTo = 'Home', data = {} }) => {
-  console.log('RemoveButton data: ', data);
   return (
     <TouchableOpacity
       style={[styles.removeButton]}

@@ -1,14 +1,34 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, StyleSheet } from "react-native";
+import { View, Text, TextInput, StyleSheet, TouchableOpacity } from "react-native";
 import { Calendar } from "react-native-calendars";
 import { AddButton } from "./Buttons";
 import { formatDate, getTodaysDate, generateMarkedDates } from "./Util";
 import { RootStackParamList, HabitCreationScreenProps } from "./types/screen.d";
+import DateTimePicker, { DateTimePickerAndroid, DateTimePickerEvent } from '@react-native-community/datetimepicker';
 
 
 const HabitCreationScreen: React.FC<HabitCreationScreenProps> = ({ navigation }) => {
   const [text, onChangeText] = useState("");
   const [selected, setSelectedDate] = useState("");
+  const [currentTime, setCurrentTime] = useState(new Date());
+  const onChange = (event: DateTimePickerEvent, selectedTime?: Date | undefined ): void => {
+    if (selectedTime) {
+      setCurrentTime(selectedTime);
+    }
+    else {
+      console.log("No time selected");
+    }
+  };
+  const showTimepicker = (): void => {
+    DateTimePickerAndroid.open({
+      value: new Date(),
+      onChange,
+      mode: 'time',
+      is24Hour: true,
+      positiveButton: {label: 'OK', textColor: 'black'},
+      negativeButton: {label: 'Cancel', textColor: 'black'},
+    });
+  };
 
   return (
     <View style={styles.habit_view}>
@@ -40,7 +60,7 @@ const HabitCreationScreen: React.FC<HabitCreationScreenProps> = ({ navigation })
         navigation={navigation}
         whereTo="Home"
         disabled={!selected || !text || text.length < 1 || selected.length < 1}
-        data={{ description: text, date: selected }}
+        data={{ description: text, date: selected, time: currentTime.getHours() + ":" + currentTime.getMinutes() }}
       />
 
       <Calendar
@@ -67,6 +87,15 @@ const HabitCreationScreen: React.FC<HabitCreationScreenProps> = ({ navigation })
       {selected ? (
         <Text style={{ fontSize: 17, margin: 20 }}>
           Selected date: {formatDate(selected)}
+        </Text>
+      ) : null}
+      <TouchableOpacity onPress={showTimepicker} style={{ marginTop: 20, backgroundColor: '#1a1a1a', borderRadius: 5, alignItems: 'center'}}>
+        <Text style={{ fontSize: 20, margin: 10, color: 'white'}}>Choose time</Text>
+      </TouchableOpacity>
+      
+      {currentTime ? (
+        <Text style={{ fontSize: 17, marginTop: 20 }}>
+          Selected time: <Text style={{ fontWeight: 'bold' }}>{currentTime.getHours()}:{currentTime.getMinutes()}</Text> 
         </Text>
       ) : null}
     </View>

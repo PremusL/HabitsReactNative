@@ -42,7 +42,7 @@ export const Habit: React.FC<HabitInterface> = ({ habit, navigation, isSelected,
 
 export const HabitList: React.FC<HabitListInterface> = ({ habits, navigation, selectedHabit, setSelectedHabit }) => (
   <View>
-    {habits.map((habit) => (
+    {habits.map((habit, index) => (
       <Habit
         key={habit.habitKey}
         habit={habit}
