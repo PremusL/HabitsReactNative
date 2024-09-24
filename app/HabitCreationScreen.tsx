@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, StyleSheet, TouchableOpacity } from "react-native";
 import { Calendar } from "react-native-calendars";
+import DateTimePicker, { DateTimePickerAndroid, DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { AddButton } from "./Buttons";
 import { formatDate, getTodaysDate, generateMarkedDates } from "./Util";
 import { RootStackParamList, HabitCreationScreenProps } from "./types/screen.d";
-import DateTimePicker, { DateTimePickerAndroid, DateTimePickerEvent } from '@react-native-community/datetimepicker';
+
 
 
 const HabitCreationScreen: React.FC<HabitCreationScreenProps> = ({ navigation }) => {
@@ -84,9 +85,19 @@ const HabitCreationScreen: React.FC<HabitCreationScreenProps> = ({ navigation })
           arrowColor: "black",
         }}
       />
+      
       {selected ? (
-        <Text style={{ fontSize: 17, margin: 20 }}>
-          Selected date: {formatDate(selected)}
+        <Text style={{ fontSize: 17, marginTop: 20 }}>
+          Selected date: <Text style={{ fontWeight: 'bold' }}>{formatDate(selected)}</Text>
+        </Text>
+      ) : null}
+      <TouchableOpacity onPress={showTimepicker} style={{ marginTop: 20, backgroundColor: '#1a1a1a', borderRadius: 5, alignItems: 'center'}}>
+        <Text style={{ fontSize: 20, margin: 10, color: 'white'}}>Choose time</Text>
+      </TouchableOpacity>
+      
+      {currentTime ? (
+        <Text style={{ fontSize: 17, marginTop: 20 }}>
+          Selected time: <Text style={{ fontWeight: 'bold' }}>{currentTime.getHours() < 10 ? '0' + currentTime.getHours(): currentTime.getHours()}:{currentTime.getMinutes() < 10 ? '0' + currentTime.getMinutes(): currentTime.getMinutes()}</Text> 
         </Text>
       ) : null}
       <TouchableOpacity onPress={showTimepicker} style={{ marginTop: 20, backgroundColor: '#1a1a1a', borderRadius: 5, alignItems: 'center'}}>
@@ -114,6 +125,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginTop: 20,
     paddingLeft: 10,
+    borderRadius: 5,
   },
 });
 

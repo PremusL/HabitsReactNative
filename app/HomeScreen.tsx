@@ -40,6 +40,8 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }) => {
       const currentParams = route.params;
       const paramDescription = currentParams.description;
       const paramDate = currentParams.date;
+      const paramTime = currentParams.time;
+      console.log("paramTime", paramTime);
       // addHabit(paramDescription, paramDate);
       // Save habit data when the component mounts
       console.log("time to add: ", currentParams);

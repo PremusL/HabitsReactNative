@@ -25,6 +25,8 @@ const calculateDaysDifference = (startDate: string | undefined, endDate: string)
   const differenceInDays = differenceInTime / (1000 * 3600 * 24); // Convert milliseconds to days
   return Math.round(differenceInDays); // Round to the nearest whole number
 };
+
+
 const generateMarkedDates = (startDate: string, endDate: string) => {
   const currentDate = new Date(startDate);
   const finalDate = new Date(endDate);
