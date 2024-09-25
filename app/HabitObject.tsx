@@ -4,6 +4,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { View, Text, TouchableOpacity, Animated} from "react-native";
 import { HabitInterface, HabitListInterface } from "./types/habit.d";
 
+
 export const Habit: React.FC<HabitInterface> = ({ habit, navigation, isSelected, onPress }) => {
   const [timeDifference, setTimeDifference] = useState("N/A");
   // const animatedValue = useRef(new Animated.Value(1)).current;
@@ -36,9 +37,12 @@ export const Habit: React.FC<HabitInterface> = ({ habit, navigation, isSelected,
     ]).start();
   }, [isSelected]);
 
+  
+
   return (
-  <TouchableOpacity onPress={onPress}>
+    
     <Animated.View style={[styles.habitCard, isSelected && styles.selectedHabitCard, { transform: [{ scale: scaleValue }] }] }>
+      <TouchableOpacity onPress={onPress}>
       {!isSelected && (
         <Text style={{ fontSize: 24 }}>
           {habit.name}
@@ -63,8 +67,8 @@ export const Habit: React.FC<HabitInterface> = ({ habit, navigation, isSelected,
               </TouchableOpacity>
           </Animated.View>
         )}
+        </TouchableOpacity>
     </Animated.View>
-  </TouchableOpacity>
   );
 };
 

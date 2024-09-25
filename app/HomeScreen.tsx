@@ -21,7 +21,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import { HomeScreenProps } from "./types/screen.d";
 import styles from "./style/styles";
 import { HabitType } from "./types/habit.d";
-
+import { PanGestureHandler, State } from 'react-native-gesture-handler';
 
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }) => {
@@ -99,6 +99,14 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }) => {
       console.error("Failed to fetch keys", error);
     }
   };
+  const handleGesture = ({ nativeEvent }: { nativeEvent: any }) => {
+    // console.log(nativeEvent.translationX, nativeEvent.translationY);
+
+    if (nativeEvent.translationX < -50) {
+      
+      navigation.navigate("HabitCreationScreen",  {}); // Replace "NewScreen" with your target screen name
+    }
+  };
   // calls fetchData just once
   useFocusEffect(
     useCallback(() => {
@@ -106,6 +114,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }) => {
     }, [])
   );
   return (
+    <PanGestureHandler onGestureEvent={handleGesture} onHandlerStateChange={handleGesture}>
     <View style={styles.mainPage}>
       <AddButton navigation={navigation} whereTo="HabitCreationScreen" />
       <HabitList
@@ -115,6 +124,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }) => {
         setSelectedHabit={(habitKey) => setSelectedHabit(habitKey ?? null)}
       />
     </View>
+    </PanGestureHandler>
   );
 };
 export default HomeScreen;
