@@ -13,7 +13,7 @@ const styles = StyleSheet.create({
   mainPage: {
     flex: 1,
     flexDirection: "column",
-    backgroundColor: "#cccccc",
+    backgroundColor: "#888888",
   },
   addButton: {
     backgroundColor: "darkblue",
@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
     // alignContent: 'center',
     alignItems: "center",
     // justifyContent: 'center', // center vertically
-    backgroundColor: "#cccccc",
+    backgroundColor: "#888888",
     paddingTop: 20,
     flex: 1,
   },

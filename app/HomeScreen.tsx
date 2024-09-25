@@ -100,11 +100,11 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }) => {
     }
   };
   const handleGesture = ({ nativeEvent }: { nativeEvent: any }) => {
-    // console.log(nativeEvent.translationX, nativeEvent.translationY);
+    console.log(nativeEvent.translationX, nativeEvent.translationY);
 
     if (nativeEvent.translationX < -50) {
       
-      navigation.navigate("HabitCreationScreen",  {}); // Replace "NewScreen" with your target screen name
+      navigation.navigate("SecondScreen") // Replace "NewScreen" with your target screen name
     }
   };
   // calls fetchData just once
