@@ -22,12 +22,14 @@ import { HomeScreenProps } from "./types/screen.d";
 import styles from "./style/styles";
 import { HabitType } from "./types/habit.d";
 import { PanGestureHandler, State } from 'react-native-gesture-handler';
+import { useData } from './DataContext';
 
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }) => {
-  const [habits, setHabits] = useState<HabitType[]>([]);
+  // const [habits, setHabits] = useState<HabitType[]>([]);
   const [selectedHabit, setSelectedHabit] = useState<number | null>(null);
   const [currentKey, setCurrentKey] = useState(0);
+  const { data, fetchData } = useData();
 
   const keyToSet = currentKey === -1 ? 0 : currentKey;
 
@@ -36,6 +38,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }) => {
   };
 
   useEffect(() => {
+    console.log("data: " + data);
     if (route.params && route.params.description) {
       const currentParams = route.params;
       const paramDescription = currentParams.description;
@@ -59,58 +62,17 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }) => {
     }
   }, [route.params]);
 
-  // get all keys and data from AsyncStorage
-  const fetchData = async () => {
-    try {
-      const readonlyKeys: readonly string[] | undefined = await getAllKeys();
-      const keys: string[] | undefined = readonlyKeys?.slice();
-      keys?.sort((a, b) => parseInt(a) - parseInt(b));
-      console.log("Keys: ", keys);
-      if (!keys) {
-        console.log("No keys found");
-        return;
-      }
-      
-      const data = await multiGet(keys);
-      if (!data) {
-        console.log("Multi get didn't work");
-        return;
-      }
-      let fetchedHabits = data.map((element: any) => {
-        const curKeyValue = element[0];
-        const jsonData = JSON.parse(element[1]);
-        return {
-          name: jsonData.description,
-          date: jsonData.date,
-          time: jsonData.time,
-          habitKey: curKeyValue,
-        };
-      });
-      if (!fetchedHabits) {
-        return;
-      }
-      fetchedHabits = fetchedHabits.sort((a , b) => a.habitKey - b.habitKey);
-      console.log("Fetched habits: ", fetchedHabits);
-      setHabits(fetchedHabits);
-      
-      setCurrentKey(keys[keys.length - 1] ? parseInt(keys[keys.length - 1]) + 1 : 0);
-      // You can use the keys to fetch and set habits if needed
-    } catch (error) {
-      console.error("Failed to fetch keys", error);
-    }
-  };
   const handleGesture = ({ nativeEvent }: { nativeEvent: any }) => {
-    console.log(nativeEvent.translationX, nativeEvent.translationY);
-
-    if (nativeEvent.translationX < -50) {
-      
-      navigation.navigate("SecondScreen") // Replace "NewScreen" with your target screen name
+    if (nativeEvent.translationX < -50) { // checks for swipe left
+      navigation.navigate("SecondScreen")
     }
   };
   // calls fetchData just once
   useFocusEffect(
     useCallback(() => {
       fetchData();
+      data.forEach((element: any, index: number) => {console.log("nummero: " + index + " " + JSON.stringify(element))});
+      // console.log("Data v homescreenu: " + data);
     }, [])
   );
   return (
@@ -118,7 +80,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }) => {
     <View style={styles.mainPage}>
       <AddButton navigation={navigation} whereTo="HabitCreationScreen" />
       <HabitList
-        habits={habits}
+        habits={data}
         navigation={navigation as any}
         selectedHabit={selectedHabit}
         setSelectedHabit={(habitKey) => setSelectedHabit(habitKey ?? null)}

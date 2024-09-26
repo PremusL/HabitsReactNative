@@ -9,7 +9,7 @@ import SecondScreen from "./app/SecondScreen";
 import { RootStackParamList } from "./app/types/screen.d";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Ionicons } from '@expo/vector-icons'; // You can use any icon library
-import { BlurView } from 'expo-blur';
+import { DataProvider } from './app/DataContext';
 
 const Tab = createBottomTabNavigator();
 
@@ -51,12 +51,10 @@ const TabNavigator = () => (
         fontWeight: 'bold',
       },
       headerTitleAlign: 'center',
-      tabBarBackground: () => {
-        <BlurView tint="" intensity={100} />
-      },
-      
+      // tabBarBackground: () => {
+      //   <BlurView tint="" intensity={100} />
+      // },  
     })}
-    
     tabBarOptions={{
       activeTintColor: 'white',
       inactiveTintColor: '#888888',
@@ -75,14 +73,15 @@ const TabNavigator = () => (
 const App = () => (
   <GestureHandlerRootView style={{ flex: 1 }}>
     <NavigationContainer>
+    <DataProvider>
       <Stack.Navigator
        screenOptions={navigatorOptions}>
         <Stack.Screen name="Tabs" component={TabNavigator} options={{ headerShown: false }} />
         <Stack.Screen name="SecondScreen" component={SecondScreen} />
         <Stack.Screen name="HabitScreen" component={HabitScreen} />
         <Stack.Screen name="HabitCreationScreen" component={HabitCreationScreen} />
-        {/* Add other screens here */}
       </Stack.Navigator>
+      </DataProvider>
     </NavigationContainer>
   </GestureHandlerRootView>
 );

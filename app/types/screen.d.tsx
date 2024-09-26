@@ -6,7 +6,7 @@ import { RouteProp } from '@react-navigation/native';
 export type HomeScreenRouteProp = RouteProp<RootStackParamList, 'Home'>;
 
 export type RootStackParamList = {
-    Home: { description?: { text: string }; date?: string; time?: Date; remove?: { habit_key: number | null } } | undefined
+    Home: { description?: { text: string }; date?: string; time?: Date; remove?: { habit_key: number | null } } | undefined;
     HabitCreationScreen: { description: { text: string }; remove?: { habit_key?: number} | {} | undefined};
     HabitScreen: { name: string | undefined; date: string | undefined; time: string | undefined; habitKey: number | null };
     SecondScreen: undefined;
@@ -30,7 +30,8 @@ export interface HomeScreenProps {
 
 export interface SecondScreenProps {
     navigation: NavigationProp, 
-    route?: { params: { description?: string, remove?: number, date?: string, time?: Date} } | any |  undefined
+    route?: 
+     { params: { description?: string, remove?: number, date?: string, time?: Date} } | any |  undefined
   };
   
 export type HomeScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Home'>;
