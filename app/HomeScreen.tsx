@@ -28,7 +28,7 @@ import { useData } from './DataContext';
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }) => {
   // const [habits, setHabits] = useState<HabitType[]>([]);
   const [selectedHabit, setSelectedHabit] = useState<number | null>(null);
-  const [currentKey, setCurrentKey] = useState(0);
+  const [currentKey, setCurrentKey] = useState(-1);
   const { data, fetchData } = useData();
 
   const keyToSet = currentKey === -1 ? 0 : currentKey;
@@ -71,6 +71,14 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }) => {
   useFocusEffect(
     useCallback(() => {
       fetchData();
+      const numHabits = data.length;
+      const maxKey: string | null = data[numHabits - 1].habitKey;
+      // console.log("numHabits: " + JSON.stringify(data[numHabits - 1].habitKey));
+      console.log("cCurrentKey: " + currentKey);
+
+      setCurrentKey(maxKey ? (prev) => prev = parseInt(maxKey) + 1 : 0);
+      console.log("currentKey: " + currentKey);
+
       data.forEach((element: any, index: number) => {console.log("nummero: " + index + " " + JSON.stringify(element))});
       // console.log("Data v homescreenu: " + data);
     }, [])
