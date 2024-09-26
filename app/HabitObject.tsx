@@ -59,7 +59,7 @@ export const Habit: React.FC<HabitInterface> = ({ habit, navigation, isSelected,
             <Text>Time: {timeDifference}</Text>
 
             <TouchableOpacity style={{ backgroundColor: 'darkgreen', padding: 5, borderRadius: 5, marginTop: 5, width: 80, alignItems: 'center' }}
-            onPress={() => navigation.navigate("HabitScreen", { name: habit.name, habitKey: habit.habitKey, date: habit.date, time: habit.time })}
+            onPress={() => navigation.navigate("HabitScreen", { ...habit })} // send the habit object to the habit screen
             >
              <Text style={{ color: 'white', fontWeight: 'normal', fontSize: 15, backgroundColor: 'darkgreen' }}>
                   More

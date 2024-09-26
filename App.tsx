@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator, NativeStackNavigationOptions } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { createStackNavigator } from '@react-navigation/stack';
 import HomeScreen from "./app/HomeScreen";
 import HabitScreen from "./app/HabitScreen";
 import HabitCreationScreen from "./app/HabitCreationScreen";
