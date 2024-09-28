@@ -1,6 +1,7 @@
-import React, { createContext, useState, useEffect, useContext } from 'react';
+import React, { createContext, useState, useContext, useCallback, useEffect } from 'react';
 import { getAllKeys, multiGet } from './LocalStorageUtil';
 import { HabitType } from './types/habit.d';
+import { useFocusEffect } from "@react-navigation/native";
 
 
 
@@ -12,13 +13,14 @@ interface DataContextType {
 }
 
 // Create the context with a default value
-const DataContext = createContext<DataContextType | undefined>(undefined);
+export const DataContext = createContext<DataContextType | undefined>(undefined);
 
 // Create a provider component
 export const DataProvider: React.FC<{children: any}> = ({ children }) => {
   const [data, setData] = useState<HabitType[]>([]);
 
   const fetchData = async () => {
+    console.log("FETCHING IN DATACONTEXT!")
     try {
       const readonlyKeys: readonly string[] | undefined = await getAllKeys();
       const keys: string[] | undefined = readonlyKeys?.slice();
@@ -48,21 +50,18 @@ export const DataProvider: React.FC<{children: any}> = ({ children }) => {
         return;
       }
       fetchedHabits = fetchedHabits.sort((a , b) => a.habitKey - b.habitKey);
+      console.log("Fetched habits: ", JSON.stringify(fetchedHabits));
+
       setData(fetchedHabits);
-      
-    //   setCurrentKey(keys[keys.length - 1] ? parseInt(keys[keys.length - 1]) + 1 : 0);
-    
-      // You can use the keys to fetch and set habits if needed
+      data.forEach((element: any, index: number) => {
+        console.log("DataContext: " + index + " " + JSON.stringify(element));
+      });
     } catch (error) {
       console.error("Failed to fetch keys", error);
     }
+
+
   };
-
-  useEffect(() => {
-    fetchData();
-    console.log("DataContext: ", data);
-  }, []);
-
   return (
     <DataContext.Provider value={{ data, fetchData }}>
       {children}

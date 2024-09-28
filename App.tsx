@@ -55,15 +55,15 @@ const TabNavigator = () => (
       //   <BlurView tint="" intensity={100} />
       // },  
     })}
-    tabBarOptions={{
-      activeTintColor: 'white',
-      inactiveTintColor: '#888888',
-      activeBackgroundColor: '#1a1a1a',
-      inactiveBackgroundColor: '#1a1a1a',
-      style: {
-        backgroundColor: 'red',
-      },
-    }}
+    // tabBarOptions={{
+    //   activeTintColor: 'white',
+    //   inactiveTintColor: '#888888',
+    //   activeBackgroundColor: '#1a1a1a',
+    //   inactiveBackgroundColor: '#1a1a1a',
+    //   style: {
+    //     backgroundColor: 'red',
+    //   },
+    // }}
   >
     <Tab.Screen name="Home" component={HomeScreen} />
     <Tab.Screen name="SecondScreen" component={SecondScreen} options={{ title: "Habit"}} />
