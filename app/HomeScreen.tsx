@@ -35,7 +35,6 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }) => {
 
   const handleGesture = ({ nativeEvent }: { nativeEvent: any }) => {
     if (nativeEvent.translationX < -50) {
-      // checks for swipe left
       navigation.navigate("SecondScreen");
     }
   };

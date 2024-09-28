@@ -9,6 +9,7 @@ import HomeScreen from "./app/HomeScreen";
 import HabitScreen from "./app/HabitScreen";
 import HabitCreationScreen from "./app/HabitCreationScreen";
 import SecondScreen from "./app/SecondScreen";
+import ProfileScreen from "./app/ProfileScreen";
 import { RootStackParamList } from "./app/types/screen.d";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Ionicons } from "@expo/vector-icons"; // You can use any icon library
@@ -75,6 +76,7 @@ const TabNavigator = () => (
       component={SecondScreen}
       options={{ title: "Habit" }}
     />
+    <Tab.Screen name="Profile" component={ProfileScreen} />
   </Tab.Navigator>
 );
 
@@ -89,6 +91,8 @@ const App = () => (
             options={{ headerShown: false }}
           />
           <Stack.Screen name="SecondScreen" component={SecondScreen} />
+          <Stack.Screen name="Profile" component={ProfileScreen} />
+
           <Stack.Screen name="HabitScreen" component={HabitScreen} />
           <Stack.Screen
             name="HabitCreationScreen"

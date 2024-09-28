@@ -21,12 +21,15 @@ import {
 } from "./Util";
 import { useData } from "./DataContext";
 
-const SecondScreen: React.FC<SecondScreenProps> = ({ navigation, route }) => {
+const SecondScreen: React.FC<SecondScreenProps> = ({ navigation }) => {
   // const markedDates = generateMarkedDates(currentDate, getTodaysDate());
   const { data, fetchData } = useData();
   const handleGesture = ({ nativeEvent }: { nativeEvent: any }) => {
     if (nativeEvent.translationX > 50) {
       navigation.navigate("Home"); // Replace "NewScreen" with your target screen name
+    }
+    if (nativeEvent.translationX < -50) {
+      navigation.navigate("Profile"); // Replace "NewScreen" with your target screen name
     }
   };
   useFocusEffect(
