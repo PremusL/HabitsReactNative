@@ -1,26 +1,34 @@
-import React, { createContext, useState, useContext, useCallback, useEffect } from 'react';
-import { getAllKeys, multiGet } from './LocalStorageUtil';
-import { HabitType } from './types/habit.d';
+import React, {
+  createContext,
+  useState,
+  useContext,
+  useCallback,
+  useEffect,
+} from "react";
+import { getAllKeys, multiGet } from "./LocalStorageUtil";
+import { HabitType } from "./types/habit.d";
 import { useFocusEffect } from "@react-navigation/native";
-
-
-
+import { set } from "date-fns";
 
 // Define the shape of the context data
 interface DataContextType {
   data: HabitType[];
+  nextKey: number;
   fetchData: () => void;
 }
 
 // Create the context with a default value
-export const DataContext = createContext<DataContextType | undefined>(undefined);
+export const DataContext = createContext<DataContextType | undefined>(
+  undefined
+);
 
 // Create a provider component
-export const DataProvider: React.FC<{children: any}> = ({ children }) => {
+export const DataProvider: React.FC<{ children: any }> = ({ children }) => {
   const [data, setData] = useState<HabitType[]>([]);
-
+  const [nextKey, setMaxKey] = useState(0);
+  console.log("DataProvider");
   const fetchData = async () => {
-    console.log("FETCHING IN DATACONTEXT!")
+    console.log("FETCHING IN DATACONTEXT!");
     try {
       const readonlyKeys: readonly string[] | undefined = await getAllKeys();
       const keys: string[] | undefined = readonlyKeys?.slice();
@@ -30,7 +38,7 @@ export const DataProvider: React.FC<{children: any}> = ({ children }) => {
         console.log("No keys found");
         return;
       }
-      
+
       const data = await multiGet(keys);
       if (!data) {
         console.log("Multi get didn't work");
@@ -49,21 +57,19 @@ export const DataProvider: React.FC<{children: any}> = ({ children }) => {
       if (!fetchedHabits) {
         return;
       }
-      fetchedHabits = fetchedHabits.sort((a , b) => a.habitKey - b.habitKey);
-      console.log("Fetched habits: ", JSON.stringify(fetchedHabits));
+      fetchedHabits = fetchedHabits.sort((a, b) => a.habitKey - b.habitKey);
 
       setData(fetchedHabits);
+      setMaxKey(() => parseInt(data[data.length - 1][0]) + 1);
       data.forEach((element: any, index: number) => {
         console.log("DataContext: " + index + " " + JSON.stringify(element));
       });
     } catch (error) {
       console.error("Failed to fetch keys", error);
     }
-
-
   };
   return (
-    <DataContext.Provider value={{ data, fetchData }}>
+    <DataContext.Provider value={{ data, nextKey, fetchData }}>
       {children}
     </DataContext.Provider>
   );
@@ -73,7 +79,7 @@ export const DataProvider: React.FC<{children: any}> = ({ children }) => {
 export const useData = () => {
   const context = useContext(DataContext);
   if (!context) {
-    throw new Error('useData must be used within a DataProvider');
+    throw new Error("useData must be used within a DataProvider");
   }
   return context;
 };

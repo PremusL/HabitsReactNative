@@ -27,10 +27,11 @@ import { useData } from "./DataContext";
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }) => {
   // const [habits, setHabits] = useState<HabitType[]>([]);
   const [selectedHabit, setSelectedHabit] = useState<number | null>(null);
-  const [currentKey, setCurrentKey] = useState(-1);
-  const { data, fetchData } = useData();
+  const [currentKey, setCurrentKey] = useState("0");
+  const [maxKey, setMaxKey] = useState(0);
+  const { data, nextKey, fetchData } = useData();
 
-  const keyToSet = currentKey === -1 ? 0 : currentKey;
+  console.log(nextKey);
 
   const handleGesture = ({ nativeEvent }: { nativeEvent: any }) => {
     if (nativeEvent.translationX < -50) {
@@ -45,37 +46,47 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }) => {
 
   const settingKey = () => {
     const numHabits = data.length;
+
     if (numHabits === 0) {
-      setCurrentKey(0);
+      setCurrentKey("0");
     } else {
-      const maxKey: string | null = data[numHabits - 1].habitKey;
+      const maxKeyString: string | null = data[numHabits - 1].habitKey;
+      setMaxKey(() => parseInt(maxKeyString ?? "0") + 1);
+      console.log("-----------------");
       console.log("maxKey: " + maxKey);
-      const maxKeyInt = parseInt(maxKey ?? "0");
-      setCurrentKey(maxKeyInt + 1);
+      console.log("-----------------");
+
+      setCurrentKey(() => maxKey.toString());
     }
   };
 
   useEffect(() => {
-    fetchData();
-    settingKey();
+    const waitFetchData = async () => {
+      await fetchData();
+      settingKey();
+    };
+    waitFetchData();
   }, []);
 
   useEffect(() => {
     const waitingSaveData = async (keyToSet: string, currentParams: any) => {
       await saveData(keyToSet, JSON.stringify(currentParams));
       await fetchData();
+      fetchData();
       console.log("Data after save: ", JSON.stringify(data));
     };
     const waitingRemoveData = async (remove_key: string) => {
       await removeHabit(remove_key);
       await fetchData();
+      fetchData();
       console.log("Data after remove: ", JSON.stringify(data));
     };
     if (route.params && route.params.description) {
       const currentParams = route.params;
 
       settingKey();
-      waitingSaveData(keyToSet.toString(), currentParams);
+      console.log("Key value after the setting key: " + currentKey);
+      waitingSaveData(currentKey, currentParams);
     } else if (route.params && route.params.remove) {
       const remove_key: string = route.params.remove;
 

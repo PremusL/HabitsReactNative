@@ -33,7 +33,7 @@ const SecondScreen: React.FC<SecondScreenProps> = ({ navigation, route }) => {
     useCallback(() => {
       // fetchData();
       data.forEach((element: any, index: number) => {
-        console.log("nummero: " + index + " " + JSON.stringify(element));
+        // console.log("nummero: " + index + " " + JSON.stringify(element));
       });
       // console.log("Data v homescreenu: " + data);
     }, [])
