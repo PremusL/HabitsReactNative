@@ -5,15 +5,15 @@ import {
   NativeStackNavigationOptions,
 } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import HomeScreen from "./app/HomeScreen";
-import HabitScreen from "./app/HabitScreen";
-import HabitCreationScreen from "./app/HabitCreationScreen";
-import SecondScreen from "./app/SecondScreen";
-import ProfileScreen from "./app/ProfileScreen";
-import { RootStackParamList } from "./app/types/screen.d";
+import HomeScreen from "./app/UI/components/HomeScreen";
+import HabitScreen from "./app/UI/components/HabitScreen";
+import HabitCreationScreen from "./app/UI/components/HabitCreationScreen";
+import SecondScreen from "./app/UI/components/SecondScreen";
+import ProfileScreen from "./app/UI/components/ProfileScreen";
+
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Ionicons } from "@expo/vector-icons"; // You can use any icon library
-import { DataProvider } from "./app/DataContext";
+import { DataProvider } from "./app/UI/components/DataContext";
 
 const Tab = createBottomTabNavigator();
 

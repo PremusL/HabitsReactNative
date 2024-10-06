@@ -1,7 +1,6 @@
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { HabitType } from "./habit.d";
 import { RouteProp } from "@react-navigation/native";
-import ProfileScreen from "../ProfileScreen";
 
 export type HomeScreenRouteProp = RouteProp<RootStackParamList, "Home">;
 

@@ -6,9 +6,7 @@ import React, {
   useEffect,
 } from "react";
 import { getAllKeys, multiGet } from "./LocalStorageUtil";
-import { HabitType } from "./types/habit.d";
-import { useFocusEffect } from "@react-navigation/native";
-import { set } from "date-fns";
+import { HabitType } from "../types/habit.d";
 
 // Define the shape of the context data
 interface DataContextType {
@@ -26,14 +24,14 @@ export const DataContext = createContext<DataContextType | undefined>(
 export const DataProvider: React.FC<{ children: any }> = ({ children }) => {
   const [data, setData] = useState<HabitType[]>([]);
   const [nextKey, setMaxKey] = useState(0);
-  console.log("DataProvider");
+  // console.log("DataProvider");
   const fetchData = async () => {
-    console.log("FETCHING IN DATACONTEXT!");
+    // console.log("FETCHING IN DATACONTEXT!");
     try {
       const readonlyKeys: readonly string[] | undefined = await getAllKeys();
       const keys: string[] | undefined = readonlyKeys?.slice();
       keys?.sort((a, b) => parseInt(a) - parseInt(b));
-      console.log("Keys: ", keys);
+      // console.log("Keys: ", keys);
       if (!keys) {
         console.log("No keys found");
         return;
@@ -62,7 +60,7 @@ export const DataProvider: React.FC<{ children: any }> = ({ children }) => {
       setData(fetchedHabits);
       setMaxKey(() => parseInt(data[data.length - 1][0]) + 1);
       data.forEach((element: any, index: number) => {
-        console.log("DataContext: " + index + " " + JSON.stringify(element));
+        // console.log("DataContext: " + index + " " + JSON.stringify(element));
       });
     } catch (error) {
       console.error("Failed to fetch keys", error);

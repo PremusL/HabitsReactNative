@@ -1,29 +1,38 @@
 import React from "react";
 import { TouchableOpacity, Text, StyleSheet } from "react-native";
-import { AddButtonProps, RemoveButtonProps } from "./types/button.d";
+import { AddButtonProps, RemoveButtonProps } from "../types/button.d";
 
-const AddButton: React.FC<AddButtonProps> = ({ navigation, whereTo, disabled = false, data = {} }) => (
+const AddButton: React.FC<AddButtonProps> = ({
+  navigation,
+  whereTo,
+  disabled = false,
+  data = {},
+}) => (
   <TouchableOpacity
     style={[
       styles.addButton,
-      disabled ? { backgroundColor: 'grey' } : { backgroundColor: 'darkgreen' },
+      disabled ? { backgroundColor: "grey" } : { backgroundColor: "darkgreen" },
     ]}
     onPress={() => navigation.navigate(whereTo, data as any)}
     disabled={disabled}
   >
-    <Text style={{ color: 'white', fontWeight: 'normal', fontSize: 24 }}>
+    <Text style={{ color: "white", fontWeight: "normal", fontSize: 24 }}>
       +
     </Text>
   </TouchableOpacity>
 );
 
-const RemoveButton: React.FC<RemoveButtonProps> = ({ navigation, whereTo = 'Home', data = {} }) => {
+const RemoveButton: React.FC<RemoveButtonProps> = ({
+  navigation,
+  whereTo = "Home",
+  data = {},
+}) => {
   return (
     <TouchableOpacity
       style={[styles.removeButton]}
       onPress={() => navigation.navigate(whereTo, data as any)} // ta any bi blo treba zamenat z dejansko obliko
     >
-      <Text style={{ color: 'white', fontWeight: 'normal', fontSize: 24 }}>
+      <Text style={{ color: "white", fontWeight: "normal", fontSize: 24 }}>
         -
       </Text>
     </TouchableOpacity>

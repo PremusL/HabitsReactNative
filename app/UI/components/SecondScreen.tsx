@@ -9,9 +9,9 @@ import {
   TextInput,
 } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
-import { HomeScreenProps, SecondScreenProps } from "./types/screen.d";
-import styles from "./style/styles";
-import { HabitType } from "./types/habit.d";
+import { HomeScreenProps, SecondScreenProps } from "../types/screen.d";
+import styles from "../style/styles";
+import { HabitType } from "../types/habit.d";
 import { PanGestureHandler, State } from "react-native-gesture-handler";
 import { Calendar } from "react-native-calendars";
 import {

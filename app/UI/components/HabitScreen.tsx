@@ -7,8 +7,7 @@ import {
   getTodaysDate,
   calculateDaysDifference,
 } from "./Util"; // Adjust the path as necessary
-import { saveData } from "./LocalStorageUtil"; // Adjust the path as necessary
-import { HabitScreenProps } from "./types/screen.d";
+import { HabitScreenProps } from "../types/screen.d";
 
 const HabitScreen: React.FC<HabitScreenProps> = ({ navigation, route }) => {
   const currentParams = route?.params;

@@ -1,13 +1,5 @@
 import React, { useState, useEffect, useCallback, useContext } from "react";
-import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  Button,
-  TextInput,
-} from "react-native";
+import { View } from "react-native";
 import { AddButton } from "./Buttons";
 import { HabitList } from "./HabitObject";
 import {
@@ -17,12 +9,12 @@ import {
   clearAll,
   removeData,
 } from "./LocalStorageUtil";
-import { useFocusEffect } from "@react-navigation/native";
-import { HomeScreenProps } from "./types/screen.d";
-import styles from "./style/styles";
-import { HabitType } from "./types/habit.d";
+import { HomeScreenProps } from "../types/screen.d";
+import styles from "../style/styles";
 import { PanGestureHandler, State } from "react-native-gesture-handler";
 import { useData } from "./DataContext";
+import { readHabitsDB, writeHabitDB } from "./DataBaseUtil";
+import { HabitType } from "../types/habit.d";
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }) => {
   // const [habits, setHabits] = useState<HabitType[]>([]);
@@ -30,8 +22,9 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }) => {
   const [currentKey, setCurrentKey] = useState("0");
   const [maxKey, setMaxKey] = useState(0);
   const { data, nextKey, fetchData } = useData();
+  const { dataDB, setDataDB } = useState([]);
 
-  console.log(nextKey);
+  // console.log(nextKey);
 
   const handleGesture = ({ nativeEvent }: { nativeEvent: any }) => {
     if (nativeEvent.translationX < -50) {
@@ -49,11 +42,11 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }) => {
     if (numHabits === 0) {
       setCurrentKey("0");
     } else {
-      const maxKeyString: string | null = data[numHabits - 1].habitKey;
-      setMaxKey(() => parseInt(maxKeyString ?? "0") + 1);
-      console.log("-----------------");
-      console.log("maxKey: " + maxKey);
-      console.log("-----------------");
+      const maxKeyString: number | null = data[numHabits - 1].habitKey;
+      setMaxKey(() => (maxKeyString ? maxKeyString + 1 : 0));
+      // console.log("-----------------");
+      // console.log("maxKey: " + maxKey);
+      // console.log("-----------------");
 
       setCurrentKey(() => maxKey.toString());
     }
@@ -68,11 +61,17 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }) => {
   }, []);
 
   useEffect(() => {
-    const waitingSaveData = async (keyToSet: string, currentParams: any) => {
-      await saveData(keyToSet, JSON.stringify(currentParams));
-      await fetchData();
-      fetchData();
-      console.log("Data after save: ", JSON.stringify(data));
+    const waitingSaveData = async (keyToSet: number, currentParams: any) => {
+      currentParams["habitKey"] = keyToSet; // Set the key to the current habit
+      await writeHabitDB(currentParams);
+      setDataDB(await readHabitsDB());
+
+      console.log("DataDB: ", JSON.stringify(dataDB));
+
+      // await saveData(keyToSet, JSON.stringify(currentParams));
+      // await fetchData();
+      // fetchData();
+      // console.log("Data after save: ", JSON.stringify(data));
     };
     const waitingRemoveData = async (remove_key: string) => {
       await removeHabit(remove_key);
@@ -85,7 +84,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }) => {
 
       settingKey();
       console.log("Key value after the setting key: " + currentKey);
-      waitingSaveData(currentKey, currentParams);
+      waitingSaveData(nextKey, currentParams);
     } else if (route.params && route.params.remove) {
       const remove_key: string = route.params.remove;
 
@@ -94,6 +93,14 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }) => {
       console.log("no params");
     }
   }, [route.params]);
+
+  // useEffect(() => {
+  //   const waitReadHabitsDB = async () => {
+
+  //   };
+  //   waitReadHabitsDB();
+  // }, []);
+
   return (
     <PanGestureHandler
       onGestureEvent={handleGesture}
