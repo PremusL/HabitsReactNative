@@ -33,7 +33,15 @@ client.connect((err) => {
 app.get("/api/readHabits", async (req, res) => {
   console.log("Request to get");
   try {
-    const result = await client.query(`SELECT (habit) FROM ${tableName}`); // Replace with your SQL query
+    const selectColumns = tableColumns
+      .split(", ")
+      .map((column) => "(habit)." + column)
+      .join(", ");
+
+    const result = await client.query(
+      `SELECT ${selectColumns} FROM ${tableName}`
+    ); // Replace with your SQL query\
+
     res.json(result.rows);
   } catch (error) {
     console.error("Error executing query:", error);
@@ -48,13 +56,35 @@ app.post("/api/writeHabits", async (req, res) => {
   // const { name, surname } = req.body;
   console.log("Request to post");
   console.log("req.body", req.body);
-  const { habitKey, name, description, date, time } = req.body;
+  const { habit_key, name, description, date, time } = req.body;
   try {
     const result = await client.query(
       `INSERT INTO ${tableName} (habit)
-       VALUES (ROW (${habitKey}, '${name}', '${description}', '${date}', '${time}'))`
+       VALUES (ROW (${habit_key}, '${name}', '${description}', '${date}', '${time}'))`
     ); // Replace with your SQL query
     res.json({ message: "Data added successfully" });
+  } catch (error) {
+    console.error("Error executing query:", error);
+    if (!res.headersSent) {
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  }
+});
+
+app.delete("/api/deleteHabits/:habit_key", async (req, res) => {
+  console.log("Request to delete");
+  const { habit_key } = req.params;
+
+  if (!habit_key) {
+    return res.status(400).json({ error: "habit_key is required" });
+  }
+
+  try {
+    const result = await client.query(
+      `DELETE FROM ${tableName} WHERE (habit).habit_key = $1`,
+      [habit_key]
+    );
+    res.json({ message: "Data deleted successfully" });
   } catch (error) {
     console.error("Error executing query:", error);
     if (!res.headersSent) {

@@ -83,23 +83,23 @@ const TabNavigator = () => (
 const App = () => (
   <GestureHandlerRootView style={{ flex: 1 }}>
     <NavigationContainer>
-      <DataProvider>
-        <Stack.Navigator screenOptions={navigatorOptions}>
-          <Stack.Screen
-            name="Tabs"
-            component={TabNavigator}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen name="SecondScreen" component={SecondScreen} />
-          <Stack.Screen name="Profile" component={ProfileScreen} />
+      {/* <DataProvider> */}
+      <Stack.Navigator screenOptions={navigatorOptions}>
+        <Stack.Screen
+          name="Tabs"
+          component={TabNavigator}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen name="SecondScreen" component={SecondScreen} />
+        <Stack.Screen name="Profile" component={ProfileScreen} />
 
-          <Stack.Screen name="HabitScreen" component={HabitScreen} />
-          <Stack.Screen
-            name="HabitCreationScreen"
-            component={HabitCreationScreen}
-          />
-        </Stack.Navigator>
-      </DataProvider>
+        <Stack.Screen name="HabitScreen" component={HabitScreen} />
+        <Stack.Screen
+          name="HabitCreationScreen"
+          component={HabitCreationScreen}
+        />
+      </Stack.Navigator>
+      {/* </DataProvider> */}
     </NavigationContainer>
   </GestureHandlerRootView>
 );

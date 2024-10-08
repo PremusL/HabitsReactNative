@@ -7,6 +7,7 @@ import React, {
 } from "react";
 import { getAllKeys, multiGet } from "./LocalStorageUtil";
 import { HabitType } from "../types/habit.d";
+import { readHabitsDB, writeHabitDB } from "./DataBaseUtil";
 
 // Define the shape of the context data
 interface DataContextType {
@@ -24,7 +25,7 @@ export const DataContext = createContext<DataContextType | undefined>(
 export const DataProvider: React.FC<{ children: any }> = ({ children }) => {
   const [data, setData] = useState<HabitType[]>([]);
   const [nextKey, setMaxKey] = useState(0);
-  // console.log("DataProvider");
+
   const fetchData = async () => {
     // console.log("FETCHING IN DATACONTEXT!");
     try {
@@ -49,13 +50,13 @@ export const DataProvider: React.FC<{ children: any }> = ({ children }) => {
           name: jsonData.description,
           date: jsonData.date,
           time: jsonData.time,
-          habitKey: curKeyValue,
+          habit_key: curKeyValue,
         };
       });
       if (!fetchedHabits) {
         return;
       }
-      fetchedHabits = fetchedHabits.sort((a, b) => a.habitKey - b.habitKey);
+      fetchedHabits = fetchedHabits.sort((a, b) => a.habit_key - b.habit_key);
 
       setData(fetchedHabits);
       setMaxKey(() => parseInt(data[data.length - 1][0]) + 1);

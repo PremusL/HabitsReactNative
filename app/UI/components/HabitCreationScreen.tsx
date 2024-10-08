@@ -77,7 +77,7 @@ const HabitCreationScreen: React.FC<HabitCreationScreenProps> = ({
         whereTo="Home"
         disabled={!selected || !text || text.length < 1 || selected.length < 1}
         data={{
-          habitKey: null,
+          habit_key: null,
           name: text,
           description: text,
           date: selected,

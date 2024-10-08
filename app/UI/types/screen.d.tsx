@@ -21,7 +21,7 @@ export type RootStackParamList = {
     name: string | undefined;
     date: string | undefined;
     time: string | undefined;
-    habitKey: number | null;
+    habit_key: number | null;
   };
   SecondScreen: undefined;
   Profile: undefined;

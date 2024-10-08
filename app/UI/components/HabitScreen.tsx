@@ -39,7 +39,7 @@ const HabitScreen: React.FC<HabitScreenProps> = ({ navigation, route }) => {
       <RemoveButton
         navigation={navigation}
         whereTo="Home"
-        data={{ remove: currentParams?.habitKey }}
+        data={{ remove: currentParams?.habit_key }}
       />
       <Text style={{ fontSize: 22 }}>
         Free for: {calculateDaysDifference(currentDate, getTodaysDate())} days

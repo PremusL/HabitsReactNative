@@ -19,11 +19,9 @@ import {
   getTodaysDate,
   calculateDaysDifference,
 } from "./Util";
-import { useData } from "./DataContext";
 
 const SecondScreen: React.FC<SecondScreenProps> = ({ navigation }) => {
   // const markedDates = generateMarkedDates(currentDate, getTodaysDate());
-  const { data, fetchData } = useData();
   const handleGesture = ({ nativeEvent }: { nativeEvent: any }) => {
     if (nativeEvent.translationX > 50) {
       navigation.navigate("Home"); // Replace "NewScreen" with your target screen name
@@ -34,10 +32,6 @@ const SecondScreen: React.FC<SecondScreenProps> = ({ navigation }) => {
   };
   useFocusEffect(
     useCallback(() => {
-      // fetchData();
-      data.forEach((element: any, index: number) => {
-        // console.log("nummero: " + index + " " + JSON.stringify(element));
-      });
       // console.log("Data v homescreenu: " + data);
     }, [])
   );
