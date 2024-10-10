@@ -7,6 +7,11 @@ export interface HabitType {
   name: string | undefined;
   date: string | undefined;
   time: string | undefined;
+  description: string | undefined;
+  color: string | undefined;
+  icon: string | undefined;
+  intensity: number | undefined;
+  frequency: number | undefined;
 }
 
 export interface HabitInterface {

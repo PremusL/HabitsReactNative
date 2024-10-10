@@ -1,5 +1,5 @@
 import { formatDate, getTodaysDate, calculateTimeDifference } from "./Util";
-import styles from "../style/styles";
+import { styles } from "../style/styles";
 import React, { useEffect, useState, useRef } from "react";
 import {
   View,
@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Animated,
   ScrollView,
+  StyleSheet,
 } from "react-native";
 import { HabitInterface, HabitListInterface } from "../types/habit.d";
 
@@ -108,8 +109,8 @@ export const HabitList: React.FC<HabitListInterface> = ({
   setSelectedHabit,
 }) => (
   <View>
-    <ScrollView>
-      {habits.map((habit, index) => (
+    <ScrollView style={scrollViewStyles.scrollViewContent}>
+      {habits.map((habit) => (
         <Habit
           key={habit.habit_key}
           habit={habit}
@@ -125,3 +126,13 @@ export const HabitList: React.FC<HabitListInterface> = ({
     </ScrollView>
   </View>
 );
+
+const scrollViewStyles = StyleSheet.create({
+  // container: {
+  //   flex: 1,
+  // },
+  scrollViewContent: {
+    flexGrow: 1,
+    paddingBottom: 100,
+  },
+});

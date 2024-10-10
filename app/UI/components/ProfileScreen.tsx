@@ -9,7 +9,7 @@ import {
   TextInput,
 } from "react-native";
 import { ProfileScreenProps } from "../types/screen.d";
-import styles from "../style/styles";
+import { styles } from "../style/styles";
 import { PanGestureHandler, State } from "react-native-gesture-handler";
 
 const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {

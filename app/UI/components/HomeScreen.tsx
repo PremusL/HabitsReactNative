@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useContext } from "react";
-import { View, ScrollView } from "react-native";
+import { SafeAreaView } from "react-native";
 import { AddButton } from "./Buttons";
 import { HabitList } from "./HabitObject";
 import {
@@ -10,7 +10,7 @@ import {
   removeData,
 } from "./LocalStorageUtil";
 import { HomeScreenProps } from "../types/screen.d";
-import styles from "../style/styles";
+import { styles } from "../style/styles";
 import { PanGestureHandler, State } from "react-native-gesture-handler";
 import { useData } from "./DataContext";
 import { readHabitsDB, writeHabitDB, deleteHabitDB } from "./DataBaseUtil";
@@ -88,20 +88,19 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }) => {
   // }, []);
 
   return (
-    <PanGestureHandler
-      onGestureEvent={handleGesture}
-      onHandlerStateChange={handleGesture}
-    >
-      <View style={styles.mainPage}>
-        <AddButton navigation={navigation} whereTo="HabitCreationScreen" />
-        <HabitList
-          habits={dataDB}
-          navigation={navigation as any}
-          selectedHabit={selectedHabit}
-          setSelectedHabit={(habit_key) => setSelectedHabit(habit_key ?? null)}
-        />
-      </View>
-    </PanGestureHandler>
+    // <PanGestureHandler
+    //   onGestureEvent={handleGesture}
+    //   onHandlerStateChange={handleGesture}
+    // >
+    <SafeAreaView style={styles.mainPage}>
+      <AddButton navigation={navigation} whereTo="HabitCreationScreen" />
+      <HabitList
+        habits={dataDB}
+        navigation={navigation as any}
+        selectedHabit={selectedHabit}
+        setSelectedHabit={(habit_key) => setSelectedHabit(habit_key ?? null)}
+      />
+    </SafeAreaView>
   );
 };
 export default HomeScreen;

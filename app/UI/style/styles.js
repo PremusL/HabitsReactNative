@@ -1,7 +1,44 @@
 import { StyleSheet } from "react-native";
 
-const styles = StyleSheet.create({
+const baseMargin = {
+  marginBottom: 15, // Add marginBottom property here
+};
+
+export const habitCreationScreenStyles = StyleSheet.create({
+  subsectionText: {
+    ...baseMargin,
+    fontSize: 17,
+    fontWeight: "600",
+    textAlign: "center",
+  },
+  descriptionInput: {
+    ...baseMargin,
+    fontSize: 14,
+    height: 100,
+    borderBottomColor: "black",
+    borderWidth: 1,
+    paddingLeft: 10,
+    borderRadius: 5,
+  },
+  titleInput: {
+    ...baseMargin,
+    height: 40,
+    borderColor: "black",
+    borderWidth: 1,
+    paddingLeft: 10,
+    borderRadius: 5,
+  },
+  titleText: {
+    ...baseMargin,
+    fontSize: 22,
+    textAlign: "center",
+    fontWeight: "600",
+  },
+});
+
+export const styles = StyleSheet.create({
   navigationBar: {
+    ...baseMargin,
     backgroundColor: "darkblue",
     height: 70,
     justifyContent: "center",
@@ -54,8 +91,8 @@ const styles = StyleSheet.create({
     },
   },
   habitCard: {
+    ...baseMargin,
     padding: 10,
-    margin: 10,
     backgroundColor: "#fff",
     borderRadius: 5,
     shadowColor: "#000",
@@ -77,9 +114,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   input: {
+    ...baseMargin,
     height: 40,
     width: 230,
-    margin: 12,
     borderBottomColor: "black",
     borderBottomWidth: 1,
     // padding: 10,
@@ -124,8 +161,8 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   box: {
+    ...baseMargin,
     width: 40,
     height: 40,
   },
 });
-export default styles;

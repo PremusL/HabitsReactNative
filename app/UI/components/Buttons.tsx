@@ -49,6 +49,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 30,
     right: 30,
+    zIndex: 1,
   },
   removeButton: {
     alignItems: "center",
@@ -60,6 +61,7 @@ const styles = StyleSheet.create({
     bottom: 30,
     left: 30,
     backgroundColor: "red",
+    zIndex: 1,
   },
 });
 
