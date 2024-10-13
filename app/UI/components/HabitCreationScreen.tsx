@@ -25,7 +25,7 @@ import ColorPicker, {
   OpacitySlider,
   HueSlider,
 } from "reanimated-color-picker";
-import { CheckBox, Slider } from "@rneui/themed";
+import { CheckBox, Slider, Switch } from "@rneui/themed";
 
 const HabitCreationScreen: React.FC<HabitCreationScreenProps> = ({
   navigation,
@@ -38,6 +38,7 @@ const HabitCreationScreen: React.FC<HabitCreationScreenProps> = ({
   const [showModal, setShowModal] = useState(false);
   const [checked, setChecked] = useState(true);
   const [valueSlider, setValueSlider] = useState(0);
+  const [switchValue, setSwitchValue] = useState(false); // false meaning the habit is bad
 
   const toggleCheckbox = () => {
     setChecked(!checked);
@@ -146,12 +147,7 @@ const HabitCreationScreen: React.FC<HabitCreationScreenProps> = ({
           <View>
             <TouchableOpacity
               onPress={showTimepicker}
-              style={{
-                marginTop: 20,
-                backgroundColor: "#1a1a1a",
-                borderRadius: 5,
-                alignItems: "center",
-              }}
+              style={[habitCreationScreenStyles.chooseBtn, { marginTop: 20 }]}
             >
               <Text style={{ fontSize: 20, margin: 10, color: "white" }}>
                 Choose time
@@ -165,6 +161,22 @@ const HabitCreationScreen: React.FC<HabitCreationScreenProps> = ({
                 </Text>
               </Text>
             ) : null}
+            <Text style={habitCreationScreenStyles.subsectionText}>
+              Select type of habit:
+            </Text>
+            <View style={{ flexDirection: "row" }}>
+              <Switch
+                color={switchValue ? "darkgreen" : "darkred"}
+                value={switchValue}
+                onValueChange={() => setSwitchValue(!switchValue)}
+                style={habitCreationScreenStyles.switch}
+              />
+              <Text
+                style={[habitCreationScreenStyles.basicText, { marginTop: 12 }]}
+              >
+                {switchValue ? "Good habit" : "Bad habit"}
+              </Text>
+            </View>
             <Text style={habitCreationScreenStyles.subsectionText}>
               Description:
             </Text>
@@ -213,6 +225,9 @@ const HabitCreationScreen: React.FC<HabitCreationScreenProps> = ({
             <Text style={habitCreationScreenStyles.basicText}>
               Value: <Text style={{ fontWeight: "bold" }}>{valueSlider}</Text>
             </Text>
+            <Text style={habitCreationScreenStyles.subsectionText}>
+              Select color:
+            </Text>
             <View style={{ flexDirection: "row", alignItems: "center" }}>
               <Text style={habitCreationScreenStyles.basicText}>
                 Selected color:
@@ -227,12 +242,13 @@ const HabitCreationScreen: React.FC<HabitCreationScreenProps> = ({
             </View>
             <TouchableOpacity
               onPress={() => setShowModal(true)}
-              style={{
-                marginTop: 20,
-                backgroundColor: "#1a1a1a",
-                borderRadius: 5,
-                alignItems: "center",
-              }}
+              style={[habitCreationScreenStyles.chooseBtn]}
+              // {
+              //   marginTop: 20,
+              //   backgroundColor: "#1a1a1a",
+              //   borderRadius: 5,
+              //   alignItems: "center",
+              // }}
             >
               <Text style={{ fontSize: 20, margin: 10, color: "white" }}>
                 Choose color
@@ -252,12 +268,10 @@ const HabitCreationScreen: React.FC<HabitCreationScreenProps> = ({
                 </ColorPicker>
                 <TouchableOpacity
                   onPress={() => setShowModal(false)}
-                  style={{
-                    marginTop: 20,
-                    backgroundColor: "#1a1a1a",
-                    borderRadius: 5,
-                    alignItems: "center",
-                  }}
+                  style={[
+                    habitCreationScreenStyles.chooseBtn,
+                    { marginTop: 20 },
+                  ]}
                 >
                   <Text style={{ fontSize: 20, margin: 10, color: "white" }}>
                     Ok
@@ -265,6 +279,10 @@ const HabitCreationScreen: React.FC<HabitCreationScreenProps> = ({
                 </TouchableOpacity>
               </View>
             </Modal>
+
+            <Text style={habitCreationScreenStyles.subsectionText}>
+              Select icon:
+            </Text>
           </View>
         )}
         <TouchableOpacity

@@ -7,7 +7,7 @@ const baseMargin = {
 export const habitCreationScreenStyles = StyleSheet.create({
   subsectionText: {
     ...baseMargin,
-    fontSize: 17,
+    fontSize: 18,
     fontWeight: "600",
     textAlign: "center",
   },
@@ -53,12 +53,22 @@ export const habitCreationScreenStyles = StyleSheet.create({
   },
   intensitySlider: {
     ...baseMargin,
-    flex: 3,
   },
   intensityCheckBox: {
     ...baseMargin,
-    flex: 1,
     backgroundColor: "#cccccc",
+  },
+  chooseBtn: {
+    ...baseMargin,
+
+    backgroundColor: "#1a1a1a",
+    borderRadius: 5,
+    alignItems: "center",
+  },
+  switch: {
+    ...baseMargin,
+    marginLeft: "30%",
+    marginRight: 20,
   },
 });
 
