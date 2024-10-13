@@ -34,6 +34,23 @@ export const habitCreationScreenStyles = StyleSheet.create({
     textAlign: "center",
     fontWeight: "600",
   },
+  modal: {
+    flex: 1,
+    flexDirection: "column",
+    backgroundColor: "#888888",
+  },
+  basicText: {
+    ...baseMargin,
+    fontSize: 17,
+  },
+  smallColorView: {
+    ...baseMargin,
+    width: 20,
+    height: 20,
+    marginLeft: 10,
+    borderWidth: 1,
+    borderColor: "#000",
+  },
 });
 
 export const styles = StyleSheet.create({

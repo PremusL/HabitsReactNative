@@ -7,6 +7,8 @@ import {
   TouchableOpacity,
   SafeAreaView,
   ScrollView,
+  Modal,
+  Button,
 } from "react-native";
 import { Calendar } from "react-native-calendars";
 import DateTimePicker, {
@@ -16,10 +18,15 @@ import DateTimePicker, {
 import { AddButton } from "./Buttons";
 import { formatDate, getTodaysDate } from "./Util";
 import { habitCreationScreenStyles } from "../style/styles";
-import {
-  RootStackParamList,
-  HabitCreationScreenProps,
-} from "../types/screen.d";
+import { HabitCreationScreenProps } from "../types/screen.d";
+
+import ColorPicker, {
+  Panel1,
+  Swatches,
+  Preview,
+  OpacitySlider,
+  HueSlider,
+} from "reanimated-color-picker";
 
 const HabitCreationScreen: React.FC<HabitCreationScreenProps> = ({
   navigation,
@@ -28,6 +35,9 @@ const HabitCreationScreen: React.FC<HabitCreationScreenProps> = ({
   const [selected, setSelectedDate] = useState("");
   const [currentTime, setCurrentTime] = useState(new Date());
   const [showAdvanced, setShowAdvanced] = useState(false);
+  const [color, setColor] = useState("#ffffff");
+  const [showColorPicker, setShowColorPicker] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   const onChange = (
     event: DateTimePickerEvent,
@@ -51,6 +61,15 @@ const HabitCreationScreen: React.FC<HabitCreationScreenProps> = ({
   };
   const advancedOptionsInteract = () => {
     setShowAdvanced(showAdvanced ? false : true);
+  };
+  const showColorPickerHandler = () => {
+    setShowColorPicker(true);
+  };
+
+  const onSelectColor = ({ hex }) => {
+    // do something with the selected color.
+    console.log(hex);
+    setColor(hex);
   };
 
   return (
@@ -93,7 +112,6 @@ const HabitCreationScreen: React.FC<HabitCreationScreenProps> = ({
             Choose the last date of occurrence:
           </Text>
         </View>
-
         <Calendar
           onDayPress={(day: any) => {
             setSelectedDate(day.dateString);
@@ -115,14 +133,13 @@ const HabitCreationScreen: React.FC<HabitCreationScreenProps> = ({
             arrowColor: "black",
           }}
         />
-
         {selected ? (
           <Text style={{ fontSize: 17, marginTop: 20 }}>
             Selected date:{" "}
             <Text style={{ fontWeight: "bold" }}>{formatDate(selected)}</Text>
           </Text>
         ) : null}
-        {!showAdvanced && (
+        {showAdvanced && (
           <View>
             <TouchableOpacity
               onPress={showTimepicker}
@@ -138,8 +155,8 @@ const HabitCreationScreen: React.FC<HabitCreationScreenProps> = ({
               </Text>
             </TouchableOpacity>
             {currentTime ? (
-              <Text style={{ fontSize: 17, marginTop: 20 }}>
-                Selected time:{" "}
+              <Text style={habitCreationScreenStyles.basicText}>
+                Selected time:
                 <Text style={{ fontWeight: "bold" }}>
                   {currentTime.toString()}
                 </Text>
@@ -159,9 +176,60 @@ const HabitCreationScreen: React.FC<HabitCreationScreenProps> = ({
               numberOfLines={4}
               maxLength={200}
             />
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <Text style={habitCreationScreenStyles.basicText}>
+                Selected color:
+                <Text style={{ fontWeight: "bold" }}>{color}</Text>
+              </Text>
+              <View
+                style={[
+                  habitCreationScreenStyles.smallColorView,
+                  { backgroundColor: color },
+                ]}
+              />
+            </View>
+            <TouchableOpacity
+              onPress={() => setShowModal(true)}
+              style={{
+                marginTop: 20,
+                backgroundColor: "#1a1a1a",
+                borderRadius: 5,
+                alignItems: "center",
+              }}
+            >
+              <Text style={{ fontSize: 20, margin: 10, color: "white" }}>
+                Choose color
+              </Text>
+            </TouchableOpacity>
+            <Modal visible={showModal} animationType="slide">
+              <View style={habitCreationScreenStyles.modal}>
+                <ColorPicker
+                  style={{ width: "100%" }}
+                  value="red"
+                  onComplete={onSelectColor}
+                >
+                  <Preview />
+                  <Panel1 />
+                  <HueSlider />
+                  <OpacitySlider />
+                </ColorPicker>
+                <TouchableOpacity
+                  onPress={() => setShowModal(false)}
+                  style={{
+                    marginTop: 20,
+                    backgroundColor: "#1a1a1a",
+                    borderRadius: 5,
+                    alignItems: "center",
+                  }}
+                >
+                  <Text style={{ fontSize: 20, margin: 10, color: "white" }}>
+                    Ok
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </Modal>
           </View>
         )}
-
         <TouchableOpacity
           onPress={advancedOptionsInteract}
           style={{
@@ -175,7 +243,7 @@ const HabitCreationScreen: React.FC<HabitCreationScreenProps> = ({
           }}
         >
           <Text style={{ fontSize: 20, margin: 10, color: "white" }}>
-            {showAdvanced ? "Show advanced" : "Hide"}
+            {showAdvanced ? "Hide" : "Show advanced"}
           </Text>
         </TouchableOpacity>
       </ScrollView>
