@@ -93,10 +93,15 @@ const App = () => (
         <Stack.Screen name="SecondScreen" component={SecondScreen} />
         <Stack.Screen name="Profile" component={ProfileScreen} />
 
-        <Stack.Screen name="HabitScreen" component={HabitScreen} />
+        <Stack.Screen
+          name="HabitScreen"
+          component={HabitScreen}
+          options={{ title: "Habit Screen" }}
+        />
         <Stack.Screen
           name="HabitCreationScreen"
           component={HabitCreationScreen}
+          options={{ title: "Create Habit" }}
         />
       </Stack.Navigator>
       {/* </DataProvider> */}

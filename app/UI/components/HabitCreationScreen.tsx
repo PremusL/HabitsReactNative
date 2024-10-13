@@ -19,14 +19,13 @@ import { AddButton } from "./Buttons";
 import { formatDate, getTodaysDate } from "./Util";
 import { habitCreationScreenStyles } from "../style/styles";
 import { HabitCreationScreenProps } from "../types/screen.d";
-
 import ColorPicker, {
   Panel1,
-  Swatches,
   Preview,
   OpacitySlider,
   HueSlider,
 } from "reanimated-color-picker";
+import { CheckBox, Slider } from "@rneui/themed";
 
 const HabitCreationScreen: React.FC<HabitCreationScreenProps> = ({
   navigation,
@@ -36,8 +35,16 @@ const HabitCreationScreen: React.FC<HabitCreationScreenProps> = ({
   const [currentTime, setCurrentTime] = useState(new Date());
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [color, setColor] = useState("#ffffff");
-  const [showColorPicker, setShowColorPicker] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [checked, setChecked] = useState(true);
+  const [valueSlider, setValueSlider] = useState(0);
+
+  const toggleCheckbox = () => {
+    setChecked(!checked);
+    if (!checked) {
+      setValueSlider(0);
+    }
+  };
 
   const onChange = (
     event: DateTimePickerEvent,
@@ -62,12 +69,8 @@ const HabitCreationScreen: React.FC<HabitCreationScreenProps> = ({
   const advancedOptionsInteract = () => {
     setShowAdvanced(showAdvanced ? false : true);
   };
-  const showColorPickerHandler = () => {
-    setShowColorPicker(true);
-  };
 
-  const onSelectColor = ({ hex }) => {
-    // do something with the selected color.
+  const onSelectColor = ({ hex }: any): void => {
     console.log(hex);
     setColor(hex);
   };
@@ -176,6 +179,40 @@ const HabitCreationScreen: React.FC<HabitCreationScreenProps> = ({
               numberOfLines={4}
               maxLength={200}
             />
+            <Text style={habitCreationScreenStyles.subsectionText}>
+              Set intensity:
+            </Text>
+            <View style={{ flexDirection: "row" }}>
+              <Slider
+                disabled={checked}
+                value={valueSlider}
+                onValueChange={setValueSlider}
+                style={{ width: "63%" }}
+                animationType="spring"
+                step={1}
+                thumbStyle={{
+                  height: 20,
+                  width: 20,
+                  backgroundColor: checked ? "grey" : "darkgreen",
+                }}
+                maximumValue={10}
+                minimumValue={0}
+              />
+              <CheckBox
+                checked={checked}
+                onPress={toggleCheckbox}
+                title={"No intensity"}
+                iconType="material-community"
+                checkedIcon="checkbox-marked"
+                uncheckedIcon="checkbox-blank-outline"
+                checkedColor="darkgreen"
+                wrapperStyle={habitCreationScreenStyles.intensityCheckBox}
+                containerStyle={habitCreationScreenStyles.intensityCheckBox}
+              />
+            </View>
+            <Text style={habitCreationScreenStyles.basicText}>
+              Value: <Text style={{ fontWeight: "bold" }}>{valueSlider}</Text>
+            </Text>
             <View style={{ flexDirection: "row", alignItems: "center" }}>
               <Text style={habitCreationScreenStyles.basicText}>
                 Selected color:

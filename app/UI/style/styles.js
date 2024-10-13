@@ -51,6 +51,15 @@ export const habitCreationScreenStyles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#000",
   },
+  intensitySlider: {
+    ...baseMargin,
+    flex: 3,
+  },
+  intensityCheckBox: {
+    ...baseMargin,
+    flex: 1,
+    backgroundColor: "#cccccc",
+  },
 });
 
 export const styles = StyleSheet.create({
