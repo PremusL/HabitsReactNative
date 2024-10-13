@@ -26,6 +26,22 @@ import ColorPicker, {
   HueSlider,
 } from "reanimated-color-picker";
 import { CheckBox, Slider, Switch } from "@rneui/themed";
+import Icon from "react-native-vector-icons/FontAwesome";
+
+const iconList = [
+  "rocket",
+  "coffee",
+  "heart",
+  "star",
+  "music",
+  "camera",
+  "bell",
+  "bicycle",
+  "book",
+  "cloud",
+  "leaf",
+  "anchor",
+];
 
 const HabitCreationScreen: React.FC<HabitCreationScreenProps> = ({
   navigation,
@@ -39,12 +55,18 @@ const HabitCreationScreen: React.FC<HabitCreationScreenProps> = ({
   const [checked, setChecked] = useState(true);
   const [valueSlider, setValueSlider] = useState(0);
   const [switchValue, setSwitchValue] = useState(false); // false meaning the habit is bad
+  const [selectedIcon, setSelectedIcon] = useState("");
 
   const toggleCheckbox = () => {
     setChecked(!checked);
     if (!checked) {
       setValueSlider(0);
     }
+  };
+
+  const settingSelectedIcon = (icon: string) => {
+    if (selectedIcon === icon) setSelectedIcon("");
+    else setSelectedIcon(icon);
   };
 
   const onChange = (
@@ -283,8 +305,22 @@ const HabitCreationScreen: React.FC<HabitCreationScreenProps> = ({
             <Text style={habitCreationScreenStyles.subsectionText}>
               Select icon:
             </Text>
+            <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
+              {iconList.map((icon, index) => (
+                <TouchableOpacity onPress={() => settingSelectedIcon(icon)}>
+                  <Icon
+                    name={icon}
+                    size={30}
+                    color={selectedIcon === icon ? "darkgreen" : "#1a1a1a"}
+                    style={{ margin: 15 }}
+                    key={index}
+                  />
+                </TouchableOpacity>
+              ))}
+            </View>
           </View>
         )}
+
         <TouchableOpacity
           onPress={advancedOptionsInteract}
           style={{
