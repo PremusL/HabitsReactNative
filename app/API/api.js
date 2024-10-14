@@ -6,7 +6,8 @@ const app = express();
 const port = 3000;
 
 const tableName = "habits";
-const tableColumns = "habit_key, name, description, date, time";
+const tableColumns =
+  "habit_key, name, description, date, time, color, icon, intensity, good, frequency";
 
 // Middleware
 app.use(cors());
@@ -41,7 +42,7 @@ app.get("/api/readHabits", async (req, res) => {
     const result = await client.query(
       `SELECT ${selectColumns} FROM ${tableName}`
     ); // Replace with your SQL query\
-
+    console.log("result.rows", result.rows);
     res.json(result.rows);
   } catch (error) {
     console.error("Error executing query:", error);
@@ -56,11 +57,24 @@ app.post("/api/writeHabits", async (req, res) => {
   // const { name, surname } = req.body;
   console.log("Request to post");
   console.log("req.body", req.body);
-  const { habit_key, name, description, date, time } = req.body;
+  const {
+    habit_key,
+    name,
+    description,
+    date,
+    time,
+    color,
+    icon,
+    intensity,
+    good,
+    frequency,
+  } = req.body;
+  const keys = Object.keys(req.body);
   try {
     const result = await client.query(
       `INSERT INTO ${tableName} (habit)
-       VALUES (ROW (${habit_key}, '${name}', '${description}', '${date}', '${time}'))`
+       VALUES (ROW (${habit_key}, '${name}', '${description}', '${date}',
+        '${time}', '${color}', '${icon}', ${intensity}, '${good}', ${frequency}))`
     ); // Replace with your SQL query
     res.json({ message: "Data added successfully" });
   } catch (error) {

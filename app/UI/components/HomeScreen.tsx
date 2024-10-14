@@ -45,6 +45,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }) => {
     waitFetchData();
   }, []);
   useEffect(() => {
+    // adding a habit
     const waitingSaveData = async (keyToSet: number, currentParams: any) => {
       currentParams["habit_key"] = keyToSet; // Set the key to the current habit
       await writeHabitDB(currentParams);
@@ -54,9 +55,9 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }) => {
       if (currentData.length > 0) {
         setMaxKey(currentData[currentData.length - 1]["habit_key"]);
       }
-
       console.log("DataDB after add" + JSON.stringify(currentData), maxKey);
     };
+    // removing a habit
     const waitingRemoveData = async (remove_key: string) => {
       await deleteHabitDB(remove_key);
       const currentData = await readHabitsDB();
@@ -65,7 +66,11 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }) => {
         setMaxKey(currentData[currentData.length - 1]["habit_key"]);
       }
     };
-    if (route.params && route.params.description) {
+    if (!route.params) {
+      return;
+    }
+
+    if (route.params.name && route.params.date) {
       const currentParams = route.params;
 
       console.log("-----------------");
@@ -76,10 +81,9 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }) => {
       const remove_key: string = route.params.remove;
       waitingRemoveData(remove_key);
     } else {
-      console.log("no paramss");
+      console.log("no paramss", route.params.name, route.params.date);
     }
   }, [route.params]);
-
   // useEffect(() => {
   //   const waitReadHabitsDB = async () => {
 
@@ -94,12 +98,14 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }) => {
     // >
     <SafeAreaView style={styles.mainPage}>
       <AddButton navigation={navigation} whereTo="HabitCreationScreen" />
-      <HabitList
-        habits={dataDB}
-        navigation={navigation as any}
-        selectedHabit={selectedHabit}
-        setSelectedHabit={(habit_key) => setSelectedHabit(habit_key ?? null)}
-      />
+      {dataDB && (
+        <HabitList
+          habits={dataDB}
+          navigation={navigation as any}
+          selectedHabit={selectedHabit}
+          setSelectedHabit={(habit_key) => setSelectedHabit(habit_key ?? null)}
+        />
+      )}
     </SafeAreaView>
   );
 };

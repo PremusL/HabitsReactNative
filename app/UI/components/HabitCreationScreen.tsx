@@ -27,6 +27,7 @@ import ColorPicker, {
 } from "reanimated-color-picker";
 import { CheckBox, Slider, Switch } from "@rneui/themed";
 import Icon from "react-native-vector-icons/FontAwesome";
+import { set } from "date-fns";
 
 const iconList = [
   "rocket",
@@ -47,6 +48,7 @@ const HabitCreationScreen: React.FC<HabitCreationScreenProps> = ({
   navigation,
 }) => {
   const [text, onChangeText] = useState("");
+  const [textDescription, onChangeTextDescription] = useState("");
   const [selected, setSelectedDate] = useState("");
   const [currentTime, setCurrentTime] = useState(new Date());
   const [showAdvanced, setShowAdvanced] = useState(false);
@@ -107,7 +109,7 @@ const HabitCreationScreen: React.FC<HabitCreationScreenProps> = ({
         data={{
           habit_key: null,
           name: text,
-          description: text,
+          description: textDescription,
           date: selected,
           time:
             (currentTime.getHours() < 10
@@ -118,14 +120,17 @@ const HabitCreationScreen: React.FC<HabitCreationScreenProps> = ({
               ? "0" + currentTime.getMinutes()
               : currentTime.getMinutes()) +
             ":00",
+          color: color,
+          icon: selectedIcon,
+          intensity: checked ? -1 : valueSlider,
+          good: switchValue ? "Y" : "N",
+          frequency: 1,
         }}
       />
       <ScrollView>
-        {/* <View style={{ ustifyContent: "center", alignItems: "center" }}> */}
         <Text style={habitCreationScreenStyles.titleText}>
           What habit do you want to quit?
         </Text>
-        {/* </View> */}
         <TextInput
           style={habitCreationScreenStyles.titleInput}
           onChangeText={onChangeText}
@@ -204,8 +209,8 @@ const HabitCreationScreen: React.FC<HabitCreationScreenProps> = ({
             </Text>
             <TextInput
               style={habitCreationScreenStyles.descriptionInput}
-              onChangeText={onChangeText}
-              value={text}
+              onChangeText={onChangeTextDescription}
+              value={textDescription}
               placeholder="Enter here"
               keyboardType="default"
               editable
@@ -265,12 +270,6 @@ const HabitCreationScreen: React.FC<HabitCreationScreenProps> = ({
             <TouchableOpacity
               onPress={() => setShowModal(true)}
               style={[habitCreationScreenStyles.chooseBtn]}
-              // {
-              //   marginTop: 20,
-              //   backgroundColor: "#1a1a1a",
-              //   borderRadius: 5,
-              //   alignItems: "center",
-              // }}
             >
               <Text style={{ fontSize: 20, margin: 10, color: "white" }}>
                 Choose color
@@ -280,7 +279,7 @@ const HabitCreationScreen: React.FC<HabitCreationScreenProps> = ({
               <View style={habitCreationScreenStyles.modal}>
                 <ColorPicker
                   style={{ width: "100%" }}
-                  value="red"
+                  value="white"
                   onComplete={onSelectColor}
                 >
                   <Preview />

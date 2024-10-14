@@ -107,25 +107,28 @@ export const HabitList: React.FC<HabitListInterface> = ({
   navigation,
   selectedHabit,
   setSelectedHabit,
-}) => (
-  <View>
-    <ScrollView style={scrollViewStyles.scrollViewContent}>
-      {habits.map((habit) => (
-        <Habit
-          key={habit.habit_key}
-          habit={habit}
-          navigation={navigation}
-          isSelected={selectedHabit === habit.habit_key}
-          onPress={() =>
-            selectedHabit === habit.habit_key
-              ? setSelectedHabit(null)
-              : setSelectedHabit(habit.habit_key)
-          }
-        />
-      ))}
-    </ScrollView>
-  </View>
-);
+}) => {
+  console.log("HabitList", habits);
+  return (
+    <View>
+      <ScrollView style={scrollViewStyles.scrollViewContent}>
+        {habits.map((habit) => (
+          <Habit
+            key={habit.habit_key}
+            habit={habit}
+            navigation={navigation}
+            isSelected={selectedHabit === habit.habit_key}
+            onPress={() =>
+              selectedHabit === habit.habit_key
+                ? setSelectedHabit(null)
+                : setSelectedHabit(habit.habit_key)
+            }
+          />
+        ))}
+      </ScrollView>
+    </View>
+  );
+};
 
 const scrollViewStyles = StyleSheet.create({
   // container: {
