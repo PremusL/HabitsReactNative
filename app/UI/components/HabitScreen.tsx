@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { RemoveButton } from "./Buttons"; // Adjust the path as necessary
 import { Calendar } from "react-native-calendars";
 import {
@@ -8,15 +8,38 @@ import {
   calculateDaysDifference,
 } from "./Util"; // Adjust the path as necessary
 import { HabitScreenProps } from "../types/screen.d";
+import Icon from "react-native-vector-icons/FontAwesome";
+import { habitCreationScreenStyles } from "../style/styles";
 
 const HabitScreen: React.FC<HabitScreenProps> = ({ navigation, route }) => {
+  const [showEdit, setShowEdit] = React.useState(false);
   const currentParams = route?.params;
   const currentDate = currentParams?.date;
   const markedDates = generateMarkedDates(currentDate, getTodaysDate());
 
+  console.log(currentParams);
   return (
     <View style={styles.habit_view}>
-      <Text style={{ fontSize: 24 }}>Habit: {currentParams?.name}</Text>
+      <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <Text
+          style={{
+            fontSize: 25,
+            fontWeight: "bold",
+            textAlign: "center",
+            marginRight: 10,
+          }}
+        >
+          {currentParams?.name}
+        </Text>
+        {currentParams.icon && (
+          <Icon
+            name={currentParams?.icon}
+            color={currentParams.color}
+            size={30}
+            style={{ textAlign: "center" }}
+          />
+        )}
+      </View>
       <Calendar
         markingType={"period"}
         hideExtraDays={true}
@@ -44,6 +67,35 @@ const HabitScreen: React.FC<HabitScreenProps> = ({ navigation, route }) => {
       <Text style={{ fontSize: 22 }}>
         Free for: {calculateDaysDifference(currentDate, getTodaysDate())} days
       </Text>
+      <Text style={habitCreationScreenStyles.basicText}>
+        Last occurance: {currentParams.date} at {currentParams.time}
+      </Text>
+      <Text style={habitCreationScreenStyles.basicText}>
+        Description:{"\n"}
+        {currentParams?.description ? currentParams?.description : "No notes"}
+      </Text>
+      <Text style={habitCreationScreenStyles.basicText}>
+        Intensity:{"\n"}
+        {currentParams?.intensity > 0
+          ? currentParams?.intensity + "/10"
+          : "No intensity"}
+      </Text>
+      <TouchableOpacity
+        onPress={() => setShowEdit(!showEdit)}
+        style={{
+          marginTop: 20,
+          marginBottom: 40,
+          backgroundColor: "#1a1a1a",
+          borderRadius: 5,
+          alignItems: "center",
+          width: 150,
+          alignSelf: "center",
+        }}
+      >
+        <Text style={{ fontSize: 18, margin: 10, color: "white" }}>
+          {showEdit ? "Hide" : "Edit"}
+        </Text>
+      </TouchableOpacity>
     </View>
   );
 };

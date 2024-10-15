@@ -1,5 +1,5 @@
 import React from "react";
-import { TouchableOpacity, Text, StyleSheet } from "react-native";
+import { TouchableOpacity, Text, StyleSheet, Alert } from "react-native";
 import { AddButtonProps, RemoveButtonProps } from "../types/button.d";
 
 const AddButton: React.FC<AddButtonProps> = ({
@@ -27,10 +27,27 @@ const RemoveButton: React.FC<RemoveButtonProps> = ({
   whereTo = "Home",
   data = {},
 }) => {
+  const handleRemoveButtonPress = () => {
+    Alert.alert(
+      "Remove habit",
+      "Do you want to delete this habit?",
+      [
+        {
+          text: "Cancel",
+        },
+        {
+          text: "OK",
+          onPress: () => navigation.navigate(whereTo, data as any),
+        },
+      ],
+      { cancelable: true }
+    );
+  };
+
   return (
     <TouchableOpacity
       style={[styles.removeButton]}
-      onPress={() => navigation.navigate(whereTo, data as any)} // ta any bi blo treba zamenat z dejansko obliko
+      onPress={handleRemoveButtonPress} // ta any bi blo treba zamenat z dejansko obliko
     >
       <Text style={{ color: "white", fontWeight: "normal", fontSize: 24 }}>
         -
