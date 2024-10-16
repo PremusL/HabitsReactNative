@@ -1,25 +1,38 @@
 import React, { useEffect } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import { RemoveButton } from "./Buttons"; // Adjust the path as necessary
+import { IncreaseFrequencyButton, RemoveButton } from "./Buttons"; // Adjust the path as necessary
 import { Calendar } from "react-native-calendars";
 import {
   generateMarkedDates,
   getTodaysDate,
   calculateDaysDifference,
+  calculateTimeDifference,
+  formatDate,
 } from "./Util"; // Adjust the path as necessary
 import { HabitScreenProps } from "../types/screen.d";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { habitCreationScreenStyles } from "../style/styles";
 
 const HabitScreen: React.FC<HabitScreenProps> = ({ navigation, route }) => {
-  const [showEdit, setShowEdit] = React.useState(false);
   const currentParams = route?.params;
+
+  const [showEdit, setShowEdit] = React.useState(false);
+  const [frequency, setFrequency] = React.useState(currentParams?.frequency);
+
+  const handleFrequencyUpdate = (frequency: number) => {
+    setFrequency(frequency);
+  };
+
   const currentDate = currentParams?.date;
   const markedDates = generateMarkedDates(currentDate, getTodaysDate());
 
-  console.log(currentParams);
   return (
     <View style={styles.habit_view}>
+      <IncreaseFrequencyButton
+        habit_key={currentParams?.habit_key}
+        frequency={frequency}
+        setFrequency={handleFrequencyUpdate}
+      />
       <View style={{ flexDirection: "row", alignItems: "center" }}>
         <Text
           style={{
@@ -65,10 +78,10 @@ const HabitScreen: React.FC<HabitScreenProps> = ({ navigation, route }) => {
         data={{ remove: currentParams?.habit_key }}
       />
       <Text style={{ fontSize: 22 }}>
-        Free for: {calculateDaysDifference(currentDate, getTodaysDate())} days
+        Free for: {calculateTimeDifference(currentDate, getTodaysDate())} days
       </Text>
       <Text style={habitCreationScreenStyles.basicText}>
-        Last occurance: {currentParams.date} at {currentParams.time}
+        Last occurance: {formatDate(currentParams.date)} at {currentParams.time}
       </Text>
       <Text style={habitCreationScreenStyles.basicText}>
         Description:{"\n"}

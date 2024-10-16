@@ -1,6 +1,18 @@
 import React from "react";
-import { TouchableOpacity, Text, StyleSheet, Alert } from "react-native";
-import { AddButtonProps, RemoveButtonProps } from "../types/button.d";
+import {
+  TouchableOpacity,
+  Text,
+  StyleSheet,
+  Alert,
+  ViewStyle,
+} from "react-native";
+import {
+  AddButtonProps,
+  IncreaseFrequencyButtonProps,
+  RemoveButtonProps,
+} from "../types/button.d";
+import { updateFrequencyDB } from "./DataBaseUtil";
+import { buttonStyles } from "../style/styles";
 
 const AddButton: React.FC<AddButtonProps> = ({
   navigation,
@@ -10,7 +22,7 @@ const AddButton: React.FC<AddButtonProps> = ({
 }) => (
   <TouchableOpacity
     style={[
-      styles.addButton,
+      buttonStyles.addButton,
       disabled ? { backgroundColor: "grey" } : { backgroundColor: "darkgreen" },
     ]}
     onPress={() => navigation.navigate(whereTo, data as any)}
@@ -46,7 +58,7 @@ const RemoveButton: React.FC<RemoveButtonProps> = ({
 
   return (
     <TouchableOpacity
-      style={[styles.removeButton]}
+      style={[buttonStyles.removeButton]}
       onPress={handleRemoveButtonPress} // ta any bi blo treba zamenat z dejansko obliko
     >
       <Text style={{ color: "white", fontWeight: "normal", fontSize: 24 }}>
@@ -55,31 +67,43 @@ const RemoveButton: React.FC<RemoveButtonProps> = ({
     </TouchableOpacity>
   );
 };
+const IncreaseFrequencyButton: React.FC<IncreaseFrequencyButtonProps> = ({
+  habit_key,
+  frequency,
+  setFrequency,
+}) => {
+  const handleRemoveButtonPress = () => {
+    Alert.alert(
+      "Increase Frequency",
+      "Did it happen again?",
+      [
+        {
+          text: "Cancel",
+        },
+        {
+          text: "OK",
+          onPress: async () => {
+            const newFrequency = frequency + 1;
+            console.log("New frequency in button: ", newFrequency);
+            setFrequency(newFrequency);
+            await updateFrequencyDB(habit_key, newFrequency);
+          },
+        },
+      ],
+      { cancelable: true }
+    );
+  };
 
-const styles = StyleSheet.create({
-  addButton: {
-    alignItems: "center",
-    justifyContent: "center",
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    position: "absolute",
-    bottom: 30,
-    right: 30,
-    zIndex: 1,
-  },
-  removeButton: {
-    alignItems: "center",
-    justifyContent: "center",
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    position: "absolute",
-    bottom: 30,
-    left: 30,
-    backgroundColor: "red",
-    zIndex: 1,
-  },
-});
+  return (
+    <TouchableOpacity
+      style={[buttonStyles.frequencyButton]}
+      onPress={handleRemoveButtonPress} // ta any bi blo treba zamenat z dejansko obliko
+    >
+      <Text style={{ color: "white", fontWeight: "normal", fontSize: 24 }}>
+        +
+      </Text>
+    </TouchableOpacity>
+  );
+};
 
-export { AddButton, RemoveButton };
+export { AddButton, RemoveButton, IncreaseFrequencyButton };

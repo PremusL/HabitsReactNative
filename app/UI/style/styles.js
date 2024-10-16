@@ -1,7 +1,7 @@
 import { StyleSheet } from "react-native";
 
 const baseMargin = {
-  marginBottom: 15, // Add marginBottom property here
+  marginBottom: 15,
 };
 
 export const habitCreationScreenStyles = StyleSheet.create({
@@ -69,6 +69,33 @@ export const habitCreationScreenStyles = StyleSheet.create({
     ...baseMargin,
     marginLeft: "30%",
     marginRight: 20,
+  },
+});
+
+const baseButtonStyle = {
+  alignItems: "center",
+  justifyContent: "center",
+  width: 50,
+  height: 50,
+  borderRadius: 25,
+  position: "absolute",
+  bottom: 30,
+  right: 30,
+  zIndex: 1,
+};
+
+export const buttonStyles = StyleSheet.create({
+  addButton: {
+    ...baseButtonStyle,
+  },
+  removeButton: {
+    ...baseButtonStyle,
+    left: 30,
+    backgroundColor: "red",
+  },
+  frequencyButton: {
+    ...baseButtonStyle,
+    backgroundColor: "blue",
   },
 });
 

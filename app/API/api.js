@@ -8,7 +8,10 @@ const port = 3000;
 const tableName = "habits";
 const tableColumns =
   "habit_key, name, description, date, time, color, icon, intensity, good, frequency";
-
+const selectColumns = tableColumns
+  .split(", ")
+  .map((column) => "(habit)." + column)
+  .join(", ");
 // Middleware
 app.use(cors());
 app.use(express.json()); // To parse JSON bodies
@@ -34,15 +37,9 @@ client.connect((err) => {
 app.get("/api/readHabits", async (req, res) => {
   console.log("Request to get");
   try {
-    const selectColumns = tableColumns
-      .split(", ")
-      .map((column) => "(habit)." + column)
-      .join(", ");
-
     const result = await client.query(
       `SELECT ${selectColumns} FROM ${tableName}`
     ); // Replace with your SQL query\
-    console.log("result.rows", result.rows);
     res.json(result.rows);
   } catch (error) {
     console.error("Error executing query:", error);
@@ -50,6 +47,33 @@ app.get("/api/readHabits", async (req, res) => {
       res.status(500).json({ error: "Internal Server Error" });
     }
   }
+});
+
+app.post("/api/updateHabits/:habit_key", async (req, res) => {
+  const { habit_key } = req.params;
+  console.log(req.body);
+  const { frequency } = req.body;
+
+  console.log("Request to update, freq: ", frequency);
+  try {
+    const result = await client.query(
+      `UPDATE habits 
+       SET habit = ROW (
+         (habit).habit_key,
+         (habit).name,
+         (habit).description,
+         (habit).date,
+         (habit).time,
+         (habit).color,
+         (habit).icon,
+         (habit).intensity,
+         (habit).good,
+         $2
+       )
+       WHERE (habit).habit_key = $1`,
+      [habit_key, frequency]
+    );
+  } catch (error) {}
 });
 
 // Example route to add data

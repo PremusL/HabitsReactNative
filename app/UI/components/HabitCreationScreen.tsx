@@ -27,8 +27,6 @@ import ColorPicker, {
 } from "reanimated-color-picker";
 import { CheckBox, Slider, Switch } from "@rneui/themed";
 import Icon from "react-native-vector-icons/FontAwesome";
-import { set } from "date-fns";
-
 const iconList = [
   "rocket",
   "coffee",

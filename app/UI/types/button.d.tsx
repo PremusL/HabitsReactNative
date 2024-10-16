@@ -1,18 +1,20 @@
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import HabitCreationScreen from '../HabitCreationScreen';
-import { HabitType } from './habit.d';
-import { RootStackParamList, NavigationProp } from './screen.d';
+import { RootStackParamList, NavigationProp } from "./screen.d";
 
-  
 export interface AddButtonProps {
-    navigation: NavigationProp;
-    whereTo: keyof RootStackParamList;
-    disabled?: boolean;
-    data?: object;
-  }
+  navigation: NavigationProp;
+  whereTo: keyof RootStackParamList;
+  disabled?: boolean;
+  data?: object;
+}
 
 export interface RemoveButtonProps {
-    navigation: NavigationProp;
-    whereTo?: keyof RootStackParamList;
-    data?: object;
-  }
+  navigation: NavigationProp;
+  whereTo?: keyof RootStackParamList;
+  data?: object;
+}
+
+export interface IncreaseFrequencyButtonProps {
+  habit_key: string;
+  frequency: number;
+  setFrequency: (frequency: number) => void;
+}
