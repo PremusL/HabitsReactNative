@@ -51,7 +51,7 @@ const HabitScreen: React.FC<HabitScreenProps> = ({ navigation, route }) => {
 
   const [showEdit, setShowEdit] = React.useState(false);
   const [frequency, setFrequency] = React.useState(currentParams?.frequency);
-  const [text, onChangeText] = useState("");
+  const [text, onChangeText] = useState(currentParams?.name);
   const [textDescription, onChangeTextDescription] = useState(
     currentParams?.description
   );
@@ -233,7 +233,7 @@ const HabitScreen: React.FC<HabitScreenProps> = ({ navigation, route }) => {
         <TextInput
           style={habitCreationScreenStyles.titleInput}
           onChangeText={onChangeText}
-          value={currentParams?.name}
+          value={text}
           placeholder="Enter here"
           keyboardType="default"
         />
@@ -320,8 +320,10 @@ const HabitScreen: React.FC<HabitScreenProps> = ({ navigation, route }) => {
           </Text>
           <View style={{ flexDirection: "row" }}>
             <Slider
-              disabled={checked}
-              value={valueSlider}
+              disabled={currentParams?.intensity == -1}
+              value={
+                currentParams?.intensity != -1 ? currentParams?.intensity : 0
+              }
               onValueChange={setValueSlider}
               style={{ width: "63%" }}
               animationType="spring"
@@ -335,7 +337,7 @@ const HabitScreen: React.FC<HabitScreenProps> = ({ navigation, route }) => {
               minimumValue={0}
             />
             <CheckBox
-              checked={checked}
+              checked={currentParams?.intensity == -1}
               onPress={toggleCheckbox}
               title={"No intensity"}
               iconType="material-community"
