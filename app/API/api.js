@@ -3,7 +3,7 @@ const cors = require("cors");
 const { Client } = require("pg");
 
 const app = express();
-const port = 3000;
+const port = 3001;
 
 const tableName = "habits";
 const tableColumns =

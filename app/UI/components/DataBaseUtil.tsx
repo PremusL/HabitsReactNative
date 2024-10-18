@@ -1,6 +1,6 @@
 import axios from "axios";
 import { HabitType } from "../types/habit.d";
-const BASE_URL = "http://10.0.2.2:3000"; // Use 'http://localhost:3000' for iOS
+const BASE_URL = "http://10.0.2.2:3001"; // Use 'http://localhost:3000' for iOS
 
 export const readHabitsDB: any = async () => {
   console.log("Reading data from database");

@@ -3,6 +3,28 @@ import { StyleSheet } from "react-native";
 const baseMargin = {
   marginBottom: 15,
 };
+const baseSubMargin = {
+  marginBottom: 10,
+};
+export const habitScreenStyles = StyleSheet.create({
+  subtitle: {
+    ...baseMargin,
+    fontSize: 22,
+    fontWeight: "800",
+    textAlign: "center",
+  },
+  subsectionText: {
+    ...baseSubMargin,
+    fontSize: 18,
+    textAlign: "center",
+  },
+  editSubtitleText: {
+    ...baseSubMargin,
+    fontSize: 20,
+    textAlign: "center",
+    textWeight: "bold",
+  },
+});
 
 export const habitCreationScreenStyles = StyleSheet.create({
   subsectionText: {

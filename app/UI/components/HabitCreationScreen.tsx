@@ -8,7 +8,6 @@ import {
   SafeAreaView,
   ScrollView,
   Modal,
-  Button,
 } from "react-native";
 import { Calendar } from "react-native-calendars";
 import DateTimePicker, {
