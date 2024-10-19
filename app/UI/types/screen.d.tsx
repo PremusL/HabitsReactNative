@@ -71,3 +71,8 @@ export type HabitScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
   "HabitScreen"
 >;
+
+export interface HabitEditProps {
+  currentParams: HabitType;
+  setData: (data: HabitType) => void;
+}

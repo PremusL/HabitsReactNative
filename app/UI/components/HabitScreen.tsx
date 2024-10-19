@@ -8,15 +8,15 @@ import {
   TextInput,
   Modal,
 } from "react-native";
-import { IncreaseFrequencyButton, RemoveButton } from "./Buttons"; // Adjust the path as necessary
+import { IncreaseFrequencyButton, RemoveButton } from "./Buttons";
 import { Calendar } from "react-native-calendars";
 import {
   generateMarkedDates,
   getTodaysDate,
   calculateTimeDifference,
   formatDate,
-} from "./Util"; // Adjust the path as necessary
-import { HabitScreenProps } from "../types/screen.d";
+} from "./Util";
+import { HabitScreenProps, HabitEditProps } from "../types/screen.d";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { habitCreationScreenStyles, habitScreenStyles } from "../style/styles";
 import {
@@ -30,7 +30,9 @@ import ColorPicker, {
   HueSlider,
 } from "reanimated-color-picker";
 import { CheckBox, Slider, Switch } from "@rneui/themed";
-import { set } from "date-fns";
+import { HabitType } from "../types/habit.d";
+import { updateDataDB } from "./DataBaseUtil";
+
 const iconList = [
   "rocket",
   "coffee",
@@ -49,33 +51,15 @@ const iconList = [
 const HabitScreen: React.FC<HabitScreenProps> = ({ navigation, route }) => {
   const currentParams = route?.params;
 
-  const [showEdit, setShowEdit] = React.useState(false);
-  const [frequency, setFrequency] = React.useState(currentParams?.frequency);
-  const [text, onChangeText] = useState(currentParams?.name);
-  const [textDescription, onChangeTextDescription] = useState(
-    currentParams?.description
-  );
-  const [selected, setSelectedDate] = useState(currentParams?.date);
-  const [currentTime, setCurrentTime] = useState(currentParams?.time);
-  const [showAdvanced, setShowAdvanced] = useState(false);
-  const [color, setColor] = useState(currentParams?.color);
-  const [showModal, setShowModal] = useState(false);
-  const [checked, setChecked] = useState(true);
-  const [valueSlider, setValueSlider] = useState(currentParams?.intensity);
-  const [switchValue, setSwitchValue] = useState(currentParams?.good == "Y"); // false meaning the habit is bad
-  const [selectedIcon, setSelectedIcon] = useState(currentParams?.icon);
-
-  const toggleCheckbox = () => {
-    setChecked(!checked);
-    if (!checked) {
-      setValueSlider(0);
-    }
-  };
+  console.log("Current params: ", currentParams);
+  const [data, setData] = useState(currentParams);
+  const [showEdit, setShowEdit] = useState(false);
 
   const editSaveButtonHandler = () => {
     if (showEdit) {
       setShowEdit(false);
-      //TODO saves to the database
+
+      updateDataDB(data);
       console.log("Save changes");
     } else {
       // Edit habit
@@ -84,54 +68,17 @@ const HabitScreen: React.FC<HabitScreenProps> = ({ navigation, route }) => {
     }
   };
 
-  const settingSelectedIcon = (icon: string) => {
-    if (selectedIcon === icon) setSelectedIcon("");
-    else setSelectedIcon(icon);
-  };
-
-  const onChange = (
-    event: DateTimePickerEvent,
-    selectedTime?: Date | undefined
-  ): void => {
-    if (selectedTime) {
-      setCurrentTime(selectedTime);
-    } else {
-      console.log("No time selected");
-    }
-  };
-  const showTimepicker = (): void => {
-    DateTimePickerAndroid.open({
-      value: new Date(),
-      onChange,
-      mode: "time",
-      is24Hour: true,
-      positiveButton: { label: "OK", textColor: "black" },
-      negativeButton: { label: "Cancel", textColor: "black" },
-    });
-  };
-  const advancedOptionsInteract = () => {
-    setShowAdvanced(showAdvanced ? false : true);
-  };
-
-  const onSelectColor = ({ hex }: any): void => {
-    console.log(hex);
-    setColor(hex);
-  };
-
-  const handleFrequencyUpdate = (frequency: number) => {
-    setFrequency(frequency);
+  const handleDataUpdate = (data: HabitType) => {
+    setData(data);
   };
 
   const currentDate = currentParams?.date;
   const markedDates = generateMarkedDates(currentDate, getTodaysDate());
 
+  console.log("Current data: ", data);
   return (
     <View style={{ flex: 1 }}>
-      <IncreaseFrequencyButton
-        habit_key={currentParams?.habit_key}
-        frequency={frequency}
-        setFrequency={handleFrequencyUpdate}
-      />
+      <IncreaseFrequencyButton data={data} updateData={handleDataUpdate} />
       <RemoveButton
         navigation={navigation}
         whereTo="Home"
@@ -160,7 +107,12 @@ const HabitScreen: React.FC<HabitScreenProps> = ({ navigation, route }) => {
           )}
         </View>
         {!showEdit && <HabitScreenPreview />}
-        {showEdit && <HabitScreenEdit />}
+        {showEdit && (
+          <HabitScreenEdit
+            currentParams={currentParams}
+            setData={handleDataUpdate}
+          />
+        )}
         <TouchableOpacity
           onPress={() => editSaveButtonHandler()}
           style={{
@@ -174,7 +126,7 @@ const HabitScreen: React.FC<HabitScreenProps> = ({ navigation, route }) => {
           }}
         >
           <Text style={{ fontSize: 18, margin: 8, color: "white" }}>
-            {showEdit ? "Hide" : "Edit"}
+            {showEdit ? "Save" : "Edit"}
           </Text>
         </TouchableOpacity>
       </ScrollView>
@@ -224,199 +176,240 @@ const HabitScreen: React.FC<HabitScreenProps> = ({ navigation, route }) => {
       </View>
     );
   }
+};
+const HabitScreenEdit: React.FC<HabitEditProps> = ({
+  currentParams,
+  setData,
+}) => {
+  const [text, onChangeText] = useState(currentParams?.name);
+  const [textDescription, onChangeTextDescription] = useState(
+    currentParams?.description
+  );
+  const [selectedDate, setSelectedDate] = useState(currentParams?.date);
+  const [selectedTime, setCurrentTime] = useState(currentParams?.time);
+  const [color, setColor] = useState(currentParams?.color);
+  const [showModal, setShowModal] = useState(false);
+  const [checked, setChecked] = useState(true);
+  const [valueSlider, setValueSlider] = useState(currentParams?.intensity);
+  const [switchValue, setSwitchValue] = useState(currentParams?.good); // false meaning the habit is bad
+  const [selectedIcon, setSelectedIcon] = useState(currentParams?.icon);
 
-  function HabitScreenEdit(): React.ReactNode {
-    return (
+  const onSelectColor = ({ hex }: any): void => {
+    console.log(hex);
+    setColor(hex);
+  };
+
+  const toggleCheckbox = () => {
+    setChecked(!checked);
+    if (!checked) {
+      setValueSlider(0);
+    }
+  };
+
+  const settingSelectedIcon = (icon: string) => {
+    if (selectedIcon === icon) setSelectedIcon("");
+    else setSelectedIcon(icon);
+  };
+
+  const handleTimeChange = (
+    event: DateTimePickerEvent,
+    selectedTime?: Date | undefined
+  ): void => {
+    if (selectedTime) {
+      setCurrentTime(selectedTime);
+    } else {
+      console.log("No time selected");
+    }
+  };
+  const showTimepicker = (): void => {
+    DateTimePickerAndroid.open({
+      value: new Date(),
+      onChange: handleTimeChange,
+      mode: "time",
+      is24Hour: true,
+      positiveButton: { label: "OK", textColor: "black" },
+      negativeButton: { label: "Cancel", textColor: "black" },
+    });
+  };
+
+  return (
+    <View>
+      <Text style={habitScreenStyles.subtitle}>Edit habit</Text>
+      <Text style={habitScreenStyles.subsectionText}>Edit the name</Text>
+      <TextInput
+        style={habitCreationScreenStyles.titleInput}
+        onChangeText={onChangeText}
+        value={text}
+        placeholder="Enter here"
+        keyboardType="default"
+      />
       <View>
-        <Text style={habitScreenStyles.subtitle}>Edit habit</Text>
-        <Text style={habitScreenStyles.subsectionText}>Edit the name</Text>
+        <Text style={habitScreenStyles.subsectionText}>Edit the date</Text>
+      </View>
+      <Calendar
+        onDayPress={(day: any) => {
+          setSelectedDate(day.dateString);
+        }}
+        markingType={"period"}
+        hideExtraDays={true}
+        firstDay={1}
+        maxDate={getTodaysDate()}
+        theme={{
+          backgroundColor: "#00000",
+          calendarBackground: "#00000",
+          textSectionTitleColor: "black",
+          selectedDayBackgroundColor: "black",
+          selectedDayTextColor: "black",
+          selectedDayTextWeight: "700",
+          todayTextColor: "green",
+          dayTextColor: "black",
+          textDisabledColor: "gray",
+          arrowColor: "black",
+        }}
+      />
+
+      <Text style={habitScreenStyles.editSubtitleText}>
+        Selected date:{"  "}
+        <Text style={{ fontWeight: "bold" }}>{formatDate(selectedDate)}</Text>
+      </Text>
+      <View>
+        <Text style={habitScreenStyles.subsectionText}>Edit time</Text>
+        <TouchableOpacity
+          onPress={showTimepicker}
+          style={[habitCreationScreenStyles.chooseBtn, { marginTop: 20 }]}
+        >
+          <Text style={{ fontSize: 20, margin: 10, color: "white" }}>
+            Choose time
+          </Text>
+        </TouchableOpacity>
+        <Text style={habitScreenStyles.subsectionText}>
+          Selected time:{"  "}
+          <Text style={{ fontWeight: "bold" }}>{selectedTime}</Text>
+        </Text>
+
+        <Text style={habitScreenStyles.subsectionText}>Edit type</Text>
+        <View style={{ flexDirection: "row" }}>
+          <Switch
+            color={switchValue ? "darkgreen" : "darkred"}
+            value={switchValue}
+            onValueChange={() => setSwitchValue(!switchValue)}
+            style={habitCreationScreenStyles.switch}
+          />
+          <Text
+            style={[habitCreationScreenStyles.basicText, { marginTop: 12 }]}
+          >
+            {switchValue ? "Good habit" : "Bad habit"}
+          </Text>
+        </View>
+        <Text style={habitScreenStyles.subsectionText}>Description:</Text>
         <TextInput
-          style={habitCreationScreenStyles.titleInput}
-          onChangeText={onChangeText}
-          value={text}
+          style={habitCreationScreenStyles.descriptionInput}
+          onChangeText={onChangeTextDescription}
+          value={textDescription}
           placeholder="Enter here"
           keyboardType="default"
+          editable
+          multiline
+          numberOfLines={4}
+          maxLength={200}
         />
-        <View>
-          <Text style={habitCreationScreenStyles.subsectionText}>
-            Edit the date
-          </Text>
-        </View>
-        <Calendar
-          onDayPress={(day: any) => {
-            setSelectedDate(day.dateString);
-          }}
-          markingType={"period"}
-          hideExtraDays={true}
-          firstDay={1}
-          maxDate={getTodaysDate()}
-          theme={{
-            backgroundColor: "#00000",
-            calendarBackground: "#00000",
-            textSectionTitleColor: "black",
-            selectedDayBackgroundColor: "black",
-            selectedDayTextColor: "black",
-            selectedDayTextWeight: "700",
-            todayTextColor: "green",
-            dayTextColor: "black",
-            textDisabledColor: "gray",
-            arrowColor: "black",
-          }}
-        />
-
-        <Text style={habitScreenStyles.subsectionText}>
-          Selected date:{"  "}
-          <Text style={{ fontWeight: "bold" }}>
-            {formatDate(currentParams.date)}
-          </Text>
-        </Text>
-        <View>
-          <Text style={habitScreenStyles.editSubtitleText}>Edit the time</Text>
-          <TouchableOpacity
-            onPress={showTimepicker}
-            style={[habitCreationScreenStyles.chooseBtn, { marginTop: 20 }]}
-          >
-            <Text style={{ fontSize: 20, margin: 10, color: "white" }}>
-              Choose time
-            </Text>
-          </TouchableOpacity>
-          <Text style={habitScreenStyles.subsectionText}>
-            Selected time:{"  "}
-            <Text style={{ fontWeight: "bold" }}>
-              {currentParams.time.toString()}
-            </Text>
-          </Text>
-
-          <Text style={habitScreenStyles.editSubtitleText}>Edit type</Text>
-          <View style={{ flexDirection: "row" }}>
-            <Switch
-              color={switchValue ? "darkgreen" : "darkred"}
-              value={switchValue}
-              onValueChange={() => setSwitchValue(!switchValue)}
-              style={habitCreationScreenStyles.switch}
-            />
-            <Text
-              style={[habitCreationScreenStyles.basicText, { marginTop: 12 }]}
-            >
-              {switchValue ? "Good habit" : "Bad habit"}
-            </Text>
-          </View>
-          <Text style={habitCreationScreenStyles.subsectionText}>
-            Description:
-          </Text>
-          <TextInput
-            style={habitCreationScreenStyles.descriptionInput}
-            onChangeText={onChangeTextDescription}
-            value={textDescription}
-            placeholder="Enter here"
-            keyboardType="default"
-            editable
-            multiline
-            numberOfLines={4}
-            maxLength={200}
+        <Text style={habitScreenStyles.subsectionText}>Set intensity:</Text>
+        <View style={{ flexDirection: "row" }}>
+          <Slider
+            disabled={currentParams?.intensity == -1}
+            value={
+              currentParams?.intensity != -1 ? currentParams?.intensity : 0
+            }
+            onValueChange={setValueSlider}
+            style={{ width: "63%" }}
+            animationType="spring"
+            step={1}
+            thumbStyle={{
+              height: 20,
+              width: 20,
+              backgroundColor: checked ? "grey" : "darkgreen",
+            }}
+            maximumValue={10}
+            minimumValue={0}
           />
-          <Text style={habitCreationScreenStyles.subsectionText}>
-            Set intensity:
-          </Text>
-          <View style={{ flexDirection: "row" }}>
-            <Slider
-              disabled={currentParams?.intensity == -1}
-              value={
-                currentParams?.intensity != -1 ? currentParams?.intensity : 0
-              }
-              onValueChange={setValueSlider}
-              style={{ width: "63%" }}
-              animationType="spring"
-              step={1}
-              thumbStyle={{
-                height: 20,
-                width: 20,
-                backgroundColor: checked ? "grey" : "darkgreen",
-              }}
-              maximumValue={10}
-              minimumValue={0}
-            />
-            <CheckBox
-              checked={currentParams?.intensity == -1}
-              onPress={toggleCheckbox}
-              title={"No intensity"}
-              iconType="material-community"
-              checkedIcon="checkbox-marked"
-              uncheckedIcon="checkbox-blank-outline"
-              checkedColor="darkgreen"
-              wrapperStyle={habitCreationScreenStyles.intensityCheckBox}
-              containerStyle={habitCreationScreenStyles.intensityCheckBox}
-            />
-          </View>
+          <CheckBox
+            checked={currentParams?.intensity == -1}
+            onPress={toggleCheckbox}
+            title={"No intensity"}
+            iconType="material-community"
+            checkedIcon="checkbox-marked"
+            uncheckedIcon="checkbox-blank-outline"
+            checkedColor="darkgreen"
+            wrapperStyle={habitCreationScreenStyles.intensityCheckBox}
+            containerStyle={habitCreationScreenStyles.intensityCheckBox}
+          />
+        </View>
+        <Text style={habitScreenStyles.editSubtitleText}>
+          Value: <Text style={{ fontWeight: "bold" }}>{valueSlider}</Text>
+        </Text>
+        <Text style={habitScreenStyles.subsectionText}>Select color:</Text>
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
           <Text style={habitCreationScreenStyles.basicText}>
-            Value: <Text style={{ fontWeight: "bold" }}>{valueSlider}</Text>
+            Selected color:
+            <Text style={{ fontWeight: "bold" }}>{color}</Text>
           </Text>
-          <Text style={habitCreationScreenStyles.subsectionText}>
-            Select color:
+          <View
+            style={[
+              habitCreationScreenStyles.smallColorView,
+              { backgroundColor: color },
+            ]}
+          />
+        </View>
+        <TouchableOpacity
+          onPress={() => setShowModal(true)}
+          style={[habitCreationScreenStyles.chooseBtn]}
+        >
+          <Text style={{ fontSize: 20, margin: 10, color: "white" }}>
+            Choose color
           </Text>
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <Text style={habitCreationScreenStyles.basicText}>
-              Selected color:
-              <Text style={{ fontWeight: "bold" }}>{color}</Text>
-            </Text>
-            <View
-              style={[
-                habitCreationScreenStyles.smallColorView,
-                { backgroundColor: color },
-              ]}
-            />
+        </TouchableOpacity>
+        <Modal visible={showModal} animationType="slide">
+          <View style={habitCreationScreenStyles.modal}>
+            <ColorPicker
+              style={{ width: "100%" }}
+              value="white"
+              onComplete={onSelectColor}
+            >
+              <Preview />
+              <Panel1 />
+              <HueSlider />
+              <OpacitySlider />
+            </ColorPicker>
+            <TouchableOpacity
+              onPress={() => setShowModal(false)}
+              style={[habitCreationScreenStyles.chooseBtn, { marginTop: 20 }]}
+            >
+              <Text style={{ fontSize: 20, margin: 10, color: "white" }}>
+                Ok
+              </Text>
+            </TouchableOpacity>
           </View>
-          <TouchableOpacity
-            onPress={() => setShowModal(true)}
-            style={[habitCreationScreenStyles.chooseBtn]}
-          >
-            <Text style={{ fontSize: 20, margin: 10, color: "white" }}>
-              Choose color
-            </Text>
-          </TouchableOpacity>
-          <Modal visible={showModal} animationType="slide">
-            <View style={habitCreationScreenStyles.modal}>
-              <ColorPicker
-                style={{ width: "100%" }}
-                value="white"
-                onComplete={onSelectColor}
-              >
-                <Preview />
-                <Panel1 />
-                <HueSlider />
-                <OpacitySlider />
-              </ColorPicker>
-              <TouchableOpacity
-                onPress={() => setShowModal(false)}
-                style={[habitCreationScreenStyles.chooseBtn, { marginTop: 20 }]}
-              >
-                <Text style={{ fontSize: 20, margin: 10, color: "white" }}>
-                  Ok
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </Modal>
+        </Modal>
 
-          <Text style={habitCreationScreenStyles.subsectionText}>
-            Select icon:
-          </Text>
-          <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
-            {iconList.map((icon, index) => (
-              <TouchableOpacity onPress={() => settingSelectedIcon(icon)}>
-                <Icon
-                  name={icon}
-                  size={30}
-                  color={selectedIcon === icon ? "darkgreen" : "#1a1a1a"}
-                  style={{ margin: 15 }}
-                  key={index}
-                />
-              </TouchableOpacity>
-            ))}
-          </View>
+        <Text style={habitCreationScreenStyles.subsectionText}>
+          Select icon:
+        </Text>
+        <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
+          {iconList.map((icon, index) => (
+            <TouchableOpacity onPress={() => settingSelectedIcon(icon)}>
+              <Icon
+                name={icon}
+                size={30}
+                color={selectedIcon === icon ? "darkgreen" : "#1a1a1a"}
+                style={{ margin: 15 }}
+                key={index}
+              />
+            </TouchableOpacity>
+          ))}
         </View>
       </View>
-    );
-  }
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({

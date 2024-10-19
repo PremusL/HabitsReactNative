@@ -49,29 +49,38 @@ app.get("/api/readHabits", async (req, res) => {
   }
 });
 
-app.post("/api/updateHabits/:habit_key", async (req, res) => {
-  const { habit_key } = req.params;
+app.post("/api/updateHabits", async (req, res) => {
   console.log(req.body);
-  const { frequency } = req.body;
+  const {
+    habit_key,
+    name,
+    description,
+    date,
+    time,
+    color,
+    icon,
+    intensity,
+    good,
+    frequency,
+  } = req.body;
 
   console.log("Request to update, freq: ", frequency);
   try {
     const result = await client.query(
       `UPDATE habits 
        SET habit = ROW (
-         (habit).habit_key,
-         (habit).name,
-         (habit).description,
-         (habit).date,
-         (habit).time,
-         (habit).color,
-         (habit).icon,
-         (habit).intensity,
-         (habit).good,
-         $2
+         (habit).${habit_key},
+         (habit).${name},
+         (habit).${description},
+         (habit).${date},
+         (habit).${time},
+         (habit).${color},
+         (habit).${icon},
+         (habit).${intensity},
+         (habit).${good},
+         (habit).${frequency}
        )
-       WHERE (habit).habit_key = $1`,
-      [habit_key, frequency]
+       WHERE (habit).habit_key = ${habit_key}`
     );
   } catch (error) {}
 });

@@ -13,16 +13,10 @@ export const readHabitsDB: any = async () => {
     return null;
   }
 };
-export const updateFrequencyDB: any = async (
-  habit_key: string,
-  frequency: number
-) => {
-  console.log("Updating data in database, ", frequency);
+export const updateDataDB: any = async (data: HabitType) => {
+  console.log("Updating data in database with data:", data);
   try {
-    const response = await axios.post(
-      `${BASE_URL}/api/updateHabits/${habit_key}`,
-      { frequency }
-    );
+    const response = await axios.post(`${BASE_URL}/api/updateHabits`, data);
     console.log("Data updated successfully", response.data);
   } catch (error) {
     console.error("Failed to update data", error);

@@ -14,13 +14,14 @@ export const habitScreenStyles = StyleSheet.create({
     textAlign: "center",
   },
   subsectionText: {
-    ...baseSubMargin,
-    fontSize: 18,
+    ...baseMargin,
+    fontSize: 19,
+    fontWeight: "600",
     textAlign: "center",
   },
   editSubtitleText: {
     ...baseSubMargin,
-    fontSize: 20,
+    fontSize: 16,
     textAlign: "center",
     textWeight: "bold",
   },

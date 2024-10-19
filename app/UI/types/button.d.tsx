@@ -1,4 +1,5 @@
 import { RootStackParamList, NavigationProp } from "./screen.d";
+import { HabitType } from "./habit.d";
 
 export interface AddButtonProps {
   navigation: NavigationProp;
@@ -14,7 +15,6 @@ export interface RemoveButtonProps {
 }
 
 export interface IncreaseFrequencyButtonProps {
-  habit_key: string;
-  frequency: number;
-  setFrequency: (frequency: number) => void;
+  data: HabitType;
+  updateData: (data: HabitType) => void;
 }

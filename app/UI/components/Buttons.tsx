@@ -11,7 +11,7 @@ import {
   IncreaseFrequencyButtonProps,
   RemoveButtonProps,
 } from "../types/button.d";
-import { updateFrequencyDB } from "./DataBaseUtil";
+import { updateDataDB } from "./DataBaseUtil";
 import { buttonStyles } from "../style/styles";
 
 const AddButton: React.FC<AddButtonProps> = ({
@@ -68,9 +68,8 @@ const RemoveButton: React.FC<RemoveButtonProps> = ({
   );
 };
 const IncreaseFrequencyButton: React.FC<IncreaseFrequencyButtonProps> = ({
-  habit_key,
-  frequency,
-  setFrequency,
+  data,
+  updateData,
 }) => {
   const handleRemoveButtonPress = () => {
     Alert.alert(
@@ -83,10 +82,11 @@ const IncreaseFrequencyButton: React.FC<IncreaseFrequencyButtonProps> = ({
         {
           text: "OK",
           onPress: async () => {
-            const newFrequency = frequency + 1;
-            console.log("New frequency in button: ", newFrequency);
-            setFrequency(newFrequency);
-            await updateFrequencyDB(habit_key, newFrequency);
+            const newFrequency = data.frequency ? data.frequency + 1 : 1;
+            data = { ...data, frequency: newFrequency };
+            console.log("New data: ", data);
+            updateData(data);
+            await updateDataDB(data);
           },
         },
       ],
