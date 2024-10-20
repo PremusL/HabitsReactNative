@@ -7,16 +7,8 @@ import {
   ScrollView,
 } from "react-native";
 import { IncreaseFrequencyButton, RemoveButton } from "../Buttons";
-import { Calendar } from "react-native-calendars";
-import {
-  generateMarkedDates,
-  getTodaysDate,
-  calculateTimeDifference,
-  formatDate,
-} from "../Util";
 import { HabitScreenProps } from "../../types/screen.d";
 import Icon from "react-native-vector-icons/FontAwesome";
-import { habitCreationScreenStyles } from "../../style/styles";
 import { HabitType } from "../../types/habit.d";
 import { updateDataDB } from "../DataBaseUtil";
 import HabitScreenEdit from "./HabitScreenEdit";
@@ -24,8 +16,6 @@ import HabitScreenPreview from "./HabitScreenPreview";
 
 const HabitScreen: React.FC<HabitScreenProps> = ({ navigation, route }) => {
   const currentParams = route?.params;
-
-  console.log("Current params: ", currentParams);
   const [data, setData] = useState(currentParams);
   const [showEdit, setShowEdit] = useState(false);
 
@@ -54,7 +44,7 @@ const HabitScreen: React.FC<HabitScreenProps> = ({ navigation, route }) => {
       <RemoveButton
         navigation={navigation}
         whereTo="Home"
-        data={{ remove: currentParams?.habit_key }}
+        data={{ remove: data?.habit_key }}
       />
       <ScrollView style={styles.habit_view}>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -67,14 +57,14 @@ const HabitScreen: React.FC<HabitScreenProps> = ({ navigation, route }) => {
               marginBottom: 15,
             }}
           >
-            {currentParams?.name}
+            {data?.name}
           </Text>
-          {currentParams.icon && (
+          {data.icon && (
             <Icon
-              name={currentParams?.icon}
-              color={currentParams.color}
+              name={data?.icon}
+              color={data.color}
               size={30}
-              style={{ textAlign: "center" }}
+              style={{ textAlign: "center", marginBottom: 15 }}
             />
           )}
         </View>
@@ -89,7 +79,7 @@ const HabitScreen: React.FC<HabitScreenProps> = ({ navigation, route }) => {
             style={{
               marginTop: 20,
               marginBottom: 40,
-              backgroundColor: "#1a1a1a",
+              backgroundColor: data.color == "#ffffff" ? "#1a1a1a" : data.color,
               borderRadius: 5,
               alignItems: "center",
               width: 150,

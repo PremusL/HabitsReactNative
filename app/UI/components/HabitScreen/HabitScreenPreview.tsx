@@ -14,7 +14,11 @@ import { HabitType } from "../../types/habit.d";
 
 const HabitScreenPreview: React.FC<HabitScreenPreviewProps> = ({ data }) => {
   const currentDate: string = data?.date ? data.date : getTodaysDate();
-  const markedDates = generateMarkedDates(currentDate, getTodaysDate());
+  const markedDates = generateMarkedDates(
+    currentDate,
+    getTodaysDate(),
+    data.color == "#ffffff" ? "green" : data?.color!
+  );
 
   return (
     <View>

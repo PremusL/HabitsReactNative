@@ -65,7 +65,11 @@ const calculateTimeDifference = (
   );
 };
 
-const generateMarkedDates = (startDate: string, endDate: string) => {
+const generateMarkedDates = (
+  startDate: string,
+  endDate: string,
+  markerColor: string
+) => {
   const currentDate = new Date(startDate);
   const finalDate = new Date(endDate);
 
@@ -77,17 +81,17 @@ const generateMarkedDates = (startDate: string, endDate: string) => {
     if (dateStr === startDate) {
       markedDates[dateStr] = {
         startingDay: true,
-        color: "#70d7c7",
+        color: markerColor,
         textColor: "white",
       };
     } else if (dateStr === finalDate.toISOString().split("T")[0]) {
       markedDates[dateStr] = {
         endingDay: true,
-        color: "#70d7c7",
+        color: markerColor,
         textColor: "white",
       };
     } else {
-      markedDates[dateStr] = { color: "#70d7c7", textColor: "white" };
+      markedDates[dateStr] = { color: markerColor, textColor: "white" };
     }
     currentDate.setDate(currentDate.getDate() + 1);
   }
