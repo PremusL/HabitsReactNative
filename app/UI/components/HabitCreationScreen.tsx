@@ -15,7 +15,7 @@ import DateTimePicker, {
   DateTimePickerEvent,
 } from "@react-native-community/datetimepicker";
 import { AddButton } from "./Buttons";
-import { formatDate, getTodaysDate } from "./Util";
+import { formatDate, getTodaysDate, timeToString } from "./Util";
 import { habitCreationScreenStyles } from "../style/styles";
 import { HabitCreationScreenProps } from "../types/screen.d";
 import ColorPicker, {
@@ -108,15 +108,7 @@ const HabitCreationScreen: React.FC<HabitCreationScreenProps> = ({
           name: text,
           description: textDescription,
           date: selected,
-          time:
-            (currentTime.getHours() < 10
-              ? "0" + currentTime.getHours()
-              : currentTime.getHours()) +
-            ":" +
-            (currentTime.getMinutes() < 10
-              ? "0" + currentTime.getMinutes()
-              : currentTime.getMinutes()) +
-            ":00",
+          time: timeToString(currentTime),
           color: color,
           icon: selectedIcon,
           intensity: checked ? -1 : valueSlider,

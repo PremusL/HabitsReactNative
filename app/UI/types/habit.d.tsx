@@ -11,7 +11,7 @@ export interface HabitType {
   color: string | undefined;
   icon: string | undefined;
   intensity: number | undefined;
-  good: boolean | undefined;
+  good: string | undefined;
   frequency: number | undefined;
 }
 

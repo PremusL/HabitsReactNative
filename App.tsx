@@ -6,7 +6,7 @@ import {
 } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import HomeScreen from "./app/UI/components/HomeScreen";
-import HabitScreen from "./app/UI/components/HabitScreen";
+import HabitScreen from "./app/UI/components/HabitScreen/HabitScreen";
 import HabitCreationScreen from "./app/UI/components/HabitCreationScreen";
 import SecondScreen from "./app/UI/components/SecondScreen";
 import ProfileScreen from "./app/UI/components/ProfileScreen";

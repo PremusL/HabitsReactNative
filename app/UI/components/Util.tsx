@@ -15,7 +15,10 @@ const getTodaysDate = () => {
   const day = String(today.getDate()).padStart(2, "0");
   return `${year}-${month}-${day}`;
 };
-const calculateDaysDifference = (startDate: string | undefined, endDate: string): number => {
+const calculateDaysDifference = (
+  startDate: string | undefined,
+  endDate: string
+): number => {
   if (!startDate || !endDate) {
     throw new Error("Missing date");
   }
@@ -50,14 +53,22 @@ const calculateTimeDifference = (
   );
   const seconds = Math.floor((differenceInMilliseconds % (1000 * 60)) / 1000);
 
-  return days + " days, " + hours + " hours, " + minutes + " minutes, " + seconds + " seconds";
+  return (
+    days +
+    " days, " +
+    hours +
+    " hours, " +
+    minutes +
+    " minutes, " +
+    seconds +
+    " seconds"
+  );
 };
-
 
 const generateMarkedDates = (startDate: string, endDate: string) => {
   const currentDate = new Date(startDate);
   const finalDate = new Date(endDate);
-  
+
   const markedDates: any = {};
 
   while (currentDate <= finalDate) {
@@ -83,10 +94,31 @@ const generateMarkedDates = (startDate: string, endDate: string) => {
   return markedDates;
 };
 
+const timeToString = (time: Date): string => {
+  return (
+    (time.getHours() < 10 ? "0" + time.getHours() : time.getHours()) +
+    ":" +
+    (time.getMinutes() < 10 ? "0" + time.getMinutes() : time.getMinutes()) +
+    ":00"
+  );
+};
+
+function stringToTime(timeString: string | undefined): Date {
+  if (!timeString) {
+    throw new Error("Time is not defined");
+  }
+  const [hours, minutes, seconds] = timeString.split(":").map(Number);
+  const date = new Date();
+  date.setHours(hours, minutes, seconds, 0);
+  return date;
+}
+
 export {
   formatDate,
   getTodaysDate,
   generateMarkedDates,
   calculateDaysDifference,
-  calculateTimeDifference
+  calculateTimeDifference,
+  timeToString,
+  stringToTime,
 };

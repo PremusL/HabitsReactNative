@@ -64,24 +64,27 @@ app.post("/api/updateHabits", async (req, res) => {
     frequency,
   } = req.body;
 
-  console.log("Request to update, freq: ", frequency);
+  console.log("Request to update, update");
   try {
-    const result = await client.query(
-      `UPDATE habits 
+    const query = `UPDATE habits 
        SET habit = ROW (
-         (habit).${habit_key},
-         (habit).${name},
-         (habit).${description},
-         (habit).${date},
-         (habit).${time},
-         (habit).${color},
-         (habit).${icon},
-         (habit).${intensity},
-         (habit).${good},
-         (habit).${frequency}
+         ${habit_key},
+         '${name}',
+         '${description}',
+         '${date}',
+         '${time}',
+         '${color}',
+         '${icon}',
+         ${intensity},
+         '${good}',
+         ${frequency}
        )
-       WHERE (habit).habit_key = ${habit_key}`
-    );
+       WHERE (habit).habit_key = ${habit_key}`;
+    console.log("query", query);
+
+    const result = await client.query(query);
+    console.log("result", result);
+    res.json({ message: "Data updated successfully" });
   } catch (error) {}
 });
 

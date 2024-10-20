@@ -72,7 +72,10 @@ export type HabitScreenNavigationProp = NativeStackNavigationProp<
   "HabitScreen"
 >;
 
-export interface HabitEditProps {
+export interface HabitScreenEditProps {
   currentParams: HabitType;
   setData: (data: HabitType) => void;
+}
+export interface HabitScreenPreviewProps {
+  data: HabitType;
 }
