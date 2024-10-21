@@ -14,6 +14,10 @@ import ProfileScreen from "./app/UI/components/ProfileScreen";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Ionicons } from "@expo/vector-icons"; // You can use any icon library
 import { DataProvider } from "./app/UI/components/DataContext";
+import {
+  PostgresqlContext,
+  PostgresqlProvider,
+} from "./app/UI/components/Contexts/PostgresqlContext";
 
 const Tab = createBottomTabNavigator();
 
@@ -82,30 +86,32 @@ const TabNavigator = () => (
 
 const App = () => (
   <GestureHandlerRootView style={{ flex: 1 }}>
-    <NavigationContainer>
-      {/* <DataProvider> */}
-      <Stack.Navigator screenOptions={navigatorOptions}>
-        <Stack.Screen
-          name="Tabs"
-          component={TabNavigator}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen name="SecondScreen" component={SecondScreen} />
-        <Stack.Screen name="Profile" component={ProfileScreen} />
+    <PostgresqlProvider>
+      <NavigationContainer>
+        {/* <DataProvider> */}
+        <Stack.Navigator screenOptions={navigatorOptions}>
+          <Stack.Screen
+            name="Tabs"
+            component={TabNavigator}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen name="SecondScreen" component={SecondScreen} />
+          <Stack.Screen name="Profile" component={ProfileScreen} />
 
-        <Stack.Screen
-          name="HabitScreen"
-          component={HabitScreen}
-          options={{ title: "Habit Screen" }}
-        />
-        <Stack.Screen
-          name="HabitCreationScreen"
-          component={HabitCreationScreen}
-          options={{ title: "Create Habit" }}
-        />
-      </Stack.Navigator>
-      {/* </DataProvider> */}
-    </NavigationContainer>
+          <Stack.Screen
+            name="HabitScreen"
+            component={HabitScreen}
+            options={{ title: "Habit Screen" }}
+          />
+          <Stack.Screen
+            name="HabitCreationScreen"
+            component={HabitCreationScreen}
+            options={{ title: "Create Habit" }}
+          />
+        </Stack.Navigator>
+        {/* </DataProvider> */}
+      </NavigationContainer>
+    </PostgresqlProvider>
   </GestureHandlerRootView>
 );
 
