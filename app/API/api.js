@@ -19,7 +19,7 @@ app.use(express.json()); // To parse JSON bodies
 // PostgreSQL connection
 const client = new Client({
   user: "postgres", // Replace with your PostgreSQL username
-  host: "localhost",
+  host: "192.168.1.103",
   database: "postgres", // Replace with your database name
   password: "new_password", // Replace with your PostgreSQL password
   port: 5432,

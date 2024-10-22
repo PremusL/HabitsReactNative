@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useEffect, useCallback, useContext } from "react";
 import {
   ScrollView,
   StatusBar,
@@ -16,6 +16,9 @@ import { styles } from "../style/styles";
 import { HabitType } from "../types/habit.d";
 import { PanGestureHandler, State } from "react-native-gesture-handler";
 import * as SQLite from "expo-sqlite";
+import PostgresqlContext, {
+  usePostgreSQLContext,
+} from "./Contexts/PostgresqlContext";
 
 // const db = open({
 //   name: "queries.sqlite",
@@ -34,6 +37,8 @@ import * as SQLite from "expo-sqlite";
 // console.warn("Query result: " + queryrResult);
 
 const SecondScreen: React.FC<SecondScreenProps> = ({ navigation }) => {
+  const { data, fetchData } = usePostgreSQLContext();
+
   // const markedDates = generateMarkedDates(currentDate, getTodaysDate());
   const handleGesture = ({ nativeEvent }: { nativeEvent: any }) => {
     if (nativeEvent.translationX > 50) {
@@ -65,27 +70,9 @@ const SecondScreen: React.FC<SecondScreenProps> = ({ navigation }) => {
   }, []);
   return (
     <View style={styles.mainPage}>
-      {/* <Calendar
-          markingType={"period"}
-          hideExtraDays={true}
-          firstDay={1}
-          // markedDates={markedDates}
-          maxDate={getTodaysDate()}
-          theme={{
-            backgroundColor: "#00000",
-            calendarBackground: "#00000",
-            textSectionTitleColor: "black",
-            selectedDayBackgroundColor: "black",
-            selectedDayTextColor: "black",
-            selectedDayTextWeight: "700",
-            todayTextColor: "green",
-            dayTextColor: "black",
-            textDisabledColor: "gray",
-            arrowColor: "black",
-          }}
-        /> */}
       <SafeAreaView style={styles.container}>
         <ScrollView style={styles2.scrollView}>
+          <Button title="Fetch Data" onPress={fetchData}></Button>
           <Text style={styles2.text}>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
             eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim

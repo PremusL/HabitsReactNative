@@ -39,7 +39,8 @@ const calculateTimeDifference = (
   const end = new Date(endDateTime);
 
   if (isNaN(start.getTime()) || isNaN(end.getTime())) {
-    throw new Error("Invalid date format");
+    // throw new Error("Invalid date format");
+    return "empty";
   }
 
   const differenceInMilliseconds = Math.abs(end.getTime() - start.getTime());
