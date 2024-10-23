@@ -69,9 +69,8 @@ const RemoveButton: React.FC<RemoveButtonProps> = ({
 };
 const IncreaseFrequencyButton: React.FC<IncreaseFrequencyButtonProps> = ({
   data,
-  updateData,
 }) => {
-  const handleRemoveButtonPress = () => {
+  const handleFrequencyButtonPress = () => {
     Alert.alert(
       "Increase Frequency",
       "Did it happen again?",
@@ -85,7 +84,6 @@ const IncreaseFrequencyButton: React.FC<IncreaseFrequencyButtonProps> = ({
             const newFrequency = data.frequency ? data.frequency + 1 : 1;
             data = { ...data, frequency: newFrequency };
             console.log("New data: ", data);
-            updateData(data);
             await updateDataDB(data);
           },
         },
@@ -97,7 +95,7 @@ const IncreaseFrequencyButton: React.FC<IncreaseFrequencyButtonProps> = ({
   return (
     <TouchableOpacity
       style={[buttonStyles.frequencyButton]}
-      onPress={handleRemoveButtonPress} // ta any bi blo treba zamenat z dejansko obliko
+      onPress={handleFrequencyButtonPress}
     >
       <Text style={{ color: "white", fontWeight: "normal", fontSize: 24 }}>
         +

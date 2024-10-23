@@ -21,6 +21,7 @@ import ColorPicker, {
 import { CheckBox, Slider, Switch } from "@rneui/themed";
 import { HabitType } from "../../types/habit.d";
 import { updateDataDB } from "../DataBaseUtil";
+import { usePostgreSQLContext } from "../Contexts/PostgresqlContext";
 
 const iconList = [
   "rocket",
@@ -38,27 +39,36 @@ const iconList = [
 ];
 
 const HabitScreenEdit: React.FC<HabitScreenEditProps> = ({
-  currentParams,
-  setData,
+  habit_key,
+  setEdit,
 }) => {
-  const [name, setNameChange] = useState(currentParams?.name);
-  const [textDescription, onChangeTextDescription] = useState(
-    currentParams?.description
+  const { data, fetchData } = usePostgreSQLContext();
+  const currentHabit = data.find(
+    (habit: HabitType) => habit.habit_key === habit_key
   );
-  const [selectedDate, setSelectedDate] = useState(currentParams?.date);
-  const [selectedTime, setCurrentTime] = useState(
-    stringToTime(currentParams.time)
-  );
-  const [color, setColor] = useState(currentParams?.color);
-  const [showModal, setShowModal] = useState(false);
-  const [checked, setChecked] = useState(currentParams?.intensity == -1);
-  const [valueSlider, setValueSlider] = useState(currentParams?.intensity);
-  const [switchValue, setSwitchValue] = useState(currentParams?.good); // false meaning the habit is bad
-  const [selectedIcon, setSelectedIcon] = useState(currentParams?.icon);
+  if (!currentHabit) {
+    throw new Error("Habit with habit_key " + habit_key + " not found");
+  }
 
-  const handleSave = (data: HabitType) => {
-    setData(data);
-    updateDataDB(data);
+  const [name, setNameChange] = useState(currentHabit.name);
+  const [textDescription, onChangeTextDescription] = useState(
+    currentHabit?.description
+  );
+  const [selectedDate, setSelectedDate] = useState(currentHabit?.date);
+  const [selectedTime, setCurrentTime] = useState(
+    stringToTime(currentHabit.time)
+  );
+  const [color, setColor] = useState(currentHabit?.color);
+  const [showModal, setShowModal] = useState(false);
+  const [checked, setChecked] = useState(currentHabit?.intensity == -1);
+  const [valueSlider, setValueSlider] = useState(currentHabit?.intensity);
+  const [switchValue, setSwitchValue] = useState(currentHabit?.good); // false meaning the habit is bad
+  const [selectedIcon, setSelectedIcon] = useState(currentHabit?.icon);
+
+  const handleSave = async (data: HabitType) => {
+    await updateDataDB(data);
+    await fetchData();
+    setEdit(false);
   };
 
   const onSelectColor = ({ hex }: any): void => {
@@ -289,8 +299,8 @@ const HabitScreenEdit: React.FC<HabitScreenEditProps> = ({
             color: color,
             good: switchValue,
             icon: selectedIcon,
-            habit_key: currentParams.habit_key,
-            frequency: currentParams.frequency,
+            habit_key: habit_key,
+            frequency: currentHabit.frequency,
           })
         }
         style={{

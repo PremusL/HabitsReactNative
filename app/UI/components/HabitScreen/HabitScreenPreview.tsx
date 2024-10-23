@@ -10,14 +10,28 @@ import {
 } from "../Util";
 import { HabitScreenPreviewProps } from "../../types/screen.d";
 import { habitCreationScreenStyles } from "../../style/styles";
+import { usePostgreSQLContext } from "../Contexts/PostgresqlContext";
 import { HabitType } from "../../types/habit.d";
 
-const HabitScreenPreview: React.FC<HabitScreenPreviewProps> = ({ data }) => {
-  const currentDate: string = data?.date ? data.date : getTodaysDate();
+const HabitScreenPreview: React.FC<HabitScreenPreviewProps> = ({
+  habit_key,
+}) => {
+  const { data, fetchData } = usePostgreSQLContext();
+
+  const currentHabit = data.find(
+    (habit: HabitType) => habit.habit_key === habit_key
+  );
+  if (!currentHabit) {
+    throw new Error("Habit with habit_key " + habit_key + " not found");
+  }
+
+  const currentDate: string = currentHabit?.date
+    ? currentHabit.date
+    : getTodaysDate();
   const markedDates = generateMarkedDates(
     currentDate,
     getTodaysDate(),
-    data.color == "#ffffff" ? "green" : data?.color!
+    currentHabit.color == "#ffffff" ? "green" : currentHabit?.color!
   );
 
   return (
@@ -46,16 +60,16 @@ const HabitScreenPreview: React.FC<HabitScreenPreviewProps> = ({ data }) => {
         Free for: {calculateTimeDifference(currentDate, getTodaysDate())} days
       </Text>
       <Text style={habitCreationScreenStyles.basicText}>
-        Last occurance: {formatDate(data.date)} at {data.time}
+        Last occurance: {formatDate(currentHabit.date)} at {currentHabit.time}
       </Text>
       <Text style={habitCreationScreenStyles.basicText}>
         Description:{"\n"}
-        {data?.description ? data?.description : "No notes"}
+        {currentHabit?.description ? currentHabit?.description : "No notes"}
       </Text>
       <Text style={habitCreationScreenStyles.basicText}>
         Intensity:{"\n"}
-        {data.intensity && data.intensity !== 0
-          ? data?.intensity + "/10"
+        {currentHabit.intensity && currentHabit.intensity !== 0
+          ? currentHabit?.intensity + "/10"
           : "No intensity"}
       </Text>
     </View>

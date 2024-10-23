@@ -18,9 +18,6 @@ export type RootStackParamList = {
     remove?: { habit_key?: number } | {} | undefined;
   };
   HabitScreen: {
-    name: string | undefined;
-    date: string | undefined;
-    time: string | undefined;
     habit_key: number | null;
   };
   SecondScreen: undefined;
@@ -35,7 +32,7 @@ export interface HabitCreationScreenProps {
 
 export interface HabitScreenProps {
   navigation: NavigationProp;
-  route?: { params: HabitType } | any | undefined;
+  route?: number | any | undefined;
 }
 
 export interface HomeScreenProps {
@@ -73,9 +70,9 @@ export type HabitScreenNavigationProp = NativeStackNavigationProp<
 >;
 
 export interface HabitScreenEditProps {
-  currentParams: HabitType;
-  setData: (data: HabitType) => void;
+  habit_key: number;
+  setEdit: (edit: boolean) => void;
 }
 export interface HabitScreenPreviewProps {
-  data: HabitType;
+  habit_key: number;
 }

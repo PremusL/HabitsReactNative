@@ -39,6 +39,11 @@ import PostgresqlContext, {
 const SecondScreen: React.FC<SecondScreenProps> = ({ navigation }) => {
   const { data, fetchData } = usePostgreSQLContext();
 
+  const fetchAndPrintData = async () => {
+    await fetchData();
+    console.log(data);
+  };
+
   // const markedDates = generateMarkedDates(currentDate, getTodaysDate());
   const handleGesture = ({ nativeEvent }: { nativeEvent: any }) => {
     if (nativeEvent.translationX > 50) {

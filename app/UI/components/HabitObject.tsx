@@ -65,7 +65,6 @@ export const Habit: React.FC<HabitInterface> = ({
     >
       <TouchableOpacity onPress={onPress}>
         {!isSelected && <Text style={{ fontSize: 24 }}>{habit.name}</Text>}
-
         {isSelected && (
           <Animated.View style={{ transform: [{ scale: scaleValue }] }}>
             <Text style={{ fontSize: 22 }}>{habit.name}</Text>
@@ -82,7 +81,11 @@ export const Habit: React.FC<HabitInterface> = ({
                 width: 80,
                 alignItems: "center",
               }}
-              onPress={() => navigation.navigate("HabitScreen", { ...habit })} // send the habit object to the habit screen
+              onPress={() =>
+                navigation.navigate("HabitScreen", {
+                  habit_key: habit.habit_key,
+                })
+              } // send the habit object to the habit screen
             >
               <Text
                 style={{

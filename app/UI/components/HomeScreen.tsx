@@ -2,29 +2,16 @@ import React, { useState, useEffect, useCallback, useContext } from "react";
 import { SafeAreaView } from "react-native";
 import { AddButton } from "./Buttons";
 import { HabitList } from "./HabitObject";
-import {
-  getAllKeys,
-  multiGet,
-  saveData,
-  clearAll,
-  removeData,
-} from "./LocalStorageUtil";
 import { HomeScreenProps } from "../types/screen.d";
 import { styles } from "../style/styles";
-import { PanGestureHandler, State } from "react-native-gesture-handler";
-import { useData } from "./DataContext";
-import { readHabitsDB, writeHabitDB, deleteHabitDB } from "./DataBaseUtil";
-import { HabitType } from "../types/habit.d";
+import { writeHabitDB, deleteHabitDB } from "./DataBaseUtil";
+import { usePostgreSQLContext } from "./Contexts/PostgresqlContext";
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }) => {
-  // const [habits, setHabits] = useState<HabitType[]>([]);
+  const { data, fetchData } = usePostgreSQLContext();
   const [selectedHabit, setSelectedHabit] = useState<number | null>(null);
-  const [currentKey, setCurrentKey] = useState("0");
-  const [maxKey, setMaxKey] = useState(0);
-  const [dataDB, setDataDB] = useState([]);
-  // const { data, nextKey, fetchData } = useData();
-
-  // console.log(nextKey);
+  const [maxKey, setMaxKey] = useState<number | null>(0);
+  // const [dataDB, setDataDB] = useState(data);
 
   const handleGesture = ({ nativeEvent }: { nativeEvent: any }) => {
     if (nativeEvent.translationX < -50) {
@@ -34,12 +21,9 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }) => {
 
   useEffect(() => {
     const waitFetchData = async () => {
-      const currentData = await readHabitsDB();
-      await setDataDB(currentData);
-      console.log("DataDB: ", JSON.stringify(currentData));
-
-      if (currentData.length > 0) {
-        setMaxKey(currentData[currentData.length - 1]["habit_key"]);
+      await fetchData();
+      if (data.length > 0) {
+        setMaxKey(data[data.length - 1]["habit_key"]);
       }
     };
     waitFetchData();
@@ -49,21 +33,20 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }) => {
     const waitingSaveData = async (keyToSet: number, currentParams: any) => {
       currentParams["habit_key"] = keyToSet; // Set the key to the current habit
       await writeHabitDB(currentParams);
-      const currentData = await readHabitsDB();
-      setDataDB(currentData);
+      await fetchData();
 
-      if (currentData.length > 0) {
-        setMaxKey(currentData[currentData.length - 1]["habit_key"]);
+      if (data.length > 0) {
+        setMaxKey(data[data.length - 1]["habit_key"]);
       }
-      console.log("DataDB after add" + JSON.stringify(currentData), maxKey);
+      console.log("DataDB after add" + JSON.stringify(data), maxKey);
     };
     // removing a habit
     const waitingRemoveData = async (remove_key: string) => {
       await deleteHabitDB(remove_key);
-      const currentData = await readHabitsDB();
-      setDataDB(currentData);
-      if (currentData.length > 0) {
-        setMaxKey(currentData[currentData.length - 1]["habit_key"]);
+      await fetchData();
+
+      if (data.length > 0) {
+        setMaxKey(data[data.length - 1]["habit_key"]);
       }
     };
     if (!route.params) {
@@ -74,7 +57,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }) => {
       const currentParams = route.params;
 
       console.log("-----------------");
-      waitingSaveData(maxKey + 1, currentParams);
+      waitingSaveData(maxKey ? maxKey + 1 : 0, currentParams);
 
       console.log("-----------------");
     } else if (route.params && route.params.remove) {
@@ -84,12 +67,6 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }) => {
       console.log("no paramss", route.params.name, route.params.date);
     }
   }, [route.params]);
-  // useEffect(() => {
-  //   const waitReadHabitsDB = async () => {
-
-  //   };
-  //   waitReadHabitsDB();
-  // }, []);
 
   return (
     // <PanGestureHandler
@@ -98,9 +75,9 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }) => {
     // >
     <SafeAreaView style={styles.mainPage}>
       <AddButton navigation={navigation} whereTo="HabitCreationScreen" />
-      {dataDB && (
+      {data && (
         <HabitList
-          habits={dataDB}
+          habits={data}
           navigation={navigation as any}
           selectedHabit={selectedHabit}
           setSelectedHabit={(habit_key) => setSelectedHabit(habit_key ?? null)}

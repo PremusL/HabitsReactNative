@@ -13,10 +13,21 @@ import { HabitType } from "../../types/habit.d";
 import { updateDataDB } from "../DataBaseUtil";
 import HabitScreenEdit from "./HabitScreenEdit";
 import HabitScreenPreview from "./HabitScreenPreview";
+import { usePostgreSQLContext } from "../Contexts/PostgresqlContext";
 
 const HabitScreen: React.FC<HabitScreenProps> = ({ navigation, route }) => {
-  const currentParams = route?.params;
-  const [data, setData] = useState(currentParams);
+  const habit_key = route?.params.habit_key;
+  console.log(JSON.stringify(route), habit_key);
+
+  const { data, fetchData } = usePostgreSQLContext();
+  const currentHabit = data.find(
+    (habit: HabitType) => habit.habit_key === habit_key
+  );
+  if (!currentHabit) {
+    throw new Error("Habit with habit_key " + habit_key + " not found");
+  }
+
+  console.log("Current habit: ", currentHabit);
   const [showEdit, setShowEdit] = useState(false);
 
   const editSaveButtonHandler = () => {
@@ -34,17 +45,20 @@ const HabitScreen: React.FC<HabitScreenProps> = ({ navigation, route }) => {
 
   const handleDataUpdate = (data: HabitType) => {
     setShowEdit(false);
-    setData(data);
+  };
+
+  const handleSetShowEdit = (showEdit: boolean) => {
+    setShowEdit(showEdit);
   };
 
   console.log("Current data: ", data);
   return (
     <View style={{ flex: 1 }}>
-      <IncreaseFrequencyButton data={data} updateData={handleDataUpdate} />
+      <IncreaseFrequencyButton data={currentHabit} />
       <RemoveButton
         navigation={navigation}
         whereTo="Home"
-        data={{ remove: data?.habit_key }}
+        data={{ remove: habit_key }}
       />
       <ScrollView style={styles.habit_view}>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -57,29 +71,31 @@ const HabitScreen: React.FC<HabitScreenProps> = ({ navigation, route }) => {
               marginBottom: 15,
             }}
           >
-            {data?.name}
+            {currentHabit.name}
           </Text>
-          {data.icon && (
+          {currentHabit.icon && (
             <Icon
-              name={data?.icon}
-              color={data.color}
+              name={currentHabit.icon}
+              color={currentHabit.color}
               size={30}
               style={{ textAlign: "center", marginBottom: 15 }}
             />
           )}
         </View>
-        {!showEdit && <HabitScreenPreview data={data} />}
+        {!showEdit && <HabitScreenPreview habit_key={habit_key} />}
         {showEdit && (
-          <HabitScreenEdit currentParams={data} setData={handleDataUpdate} />
+          <HabitScreenEdit habit_key={habit_key} setEdit={handleSetShowEdit} />
         )}
-
         {!showEdit && (
           <TouchableOpacity
             onPress={() => editSaveButtonHandler()}
             style={{
               marginTop: 20,
               marginBottom: 40,
-              backgroundColor: data.color == "#ffffff" ? "#1a1a1a" : data.color,
+              backgroundColor:
+                currentHabit.color == "#ffffff"
+                  ? "#1a1a1a"
+                  : currentHabit.color,
               borderRadius: 5,
               alignItems: "center",
               width: 150,
