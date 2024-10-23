@@ -73,6 +73,10 @@ export interface HabitScreenEditProps {
   habit_key: number;
   setEdit: (edit: boolean) => void;
 }
+export interface HabitScreenAnotherProps {
+  habit_key: number;
+  setShowAnother: (isAnother: boolean) => void;
+}
 export interface HabitScreenPreviewProps {
   habit_key: number;
 }

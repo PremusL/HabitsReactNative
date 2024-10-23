@@ -69,22 +69,20 @@ const RemoveButton: React.FC<RemoveButtonProps> = ({
 };
 const IncreaseFrequencyButton: React.FC<IncreaseFrequencyButtonProps> = ({
   data,
+  setShowAnother,
 }) => {
   const handleFrequencyButtonPress = () => {
     Alert.alert(
-      "Increase Frequency",
       "Did it happen again?",
+      "",
       [
         {
           text: "Cancel",
         },
         {
-          text: "OK",
+          text: "Yes",
           onPress: async () => {
-            const newFrequency = data.frequency ? data.frequency + 1 : 1;
-            data = { ...data, frequency: newFrequency };
-            console.log("New data: ", data);
-            await updateDataDB(data);
+            setShowAnother(true);
           },
         },
       ],

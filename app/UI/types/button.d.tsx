@@ -16,4 +16,5 @@ export interface RemoveButtonProps {
 
 export interface IncreaseFrequencyButtonProps {
   data: HabitType;
+  setShowAnother: (isAnother: boolean) => void;
 }

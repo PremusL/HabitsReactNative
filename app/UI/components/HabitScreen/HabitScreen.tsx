@@ -15,8 +15,12 @@ import HabitScreenEdit from "./HabitScreenEdit";
 import HabitScreenPreview from "./HabitScreenPreview";
 import { usePostgreSQLContext } from "../Contexts/PostgresqlContext";
 import { getTextColorBasedOnBackground } from "../Util";
+import HabitScreenAnother from "./HabitScreenAnother";
 
 const HabitScreen: React.FC<HabitScreenProps> = ({ navigation, route }) => {
+  const [showEdit, setShowEdit] = useState(false);
+  const [showAnother, setShowAnother] = useState(false);
+
   const habit_key = route?.params.habit_key;
   console.log(JSON.stringify(route), habit_key);
 
@@ -29,7 +33,6 @@ const HabitScreen: React.FC<HabitScreenProps> = ({ navigation, route }) => {
   }
 
   console.log("Current habit: ", currentHabit);
-  const [showEdit, setShowEdit] = useState(false);
 
   const editSaveButtonHandler = () => {
     if (showEdit) {
@@ -44,8 +47,8 @@ const HabitScreen: React.FC<HabitScreenProps> = ({ navigation, route }) => {
     }
   };
 
-  const handleDataUpdate = (data: HabitType) => {
-    setShowEdit(false);
+  const handleSetShowAnother = (showEdit: boolean) => {
+    setShowAnother(showEdit);
   };
 
   const handleSetShowEdit = (showEdit: boolean) => {
@@ -55,12 +58,19 @@ const HabitScreen: React.FC<HabitScreenProps> = ({ navigation, route }) => {
   console.log("Current data: ", data);
   return (
     <View style={{ flex: 1 }}>
-      <IncreaseFrequencyButton data={currentHabit} />
-      <RemoveButton
-        navigation={navigation}
-        whereTo="Home"
-        data={{ remove: habit_key }}
-      />
+      {!showAnother && (
+        <IncreaseFrequencyButton
+          data={currentHabit}
+          setShowAnother={handleSetShowAnother}
+        />
+      )}
+      {!showAnother && (
+        <RemoveButton
+          navigation={navigation}
+          whereTo="Home"
+          data={{ remove: habit_key }}
+        />
+      )}
       <ScrollView style={styles.habit_view}>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <Text
@@ -83,11 +93,19 @@ const HabitScreen: React.FC<HabitScreenProps> = ({ navigation, route }) => {
             />
           )}
         </View>
-        {!showEdit && <HabitScreenPreview habit_key={habit_key} />}
-        {showEdit && (
+        {showAnother && (
+          <HabitScreenAnother
+            habit_key={habit_key}
+            setShowAnother={setShowAnother}
+          />
+        )}
+        {!showEdit && !showAnother && (
+          <HabitScreenPreview habit_key={habit_key} />
+        )}
+        {showEdit && !showAnother && (
           <HabitScreenEdit habit_key={habit_key} setEdit={handleSetShowEdit} />
         )}
-        {!showEdit && (
+        {!showEdit && !showAnother && (
           <TouchableOpacity
             onPress={() => editSaveButtonHandler()}
             style={{
