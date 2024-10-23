@@ -19,12 +19,13 @@ import { CheckBox, Slider } from "@rneui/themed";
 import { HabitType } from "../../types/habit.d";
 import { writeHabitDB } from "../DataBaseUtil";
 import { usePostgreSQLContext } from "../Contexts/PostgresqlContext";
+import { useSqLiteContext } from "../Contexts/SqLiteContext";
 
 const HabitScreenAnother: React.FC<HabitScreenAnotherProps> = ({
   habit_key,
   setShowAnother,
 }) => {
-  const { data, fetchData } = usePostgreSQLContext();
+  const { data, fetchData } = useSqLiteContext();
 
   const [textDescription, onChangeTextDescription] = useState("");
   const [selectedDate, setSelectedDate] = useState("");
