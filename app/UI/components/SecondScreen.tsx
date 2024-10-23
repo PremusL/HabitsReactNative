@@ -19,6 +19,7 @@ import * as SQLite from "expo-sqlite";
 import PostgresqlContext, {
   usePostgreSQLContext,
 } from "./Contexts/PostgresqlContext";
+import { useSqLiteContext } from "./Contexts/SqLiteContext";
 
 // const db = open({
 //   name: "queries.sqlite",
@@ -37,7 +38,7 @@ import PostgresqlContext, {
 // console.warn("Query result: " + queryrResult);
 
 const SecondScreen: React.FC<SecondScreenProps> = ({ navigation }) => {
-  const { data, fetchData } = usePostgreSQLContext();
+  const { data, fetchData } = useSqLiteContext();
 
   const fetchAndPrintData = async () => {
     await fetchData();
@@ -77,7 +78,7 @@ const SecondScreen: React.FC<SecondScreenProps> = ({ navigation }) => {
     <View style={styles.mainPage}>
       <SafeAreaView style={styles.container}>
         <ScrollView style={styles2.scrollView}>
-          <Button title="Fetch Data" onPress={fetchData}></Button>
+          <Button title="Fetch Data" onPress={fetchAndPrintData}></Button>
           <Text style={styles2.text}>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
             eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim

@@ -111,7 +111,6 @@ export const HabitList: React.FC<HabitListInterface> = ({
   selectedHabit,
   setSelectedHabit,
 }) => {
-  console.log("HabitList", habits);
   return (
     <View>
       <ScrollView style={scrollViewStyles.scrollViewContent}>

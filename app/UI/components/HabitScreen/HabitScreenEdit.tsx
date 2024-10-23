@@ -22,6 +22,7 @@ import { CheckBox, Slider, Switch } from "@rneui/themed";
 import { HabitType } from "../../types/habit.d";
 import { updateDataDB } from "../DataBaseUtil";
 import { usePostgreSQLContext } from "../Contexts/PostgresqlContext";
+import { useSqLiteContext } from "../Contexts/SqLiteContext";
 
 const iconList = [
   "rocket",
@@ -42,7 +43,7 @@ const HabitScreenEdit: React.FC<HabitScreenEditProps> = ({
   habit_key,
   setEdit,
 }) => {
-  const { data, fetchData } = usePostgreSQLContext();
+  const { data, fetchData } = useSqLiteContext();
   const currentHabit = data.find(
     (habit: HabitType) => habit.habit_key === habit_key
   );

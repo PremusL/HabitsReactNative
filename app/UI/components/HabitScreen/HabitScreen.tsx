@@ -16,6 +16,7 @@ import HabitScreenPreview from "./HabitScreenPreview";
 import { usePostgreSQLContext } from "../Contexts/PostgresqlContext";
 import { getTextColorBasedOnBackground } from "../Util";
 import HabitScreenAnother from "./HabitScreenAnother";
+import { useSqLiteContext } from "../Contexts/SqLiteContext";
 
 const HabitScreen: React.FC<HabitScreenProps> = ({ navigation, route }) => {
   const [showEdit, setShowEdit] = useState(false);
@@ -24,7 +25,7 @@ const HabitScreen: React.FC<HabitScreenProps> = ({ navigation, route }) => {
   const habit_key = route?.params.habit_key;
   console.log(JSON.stringify(route), habit_key);
 
-  const { data, fetchData } = usePostgreSQLContext();
+  const { data, fetchData } = useSqLiteContext();
   const currentHabit = data.find(
     (habit: HabitType) => habit.habit_key === habit_key
   );

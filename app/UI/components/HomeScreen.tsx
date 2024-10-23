@@ -6,9 +6,10 @@ import { HomeScreenProps } from "../types/screen.d";
 import { styles } from "../style/styles";
 import { writeHabitDB, deleteHabitDB } from "./DataBaseUtil";
 import { usePostgreSQLContext } from "./Contexts/PostgresqlContext";
+import { useSqLiteContext } from "./Contexts/SqLiteContext";
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }) => {
-  const { data, fetchData } = usePostgreSQLContext();
+  const { data, fetchData } = useSqLiteContext();
   const [selectedHabit, setSelectedHabit] = useState<number | null>(null);
   const [maxKey, setMaxKey] = useState<number | null>(0);
   // const [dataDB, setDataDB] = useState(data);

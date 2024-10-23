@@ -3,13 +3,13 @@ import { HabitType } from "../../types/habit.d";
 import { readHabitsDB } from "../DataBaseUtil";
 
 interface PostgresqlContextType {
-  data: HabitType[];
-  fetchData: () => Promise<void>;
+  dataDb: HabitType[];
+  fetchDataDb: () => Promise<void>;
 }
 
-export const PostgresqlContext = createContext<
-  PostgresqlContextType | undefined
->(undefined);
+const PostgresqlContext = createContext<PostgresqlContextType | undefined>(
+  undefined
+);
 
 export function usePostgreSQLContext() {
   const habitData = useContext(PostgresqlContext);
@@ -22,20 +22,20 @@ export function usePostgreSQLContext() {
 export const PostgresqlProvider: React.FC<{ children: any }> = ({
   children,
 }) => {
-  const [data, setData] = useState<HabitType[]>([]);
+  const [dataDb, setData] = useState<HabitType[]>([]);
 
-  const fetchData = async () => {
+  const fetchDataDb = async () => {
     const data = await readHabitsDB();
     console.log("Data fetched: ", data);
     setData(data);
   };
 
   useEffect(() => {
-    fetchData();
+    fetchDataDb();
   }, []);
 
   return (
-    <PostgresqlContext.Provider value={{ data, fetchData }}>
+    <PostgresqlContext.Provider value={{ dataDb, fetchDataDb }}>
       {children}
     </PostgresqlContext.Provider>
   );
