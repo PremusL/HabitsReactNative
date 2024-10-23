@@ -14,6 +14,7 @@ import { updateDataDB } from "../DataBaseUtil";
 import HabitScreenEdit from "./HabitScreenEdit";
 import HabitScreenPreview from "./HabitScreenPreview";
 import { usePostgreSQLContext } from "../Contexts/PostgresqlContext";
+import { getTextColorBasedOnBackground } from "../Util";
 
 const HabitScreen: React.FC<HabitScreenProps> = ({ navigation, route }) => {
   const habit_key = route?.params.habit_key;
@@ -102,7 +103,18 @@ const HabitScreen: React.FC<HabitScreenProps> = ({ navigation, route }) => {
               alignSelf: "center",
             }}
           >
-            <Text style={{ fontSize: 18, margin: 8, color: "white" }}>
+            <Text
+              style={{
+                fontSize: 18,
+                margin: 8,
+                color:
+                  currentHabit.color == "#ffffff"
+                    ? "#1a1a1a"
+                    : getTextColorBasedOnBackground(
+                        currentHabit.color as string
+                      ),
+              }}
+            >
               Edit
             </Text>
           </TouchableOpacity>
