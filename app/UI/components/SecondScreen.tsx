@@ -16,9 +16,7 @@ import { styles } from "../style/styles";
 import { HabitType } from "../types/habit.d";
 import { PanGestureHandler, State } from "react-native-gesture-handler";
 import * as SQLite from "expo-sqlite";
-import PostgresqlContext, {
-  usePostgreSQLContext,
-} from "./Contexts/PostgresqlContext";
+
 import { useSqLiteContext } from "./Contexts/SqLiteContext";
 
 // const db = open({

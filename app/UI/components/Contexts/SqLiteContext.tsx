@@ -53,23 +53,18 @@ export const SqLiteProvider: React.FC<{ children: any }> = ({ children }) => {
     //   console.log(row.id, row.value, row.intValue);
     // }
   };
-  const fetchData = async () => {
-    await fetchDataDb();
-    setData(dataDb);
-  };
 
   useEffect(() => {
-    const waitSyncData = async () => {
+    const fetchData = async () => {
       await fetchDataDb();
-      await testSql();
-
       setData(dataDb);
     };
-    waitSyncData();
+    fetchData();
+    console.log("SqLiteContext data: " + JSON.stringify(dataDb));
   }, []);
 
   return (
-    <SqLiteContext.Provider value={{ data, fetchData }}>
+    <SqLiteContext.Provider value={{ data, fetchData: fetchDataDb }}>
       {children}
     </SqLiteContext.Provider>
   );

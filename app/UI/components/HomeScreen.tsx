@@ -10,6 +10,7 @@ import { useSqLiteContext } from "./Contexts/SqLiteContext";
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }) => {
   const { data, fetchData } = useSqLiteContext();
+  const { dataDb, fetchDataDb } = usePostgreSQLContext();
   const [selectedHabit, setSelectedHabit] = useState<number | null>(null);
   const [maxKey, setMaxKey] = useState<number | null>(0);
   // const [dataDB, setDataDB] = useState(data);
@@ -26,6 +27,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }) => {
       if (data.length > 0) {
         setMaxKey(data[data.length - 1]["habit_key"]);
       }
+      console.log("this is fetched data " + JSON.stringify(dataDb));
     };
     waitFetchData();
   }, []);

@@ -86,7 +86,6 @@ const App = () => (
     <PostgresqlProvider>
       <SqLiteProvider>
         <NavigationContainer>
-          {/* <DataProvider> */}
           <Stack.Navigator screenOptions={navigatorOptions}>
             <Stack.Screen
               name="Tabs"
@@ -107,7 +106,6 @@ const App = () => (
               options={{ title: "Create Habit" }}
             />
           </Stack.Navigator>
-          {/* </DataProvider> */}
         </NavigationContainer>
       </SqLiteProvider>
     </PostgresqlProvider>

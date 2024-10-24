@@ -1,4 +1,5 @@
 import React, { createContext, useState, useEffect, useContext } from "react";
+import { Text } from "react-native";
 import { HabitType } from "../../types/habit.d";
 import { readHabitsDB } from "../DataBaseUtil";
 
@@ -23,16 +24,24 @@ export const PostgresqlProvider: React.FC<{ children: any }> = ({
   children,
 }) => {
   const [dataDb, setData] = useState<HabitType[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const fetchDataDb = async () => {
     const data = await readHabitsDB();
-    console.log("Data fetched: ", data);
     setData(data);
+    setLoading(false);
   };
 
   useEffect(() => {
-    fetchDataDb();
+    const waitFetchDataDb = async () => {
+      await fetchDataDb();
+    };
+    waitFetchDataDb();
   }, []);
+
+  if (loading) {
+    return <Text>Loading...</Text>; // Replace with your loading indicator
+  }
 
   return (
     <PostgresqlContext.Provider value={{ dataDb, fetchDataDb }}>
