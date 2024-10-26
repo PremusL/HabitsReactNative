@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect, useContext } from "react";
+import { Text, Button } from "react-native";
 import { HabitType } from "../../types/habit.d";
-import { readHabitsDB } from "../DataBaseUtil";
 import { usePostgreSQLContext } from "./PostgresqlContext";
 import * as SQLite from "expo-sqlite";
 import { set } from "date-fns";
@@ -23,11 +23,13 @@ export const SqLiteProvider: React.FC<{ children: any }> = ({ children }) => {
   // const [data, setData] = useState<HabitType[]>([]);
   const { dataDb, fetchDataDb } = usePostgreSQLContext();
   const [data, setData] = useState<HabitType[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const testSql = async () => {
-    const db = await SQLite.openDatabaseAsync("databaseName");
+    const db = await SQLite.openDatabaseAsync("localhabits.db");
 
-    await db.execAsync(`
+    try {
+      await db.execAsync(`
       PRAGMA journal_mode = WAL;
       CREATE TABLE IF NOT EXISTS LocalHabits (
         habits_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
@@ -43,25 +45,46 @@ export const SqLiteProvider: React.FC<{ children: any }> = ({ children }) => {
         frequency INTEGER
       );
       `);
+      dataDb.forEach(async (habit) => {
+        await db.execAsync(
+          `INSERT INTO LocalHabits (habit_key, name, description, date, time, color, icon, intensity, good, frequency) VALUES
+        (${habit.habit_key}, "${habit.name}", "${habit.description}", "${habit.date}", "${habit.time}",
+         "${habit.color}", "${habit.icon}", "${habit.intensity}", "${habit.good}", "${habit.frequency}")`
+        );
+      });
+    } catch (error) {
+      console.error("Error inserting habit:", error);
+    }
 
-    dataDb.forEach((habit: HabitType, index: number) => {
-      console.log("jfoejofejoefjofejo");
-    });
-
-    // const allRows: any = await db.getAllAsync("SELECT * FROM test");
-    // for (const row of allRows) {
-    //   console.log(row.id, row.value, row.intValue);
-    // }
+    const allRows: any = await db.getAllAsync("SELECT * FROM LocalHabits");
+    for (const row of allRows) {
+      console.log(
+        row.description,
+        row.habit_key,
+        row.name,
+        row.date,
+        row.time,
+        row.color,
+        row.icon,
+        row.intensity,
+        row.good,
+        row.frequency
+      );
+    }
   };
 
   useEffect(() => {
     const fetchData = async () => {
       await fetchDataDb();
       setData(dataDb);
+      setLoading(false);
     };
     fetchData();
-    console.log("SqLiteContext data: " + JSON.stringify(dataDb));
+    testSql();
   }, []);
+  if (loading) {
+    return <Text>Loading...</Text>;
+  }
 
   return (
     <SqLiteContext.Provider value={{ data, fetchData: fetchDataDb }}>

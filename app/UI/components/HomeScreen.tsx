@@ -7,13 +7,37 @@ import { styles } from "../style/styles";
 import { writeHabitDB, deleteHabitDB } from "./DataBaseUtil";
 import { usePostgreSQLContext } from "./Contexts/PostgresqlContext";
 import { useSqLiteContext } from "./Contexts/SqLiteContext";
+import * as FileSystem from "expo-file-system";
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }) => {
   const { data, fetchData } = useSqLiteContext();
-  const { dataDb, fetchDataDb } = usePostgreSQLContext();
+  const [databases, setDatabases] = useState<string[]>([]);
+
   const [selectedHabit, setSelectedHabit] = useState<number | null>(null);
   const [maxKey, setMaxKey] = useState<number | null>(0);
   // const [dataDB, setDataDB] = useState(data);
+
+  useEffect(() => {
+    const listDatabases = async () => {
+      try {
+        const files = await FileSystem.readDirectoryAsync(
+          FileSystem.documentDirectory || ""
+        );
+        const dbFiles = files.filter(
+          (file) =>
+            file.endsWith(".db") ||
+            file.endsWith(".sqlite") ||
+            file.includes("data")
+        );
+        setDatabases(dbFiles);
+      } catch (error) {
+        console.error("Error listing databases:", error);
+      }
+    };
+
+    listDatabases();
+    console.log("Databases: ", databases);
+  }, []);
 
   const handleGesture = ({ nativeEvent }: { nativeEvent: any }) => {
     if (nativeEvent.translationX < -50) {
@@ -27,7 +51,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }) => {
       if (data.length > 0) {
         setMaxKey(data[data.length - 1]["habit_key"]);
       }
-      console.log("this is fetched data " + JSON.stringify(dataDb));
+      console.log("this is fetched data " + JSON.stringify(data));
     };
     waitFetchData();
   }, []);

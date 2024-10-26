@@ -40,7 +40,7 @@ export const PostgresqlProvider: React.FC<{ children: any }> = ({
   }, []);
 
   if (loading) {
-    return <Text>Loading...</Text>; // Replace with your loading indicator
+    return <Text>Loading...</Text>;
   }
 
   return (

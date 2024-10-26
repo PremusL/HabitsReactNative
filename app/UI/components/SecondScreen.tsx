@@ -55,7 +55,7 @@ const SecondScreen: React.FC<SecondScreenProps> = ({ navigation }) => {
   useFocusEffect(useCallback(() => {}, []));
   useEffect(() => {
     const testSql = async () => {
-      const db = await SQLite.openDatabaseAsync("databaseName");
+      const db = await SQLite.openDatabaseAsync("localhabits.db");
 
       await db.execAsync(`
         PRAGMA journal_mode = WAL;
