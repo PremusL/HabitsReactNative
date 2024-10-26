@@ -25,9 +25,17 @@ export const SqLiteProvider: React.FC<{ children: any }> = ({ children }) => {
   const [data, setData] = useState<HabitType[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const testSql = async () => {
-    const db = await SQLite.openDatabaseAsync("localhabits.db");
+  const setAllLocalData = async (db: SQLite.SQLiteDatabase) => {
+    console.log("Setting all local data");
+    try {
+      const allRows: any = await db.getAllAsync("SELECT * FROM LocalHabits");
+      setData(allRows);
+    } catch (error) {
+      console.error("Error getting local data:", error);
+    }
+  };
 
+  const createAndInsert = async (db: SQLite.SQLiteDatabase) => {
     try {
       await db.execAsync(`
       PRAGMA journal_mode = WAL;
@@ -47,29 +55,15 @@ export const SqLiteProvider: React.FC<{ children: any }> = ({ children }) => {
       `);
       dataDb.forEach(async (habit) => {
         await db.execAsync(
-          `INSERT INTO LocalHabits (habit_key, name, description, date, time, color, icon, intensity, good, frequency) VALUES
+          `REPLACE INTO LocalHabits (habit_key, name, description, date, time, color, icon, intensity, good, frequency) VALUES
         (${habit.habit_key}, "${habit.name}", "${habit.description}", "${habit.date}", "${habit.time}",
          "${habit.color}", "${habit.icon}", "${habit.intensity}", "${habit.good}", "${habit.frequency}")`
         );
       });
+      const allRows: any = await db.getAllAsync("SELECT * FROM LocalHabits");
+      console.log("All rows:", allRows);
     } catch (error) {
       console.error("Error inserting habit:", error);
-    }
-
-    const allRows: any = await db.getAllAsync("SELECT * FROM LocalHabits");
-    for (const row of allRows) {
-      console.log(
-        row.description,
-        row.habit_key,
-        row.name,
-        row.date,
-        row.time,
-        row.color,
-        row.icon,
-        row.intensity,
-        row.good,
-        row.frequency
-      );
     }
   };
 
@@ -77,10 +71,16 @@ export const SqLiteProvider: React.FC<{ children: any }> = ({ children }) => {
     const fetchData = async () => {
       await fetchDataDb();
       setData(dataDb);
+      const db = await SQLite.openDatabaseAsync("localhabits.db");
+      if (dataDb == null || dataDb.length == 0) {
+        setAllLocalData(db);
+      } else {
+        createAndInsert(db);
+      }
       setLoading(false);
+      console.log("test");
     };
     fetchData();
-    testSql();
   }, []);
   if (loading) {
     return <Text>Loading...</Text>;
