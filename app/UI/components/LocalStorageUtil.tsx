@@ -1,5 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { KeyValuePair } from "@react-native-async-storage/async-storage/lib/typescript/types";
+import * as SQLite from "expo-sqlite";
+import { Constants } from "./Constants";
 
 const saveData = async (key: string, value: string): Promise<void> => {
   try {
@@ -15,17 +17,19 @@ export default saveData;
 // 2. opcija getAll keys in pol multiget
 
 // Function to get all keys from AsyncStorage
-const getAllKeys = async (): Promise<readonly string[]| undefined> => {
+const getAllKeys = async (): Promise<readonly string[] | undefined> => {
   try {
     const keys = await AsyncStorage.getAllKeys();
-    
+
     return keys;
   } catch (error) {
     console.error("Failed to get all keys", error);
   }
 };
 
-const multiGet = async (keys: readonly string[]): Promise<readonly KeyValuePair[] | undefined> => {
+const multiGet = async (
+  keys: readonly string[]
+): Promise<readonly KeyValuePair[] | undefined> => {
   try {
     const values = await AsyncStorage.multiGet(keys);
     // console.log("Values:", values);
@@ -62,6 +66,20 @@ const clearAll = async () => {
     console.log("All data cleared");
   } catch (error) {
     console.error("Failed to clear data", error);
+  }
+};
+
+export const deleteHabitLocal = async (habit_key: string) => {
+  // Naj majo export spredaj, ne pa na koncu datoteke
+  console.log("Deleting data from local database");
+  const db = await SQLite.openDatabaseAsync(Constants.localDBName);
+  try {
+    await db.execAsync(
+      `DELETE FROM ${Constants.localHabitsTabel} WHERE habit_key = ${habit_key}`
+    );
+    console.log("Data locally deleted successfully");
+  } catch (error) {
+    console.error("Failed to delete data", error);
   }
 };
 

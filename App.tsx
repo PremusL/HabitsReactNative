@@ -13,8 +13,9 @@ import ProfileScreen from "./app/UI/components/ProfileScreen";
 
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Ionicons } from "@expo/vector-icons"; // You can use any icon library
-import { PostgresqlProvider } from "./app/UI/components/Contexts/PostgresqlContext";
-import { SqLiteProvider } from "./app/UI/components/Contexts/SqLiteContext";
+import { LoadingProvider } from "./app/UI/components/Contexts/LoadingContext";
+
+import { DataProvider } from "./app/UI/components/Contexts/DataContext";
 
 const Tab = createBottomTabNavigator();
 
@@ -83,8 +84,9 @@ const TabNavigator = () => (
 
 const App = () => (
   <GestureHandlerRootView style={{ flex: 1 }}>
-    <PostgresqlProvider>
-      <SqLiteProvider>
+    <LoadingProvider>
+      {/* <DataProvider> */}
+      <DataProvider>
         <NavigationContainer>
           <Stack.Navigator screenOptions={navigatorOptions}>
             <Stack.Screen
@@ -107,8 +109,9 @@ const App = () => (
             />
           </Stack.Navigator>
         </NavigationContainer>
-      </SqLiteProvider>
-    </PostgresqlProvider>
+      </DataProvider>
+      {/* </DataProvider> */}
+    </LoadingProvider>
   </GestureHandlerRootView>
 );
 

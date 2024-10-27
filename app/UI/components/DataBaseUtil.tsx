@@ -1,5 +1,7 @@
 import axios from "axios";
 import { HabitType } from "../types/habit.d";
+import { useLoadingContext } from "./Contexts/LoadingContext";
+
 const BASE_URL = "http://10.0.2.2:3001"; // Use 'http://localhost:3000' for iOS
 
 export const readHabitsDB: any = async () => {
@@ -23,15 +25,6 @@ export const updateDataDB: any = async (data: HabitType) => {
   }
 };
 
-export const readOneHabitDB = async (habit_key: string) => {
-  console.log("Reading data from database");
-  try {
-    const response = await axios.get(`${BASE_URL}/api/readHabits/${habit_key}`);
-    console.log("Data read successfully", response.data);
-  } catch (error) {
-    console.error("Failed to read data", error);
-  }
-};
 export const deleteHabitDB = async (habit_key: string) => {
   console.log("Deleting data from database");
   try {

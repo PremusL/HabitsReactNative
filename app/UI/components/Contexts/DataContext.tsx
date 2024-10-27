@@ -1,8 +1,8 @@
 import React, { createContext, useState, useEffect, useContext } from "react";
 import { Text } from "react-native";
 import { HabitType } from "../../types/habit.d";
-import { readHabitsDB } from "../DataBaseUtil";
 import { useLoadingContext } from "./LoadingContext";
+import { readHabitsDB } from "../DataBaseUtil";
 
 interface DataContextType {
   data: HabitType[];

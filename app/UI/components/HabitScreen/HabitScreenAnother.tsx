@@ -18,14 +18,13 @@ import {
 import { CheckBox, Slider } from "@rneui/themed";
 import { HabitType } from "../../types/habit.d";
 import { writeHabitDB } from "../DataBaseUtil";
-import { usePostgreSQLContext } from "../Contexts/PostgresqlContext";
-import { useSqLiteContext } from "../Contexts/SqLiteContext";
+import { useDataContext } from "../Contexts/DataContext";
 
 const HabitScreenAnother: React.FC<HabitScreenAnotherProps> = ({
   habit_key,
   setShowAnother,
 }) => {
-  const { data, fetchData } = useSqLiteContext();
+  const { data, fetchData } = useDataContext();
 
   const [textDescription, onChangeTextDescription] = useState("");
   const [selectedDate, setSelectedDate] = useState("");
@@ -190,6 +189,7 @@ const HabitScreenAnother: React.FC<HabitScreenAnotherProps> = ({
             icon: currentHabit.icon,
             habit_key: habit_key,
             frequency: currentFrequency + 1,
+            current_time_stamp: new Date().toISOString(),
           })
         }
         style={{

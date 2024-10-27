@@ -21,8 +21,7 @@ import ColorPicker, {
 import { CheckBox, Slider, Switch } from "@rneui/themed";
 import { HabitType } from "../../types/habit.d";
 import { updateDataDB } from "../DataBaseUtil";
-import { usePostgreSQLContext } from "../Contexts/PostgresqlContext";
-import { useSqLiteContext } from "../Contexts/SqLiteContext";
+import { useDataContext } from "../Contexts/DataContext";
 
 const iconList = [
   "rocket",
@@ -43,7 +42,7 @@ const HabitScreenEdit: React.FC<HabitScreenEditProps> = ({
   habit_key,
   setEdit,
 }) => {
-  const { data, fetchData } = useSqLiteContext();
+  const { data, fetchData } = useDataContext();
   const currentHabit = data.find(
     (habit: HabitType) => habit.habit_key === habit_key
   );
@@ -302,6 +301,7 @@ const HabitScreenEdit: React.FC<HabitScreenEditProps> = ({
             icon: selectedIcon,
             habit_key: habit_key,
             frequency: currentHabit.frequency,
+            current_time_stamp: new Date().toISOString(),
           })
         }
         style={{

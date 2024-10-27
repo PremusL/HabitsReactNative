@@ -13,10 +13,10 @@ import { HabitType } from "../../types/habit.d";
 import { updateDataDB } from "../DataBaseUtil";
 import HabitScreenEdit from "./HabitScreenEdit";
 import HabitScreenPreview from "./HabitScreenPreview";
-import { usePostgreSQLContext } from "../Contexts/PostgresqlContext";
+
 import { getTextColorBasedOnBackground } from "../Util";
 import HabitScreenAnother from "./HabitScreenAnother";
-import { useSqLiteContext } from "../Contexts/SqLiteContext";
+import { useDataContext } from "../Contexts/DataContext";
 
 const HabitScreen: React.FC<HabitScreenProps> = ({ navigation, route }) => {
   const [showEdit, setShowEdit] = useState(false);
@@ -25,7 +25,7 @@ const HabitScreen: React.FC<HabitScreenProps> = ({ navigation, route }) => {
   const habit_key = route?.params.habit_key;
   console.log(JSON.stringify(route), habit_key);
 
-  const { data, fetchData } = useSqLiteContext();
+  const { data, fetchData } = useDataContext();
   const currentHabit = data.find(
     (habit: HabitType) => habit.habit_key === habit_key
   );
@@ -35,11 +35,16 @@ const HabitScreen: React.FC<HabitScreenProps> = ({ navigation, route }) => {
 
   console.log("Current habit: ", currentHabit);
 
+  const handleUpdateFetchData = async () => {
+    await updateDataDB(data);
+    await fetchData();
+  };
+
   const editSaveButtonHandler = () => {
     if (showEdit) {
       setShowEdit(false);
+      handleUpdateFetchData();
 
-      updateDataDB(data);
       console.log("Save changes");
     } else {
       // Edit habit

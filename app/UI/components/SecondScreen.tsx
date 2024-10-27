@@ -16,8 +16,7 @@ import { styles } from "../style/styles";
 import { HabitType } from "../types/habit.d";
 import { PanGestureHandler, State } from "react-native-gesture-handler";
 import * as SQLite from "expo-sqlite";
-
-import { useSqLiteContext } from "./Contexts/SqLiteContext";
+import { useDataContext } from "./Contexts/PostgresqlContext";
 
 // const db = open({
 //   name: "queries.sqlite",
@@ -36,7 +35,7 @@ import { useSqLiteContext } from "./Contexts/SqLiteContext";
 // console.warn("Query result: " + queryrResult);
 
 const SecondScreen: React.FC<SecondScreenProps> = ({ navigation }) => {
-  const { data, fetchData } = useSqLiteContext();
+  const { data, fetchData } = useDataContext();
 
   const fetchAndPrintData = async () => {
     await fetchData();

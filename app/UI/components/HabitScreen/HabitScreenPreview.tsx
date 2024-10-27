@@ -10,14 +10,13 @@ import {
 } from "../Util";
 import { HabitScreenPreviewProps } from "../../types/screen.d";
 import { habitCreationScreenStyles } from "../../style/styles";
-import { usePostgreSQLContext } from "../Contexts/PostgresqlContext";
 import { HabitType } from "../../types/habit.d";
-import { useSqLiteContext } from "../Contexts/SqLiteContext";
+import { useDataContext } from "../Contexts/DataContext";
 
 const HabitScreenPreview: React.FC<HabitScreenPreviewProps> = ({
   habit_key,
 }) => {
-  const { data, fetchData } = useSqLiteContext();
+  const { data, fetchData } = useDataContext();
 
   const currentHabit = data.find(
     (habit: HabitType) => habit.habit_key === habit_key

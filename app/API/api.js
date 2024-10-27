@@ -7,10 +7,10 @@ const port = 3001;
 
 const tableName = "habits";
 const tableColumns =
-  "habit_key, name, description, date, time, color, icon, intensity, good, frequency";
+  "habit_key, name, description, date, time, color, icon, intensity, good, frequency, change_time_stamp";
 const selectColumns = tableColumns
   .split(", ")
-  .map((column) => "(habit)." + column)
+  .map((column) => column)
   .join(", ");
 // Middleware
 app.use(cors());
@@ -39,7 +39,7 @@ app.get("/api/readHabits", async (req, res) => {
   try {
     const result = await client.query(
       `SELECT ${selectColumns} FROM ${tableName}`
-    ); // Replace with your SQL query\
+    );
     res.json(result.rows);
   } catch (error) {
     console.error("Error executing query:", error);
@@ -67,23 +67,33 @@ app.post("/api/updateHabits", async (req, res) => {
   console.log("Request to update, update");
   try {
     const query = `UPDATE habits 
-       SET habit = ROW (
-         ${habit_key},
-         '${name}',
-         '${description}',
-         '${date}',
-         '${time}',
-         '${color}',
-         '${icon}',
-         ${intensity},
-         '${good}',
-         ${frequency}
-       )
-       WHERE (habit).habit_key = ${habit_key}`;
+       SET 
+         name = $1,
+         description = $2,
+         date = $3,
+         time = $4,
+         color = $5,
+         icon = $6,
+         intensity = $7,
+         good = $8,
+         frequency = $9,
+         change_time_stamp = NOW()
+       WHERE habit_key = $10`;
     console.log("query", query);
 
-    const result = await client.query(query);
-    console.log("result", result);
+    const result = await client.query(query, [
+      name,
+      description,
+      date,
+      time,
+      color,
+      icon,
+      intensity,
+      good,
+      frequency,
+      habit_key,
+    ]);
+    // console.log("result", result);
     res.json({ message: "Data updated successfully" });
   } catch (error) {}
 });
@@ -108,10 +118,32 @@ app.post("/api/writeHabits", async (req, res) => {
   const keys = Object.keys(req.body);
   try {
     const result = await client.query(
-      `INSERT INTO ${tableName} (habit)
-       VALUES (ROW (${habit_key}, '${name}', '${description}', '${date}',
-        '${time}', '${color}', '${icon}', ${intensity}, '${good}', ${frequency}))`
-    ); // Replace with your SQL query
+      `INSERT INTO ${tableName} (
+        habit_key,
+        name,
+        description,
+        date,
+        time,
+        color,
+        icon,
+        intensity,
+        good,
+        frequency,
+        change_time_stamp
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, NOW())`,
+      [
+        habit_key,
+        name,
+        description,
+        date,
+        time,
+        color,
+        icon,
+        intensity,
+        good,
+        frequency,
+      ]
+    );
     res.json({ message: "Data added successfully" });
   } catch (error) {
     console.error("Error executing query:", error);
@@ -131,7 +163,7 @@ app.delete("/api/deleteHabits/:habit_key", async (req, res) => {
 
   try {
     const result = await client.query(
-      `DELETE FROM ${tableName} WHERE (habit).habit_key = $1`,
+      `DELETE FROM ${tableName} WHERE habit_key = $1`,
       [habit_key]
     );
     res.json({ message: "Data deleted successfully" });
