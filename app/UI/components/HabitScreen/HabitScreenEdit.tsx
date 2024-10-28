@@ -301,7 +301,7 @@ const HabitScreenEdit: React.FC<HabitScreenEditProps> = ({
             icon: selectedIcon,
             habit_key: habit_key,
             frequency: currentHabit.frequency,
-            current_time_stamp: new Date().toISOString(),
+            change_time_stamp: new Date().toISOString(),
           })
         }
         style={{

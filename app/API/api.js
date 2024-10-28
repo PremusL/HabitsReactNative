@@ -77,8 +77,8 @@ app.post("/api/updateHabits", async (req, res) => {
          intensity = $7,
          good = $8,
          frequency = $9,
-         change_time_stamp = NOW()
-       WHERE habit_key = $10`;
+         change_time_stamp = $10
+       WHERE habit_key = $11`;
     console.log("query", query);
 
     const result = await client.query(query, [
@@ -93,7 +93,6 @@ app.post("/api/updateHabits", async (req, res) => {
       frequency,
       habit_key,
     ]);
-    // console.log("result", result);
     res.json({ message: "Data updated successfully" });
   } catch (error) {}
 });
@@ -114,6 +113,7 @@ app.post("/api/writeHabits", async (req, res) => {
     intensity,
     good,
     frequency,
+    change_time_stamp,
   } = req.body;
   const keys = Object.keys(req.body);
   try {
@@ -130,7 +130,7 @@ app.post("/api/writeHabits", async (req, res) => {
         good,
         frequency,
         change_time_stamp
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, NOW())`,
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
       [
         habit_key,
         name,
@@ -142,6 +142,7 @@ app.post("/api/writeHabits", async (req, res) => {
         intensity,
         good,
         frequency,
+        change_time_stamp,
       ]
     );
     res.json({ message: "Data added successfully" });

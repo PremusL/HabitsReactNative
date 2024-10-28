@@ -32,7 +32,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }) => {
       if (data.length > 0) {
         setMaxKey(data[data.length - 1]["habit_key"]);
       }
-      console.log("this is fetched data " + JSON.stringify(data), maxKey);
+      // console.log("this is fetched data " + JSON.stringify(data), maxKey);
     };
     waitFetchData();
   }, []);

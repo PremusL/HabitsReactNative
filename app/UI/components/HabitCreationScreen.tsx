@@ -114,6 +114,7 @@ const HabitCreationScreen: React.FC<HabitCreationScreenProps> = ({
           intensity: checked ? -1 : valueSlider,
           good: switchValue ? "Y" : "N",
           frequency: 1,
+          change_time_stamp: new Date().toString(),
         }}
       />
       <ScrollView>

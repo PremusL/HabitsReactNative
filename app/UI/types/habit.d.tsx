@@ -13,7 +13,7 @@ export interface HabitType {
   intensity: number | undefined;
   good: string | undefined;
   frequency: number | undefined;
-  current_time_stamp: string | undefined;
+  change_time_stamp: string | undefined;
 }
 
 export interface HabitInterface {
