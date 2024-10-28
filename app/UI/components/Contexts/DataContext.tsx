@@ -30,13 +30,14 @@ export const DataProvider: React.FC<{ children: any }> = ({ children }) => {
     const db = await SQLite.openDatabaseAsync(Constants.localDBName);
     const allRows: any = await db.getAllAsync("SELECT * FROM LocalHabits");
     setData(allRows);
+    console.log("All rows:", allRows);
   };
 
   const fetchDataOnline = async () => {
-    const db = await SQLite.openDatabaseAsync(Constants.localDBName);
+    // const db = await SQLite.openDatabaseAsync(Constants.localDBName);
     const data = await readHabitsDB();
     setData(data);
-    loadFromDBtoLocal(db, data); // Load data to local db
+    // loadFromDBtoLocal(db, data); // Load data to local db
   };
 
   const loadFromDBtoLocal = async (
@@ -67,7 +68,7 @@ export const DataProvider: React.FC<{ children: any }> = ({ children }) => {
       `);
       data.forEach(async (habit) => {
         await db.execAsync(
-          `REPLACE INTO ${Constants.localHabitsTable}
+          `INSERT OR REPLACE INTO ${Constants.localHabitsTable}
           (habit_key, name, description, date, time, color, icon, intensity, good, frequency, change_time_stamp) VALUES
         (${habit.habit_key}, "${habit.name}", "${habit.description}", "${habit.date}", "${habit.time}",
          "${habit.color}", "${habit.icon}", "${habit.intensity}", "${habit.good}", "${habit.frequency}", "${habit.change_time_stamp}")`
@@ -84,31 +85,74 @@ export const DataProvider: React.FC<{ children: any }> = ({ children }) => {
       );
     }
   };
+  const addLocalHabit = async (db: SQLite.SQLiteDatabase, habit: HabitType) => {
+    await db.execAsync(
+      `INSERT OR REPLACE INTO ${Constants.localHabitsTable}
+      (habit_key, name, description, date, time, color, icon, intensity, good, frequency, change_time_stamp) VALUES
+    (${habit.habit_key}, "${habit.name}", "${habit.description}", "${habit.date}", "${habit.time}",
+     "${habit.color}", "${habit.icon}", "${habit.intensity}", "${habit.good}", "${habit.frequency}", "${habit.change_time_stamp}")`
+    );
+  };
+  const removeLocalHabit = async (
+    db: SQLite.SQLiteDatabase,
+    habit_key: string
+  ) => {
+    await db.execAsync(
+      `DELETE FROM ${Constants.localHabitsTable} WHERE habit_key = ${habit_key}`
+    );
+  };
+
+  const syncData = async () => {
+    let isOnline = true;
+    try {
+      await fetchDataOnline();
+    } catch (error) {
+      console.log(isOnline);
+      isOnline = false;
+    }
+    if (!isOnline) {
+      console.log("We are not online, sync not successful");
+      return;
+    }
+    try {
+      const db = await SQLite.openDatabaseAsync(Constants.localDBName);
+      const dataLocal: HabitType[] = await db.getAllAsync(
+        "SELECT * FROM LocalHabits"
+      );
+      const dataRemote: HabitType[] = await readHabitsDB();
+
+      dataRemote.forEach((remoteHabit: HabitType) => {
+        const localhabit = dataLocal.find(
+          (habit: HabitType) => habit.habit_key === remoteHabit.habit_key
+        );
+        if (!localhabit) {
+          addLocalHabit(db, remoteHabit);
+          console.log("Added habit to local db:", remoteHabit);
+        }
+      });
+      dataLocal.forEach((localHabit: HabitType) => {
+        const remoteHabit = dataRemote.find(
+          (habit: HabitType) => habit.habit_key === localHabit.habit_key
+        );
+        if (!remoteHabit) {
+          console.log("Local habit not in remote db:", localHabit);
+          // Optionally, you can add this habit to the remote database
+          removeLocalHabit(db, localHabit.habit_key.toString());
+        }
+      });
+    } catch (error) {
+      console.error("Error fetching data from the online database:", error);
+    }
+  };
 
   const fetchData = async () => {
-    try {
-      // logic for not reading the local database when there is connection
-      let online = true;
-      try {
-        await fetchDataOnline();
-      } catch (e) {
-        console.log("error fetching from db", e);
-        online = false;
-      }
-      if (online) return;
-      try {
-        await fetchDataOffline();
-      } catch (error) {
-        console.error("Error getting local data:", error);
-      }
-    } catch (error) {
-      console.error("Error opening local database:", error);
-    }
+    await fetchDataOffline();
   };
 
   useEffect(() => {
     const waitFetchData = async () => {
       setLoading(true);
+      await syncData();
       await fetchData();
       setLoading(false);
     };

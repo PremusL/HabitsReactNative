@@ -3,7 +3,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "./screen.d";
 
 export interface HabitType {
-  habit_key: number | null;
+  habit_key: number;
   name: string | undefined;
   date: string | undefined;
   time: string | undefined;

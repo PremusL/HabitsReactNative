@@ -57,12 +57,12 @@ export const writeHabitDB = async (data: HabitType) => {
     const query = `INSERT INTO ${Constants.localHabitsTable} (habit_key, name, description, date, time, 
       color, icon, intensity, good, frequency, change_time_stamp) VALUES
       (${data.habit_key}, '${data.name}', '${data.description}', '${data.date}', '${data.time}', 
-      '${data.color}', '${data.icon}', '${data.intensity}',
-      '${data.good}', '${data.frequency}', '${data.change_time_stamp}')`;
+      '${data.color}', '${data.icon}', ${data.intensity},
+      '${data.good}', ${data.frequency}, '${data.change_time_stamp}')`;
     console.log(query);
     await db.execAsync(query);
   } catch (error) {
-    console.error("Failed to delete local data", error);
+    console.error("Failed to add a habait to local data", error);
   }
 
   // remote

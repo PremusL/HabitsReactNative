@@ -13,18 +13,9 @@ import { useDataContext } from "./Contexts/DataContext";
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }) => {
   const { data, fetchData } = useDataContext();
-  const [databases, setDatabases] = useState<string[]>([]);
-
   const [selectedHabit, setSelectedHabit] = useState<number | null>(null);
   const [maxKey, setMaxKey] = useState<number | null>(0);
   const { loading, setLoading } = useLoadingContext();
-  // const [dataDB, setDataDB] = useState(data);
-
-  const handleGesture = ({ nativeEvent }: { nativeEvent: any }) => {
-    if (nativeEvent.translationX < -50) {
-      navigation.navigate("SecondScreen");
-    }
-  };
 
   useEffect(() => {
     const waitFetchData = async () => {
@@ -32,23 +23,16 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }) => {
       if (data.length > 0) {
         setMaxKey(data[data.length - 1]["habit_key"]);
       }
-      // console.log("this is fetched data " + JSON.stringify(data), maxKey);
     };
     waitFetchData();
   }, []);
   useEffect(() => {
     // adding a habit
     const waitingSaveData = async (keyToSet: number, currentParams: any) => {
-      currentParams["habit_key"] = keyToSet; // Set the key to the current habit
-      setLoading(true);
-      writeHabitDB(currentParams);
-      fetchData();
-      setLoading(false);
+      currentParams["habit_key"] = maxKey; // Set the key to the current habit
 
-      if (data.length > 0) {
-        setMaxKey(data[data.length - 1]["habit_key"]);
-      }
-      console.log("DataDB after add" + JSON.stringify(data), maxKey);
+      await writeHabitDB(currentParams);
+      await fetchData();
     };
     // removing a habit
     const waitingRemoveData = async (remove_key: string) => {
@@ -75,7 +59,8 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }) => {
       const currentParams = route.params;
 
       console.log("-----------------");
-      waitingSaveData(maxKey ? maxKey + 1 : 0, currentParams);
+
+      waitingSaveData(maxKey ? maxKey : 0, currentParams);
 
       console.log("-----------------");
     } else if (route.params && route.params.remove >= 0) {
@@ -93,6 +78,14 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }) => {
   if (loading) {
     return <Text>Loading...</Text>;
   }
+
+  useEffect(() => {
+    if (data.length > 0 && data[data.length - 1]["habit_key"] != null) {
+      setMaxKey(() => data[data.length - 1]["habit_key"] + 1);
+      console.log("Max key is " + maxKey);
+    }
+    console.log("DataDB after add" + JSON.stringify(data), maxKey);
+  }, [data]);
 
   return (
     // <PanGestureHandler
