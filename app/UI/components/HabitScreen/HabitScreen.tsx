@@ -58,6 +58,7 @@ const HabitScreen: React.FC<HabitScreenProps> = ({ navigation, route }) => {
   };
 
   const handleSetShowEdit = (showEdit: boolean) => {
+    console.log("Set show edit: ", showEdit);
     setShowEdit(showEdit);
   };
 
@@ -108,7 +109,7 @@ const HabitScreen: React.FC<HabitScreenProps> = ({ navigation, route }) => {
         {!showEdit && !showAnother && (
           <HabitScreenPreview habit_key={habit_key} />
         )}
-        {showEdit && !showAnother && (
+        {showEdit && (
           <HabitScreenEdit habit_key={habit_key} setEdit={handleSetShowEdit} />
         )}
         {!showEdit && !showAnother && (

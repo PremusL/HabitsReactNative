@@ -65,10 +65,15 @@ const HabitScreenEdit: React.FC<HabitScreenEditProps> = ({
   const [switchValue, setSwitchValue] = useState(currentHabit?.good); // false meaning the habit is bad
   const [selectedIcon, setSelectedIcon] = useState(currentHabit?.icon);
 
-  const handleSave = async (data: HabitType) => {
+  const waitHandleSave = async (data: HabitType) => {
     await updateDataDB(data);
     await fetchData();
+  };
+
+  const handleSave = async (data: HabitType) => {
+    await waitHandleSave(data);
     setEdit(false);
+    console.log("set edit to false");
   };
 
   const onSelectColor = ({ hex }: any): void => {

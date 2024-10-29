@@ -91,6 +91,7 @@ app.post("/api/updateHabits", async (req, res) => {
       intensity,
       good,
       frequency,
+      change_time_stamp,
       habit_key,
     ]);
     res.json({ message: "Data updated successfully" });

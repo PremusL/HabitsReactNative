@@ -28,7 +28,9 @@ export const DataProvider: React.FC<{ children: any }> = ({ children }) => {
 
   const fetchDataOffline = async () => {
     const db = await SQLite.openDatabaseAsync(Constants.localDBName);
-    const allRows: any = await db.getAllAsync("SELECT * FROM LocalHabits");
+    const allRows: any = await db.getAllAsync(
+      `SELECT * FROM ${Constants.localHabitsTable}`
+    );
     setData(allRows);
     console.log("All rows:", allRows);
   };
@@ -151,7 +153,7 @@ export const DataProvider: React.FC<{ children: any }> = ({ children }) => {
 
   useEffect(() => {
     const waitFetchData = async () => {
-      setLoading(true);
+      // setLoading(true);
       await syncData();
       await fetchData();
       setLoading(false);
@@ -160,9 +162,9 @@ export const DataProvider: React.FC<{ children: any }> = ({ children }) => {
     console.log("Data fetched");
   }, []);
 
-  if (loading) {
-    return <Text>Loading...</Text>;
-  }
+  // if (loading) {
+  //   return <Text>Loading...</Text>;
+  // }
 
   return (
     <DataContext.Provider value={{ data: data, fetchData }}>

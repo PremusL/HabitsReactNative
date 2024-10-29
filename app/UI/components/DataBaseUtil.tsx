@@ -20,11 +20,33 @@ export const readHabitsDB: any = async () => {
 export const updateDataDB: any = async (data: HabitType) => {
   console.log("Updating data in database with data:", data);
   try {
-    const response = await axios.post(`${BASE_URL}/api/updateHabits`, data);
-    console.log("Data updated successfully", response.data);
+    const db = await SQLite.openDatabaseAsync(Constants.localDBName);
+    const query = `UPDATE ${Constants.localHabitsTable} 
+        SET
+        name = '${data.name}',
+        description = '${data.description}',
+        date = '${data.date}',
+        time = '${data.time}',
+        color = '${data.color}',
+        icon = '${data.icon}',
+        intensity = '${data.intensity}',
+        good = '${data.good}',
+        frequency = ${data.frequency},
+        change_time_stamp = '${data.change_time_stamp}'
+        WHERE habit_key = ${data.habit_key};
+       `;
+
+    await db.execAsync(query);
+    console.log(query);
   } catch (error) {
-    console.error("Failed to update data", error);
+    console.error("Failed to update local data", error);
   }
+  // try {
+  //   const response = await axios.post(`${BASE_URL}/api/updateHabits`, data);
+  //   console.log("Data updated successfully", response.data);
+  // } catch (error) {
+  //   console.error("Failed to update data", error);
+  // }
 };
 
 export const deleteHabitDB = async (habit_key: string) => {

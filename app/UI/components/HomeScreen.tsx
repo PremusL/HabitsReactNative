@@ -7,7 +7,6 @@ import { styles } from "../style/styles";
 import { writeHabitDB, deleteHabitDB } from "./DataBaseUtil";
 import { deleteHabitLocal } from "./LocalStorageUtil";
 import { useLoadingContext } from "./Contexts/LoadingContext";
-import { Text } from "react-native";
 import { useDataContext } from "./Contexts/DataContext";
 // import { useDataContext } from "./Contexts/DataContext";
 
@@ -75,9 +74,6 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }) => {
       );
     }
   }, [route.params]);
-  if (loading) {
-    return <Text>Loading...</Text>;
-  }
 
   useEffect(() => {
     if (data.length > 0 && data[data.length - 1]["habit_key"] != null) {

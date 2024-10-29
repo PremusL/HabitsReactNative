@@ -189,7 +189,7 @@ const HabitScreenAnother: React.FC<HabitScreenAnotherProps> = ({
             icon: currentHabit.icon,
             habit_key: habit_key,
             frequency: currentFrequency + 1,
-            current_time_stamp: new Date().toISOString(),
+            change_time_stamp: new Date().toISOString(),
           })
         }
         style={{
