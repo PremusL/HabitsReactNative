@@ -5,7 +5,6 @@ import { useLoadingContext } from "./LoadingContext";
 import { readHabitsDB } from "../DataBaseUtil";
 import * as SQLite from "expo-sqlite";
 import { Constants } from "../Constants";
-import { set } from "date-fns";
 
 interface DataContextType {
   data: HabitType[];
@@ -153,7 +152,7 @@ export const DataProvider: React.FC<{ children: any }> = ({ children }) => {
 
   useEffect(() => {
     const waitFetchData = async () => {
-      // setLoading(true);
+      setLoading(true);
       await syncData();
       await fetchData();
       setLoading(false);
@@ -162,9 +161,9 @@ export const DataProvider: React.FC<{ children: any }> = ({ children }) => {
     console.log("Data fetched");
   }, []);
 
-  // if (loading) {
-  //   return <Text>Loading...</Text>;
-  // }
+  if (loading) {
+    return <Text>Loading...</Text>;
+  }
 
   return (
     <DataContext.Provider value={{ data: data, fetchData }}>

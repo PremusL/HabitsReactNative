@@ -6,6 +6,13 @@ import { Constants } from "./Constants";
 
 const BASE_URL = "http://10.0.2.2:3001"; // Use 'http://localhost:3000' for iOS
 
+const getLocalDB = async () => {
+  const db = await SQLite.openDatabaseAsync(Constants.localDBName, {
+    useNewConnection: true,
+  });
+  return db;
+};
+
 export const readHabitsDB: any = async () => {
   console.log("Reading data from database");
   try {
@@ -20,7 +27,7 @@ export const readHabitsDB: any = async () => {
 export const updateDataDB: any = async (data: HabitType) => {
   console.log("Updating data in database with data:", data);
   try {
-    const db = await SQLite.openDatabaseAsync(Constants.localDBName);
+    const db = await getLocalDB();
     const query = `UPDATE ${Constants.localHabitsTable} 
         SET
         name = '${data.name}',
@@ -35,7 +42,7 @@ export const updateDataDB: any = async (data: HabitType) => {
         change_time_stamp = '${data.change_time_stamp}'
         WHERE habit_key = ${data.habit_key};
        `;
-
+    console.log(query);
     await db.execAsync(query);
     console.log(query);
   } catch (error) {
@@ -53,7 +60,7 @@ export const deleteHabitDB = async (habit_key: string) => {
   console.log("Deleting data from database");
   // local
   try {
-    const db = await SQLite.openDatabaseAsync(Constants.localDBName);
+    const db = await getLocalDB();
     await db.execAsync(
       `DELETE FROM ${Constants.localHabitsTable} WHERE habit_key = ${habit_key}`
     );
@@ -75,7 +82,7 @@ export const writeHabitDB = async (data: HabitType) => {
   console.log("Writing data to database");
   // local
   try {
-    const db = await SQLite.openDatabaseAsync(Constants.localDBName);
+    const db = await getLocalDB();
     const query = `INSERT INTO ${Constants.localHabitsTable} (habit_key, name, description, date, time, 
       color, icon, intensity, good, frequency, change_time_stamp) VALUES
       (${data.habit_key}, '${data.name}', '${data.description}', '${data.date}', '${data.time}', 
@@ -88,10 +95,10 @@ export const writeHabitDB = async (data: HabitType) => {
   }
 
   // remote
-  try {
-    const response = await axios.post(`${BASE_URL}/api/writeHabits`, data);
-    console.log("Data written successfully", response.data);
-  } catch (error) {
-    console.error("Failed to write data", error);
-  }
+  // try {
+  //   const response = await axios.post(`${BASE_URL}/api/writeHabits`, data);
+  //   console.log("Data written successfully", response.data);
+  // } catch (error) {
+  //   console.error("Failed to write data", error);
+  // }
 };
