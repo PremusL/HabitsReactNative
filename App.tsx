@@ -73,11 +73,11 @@ const TabNavigator = () => (
     })}
   >
     <Tab.Screen name="Home" component={HomeScreen} />
-    <Tab.Screen
+    {/* <Tab.Screen
       name="SecondScreen"
       component={SecondScreen}
       options={{ title: "Habit" }}
-    />
+    /> */}
     <Tab.Screen name="Profile" component={ProfileScreen} />
   </Tab.Navigator>
 );
@@ -94,7 +94,7 @@ const App = () => (
               component={TabNavigator}
               options={{ headerShown: false }}
             />
-            <Stack.Screen name="SecondScreen" component={SecondScreen} />
+            {/* <Stack.Screen name="SecondScreen" component={SecondScreen} /> */}
             <Stack.Screen name="Profile" component={ProfileScreen} />
 
             <Stack.Screen

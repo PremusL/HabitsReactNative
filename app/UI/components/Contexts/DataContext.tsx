@@ -76,51 +76,6 @@ export const DataProvider: React.FC<{ children: any }> = ({ children }) => {
     }
   };
 
-  const loadFromDBtoLocal = async (
-    db: SQLite.SQLiteDatabase,
-    data: HabitType[]
-  ) => {
-    if (data == null) {
-      return;
-    }
-    try {
-      await db.execAsync(`
-      DROP TABLE IF EXISTS ${Constants.localHabitsTable};
-      PRAGMA journal_mode = WAL;
-      CREATE TABLE IF NOT EXISTS ${Constants.localHabitsTable} (
-        habits_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-        habit_key INTEGER,
-        name TEXT,
-        description VARCHAR(500),
-        date VARCHAR(50),
-        time VARCHAR(50),
-        color VARCHAR(50),
-        icon VARCHAR(50),
-        intensity INTEGER,
-        good VARCHAR(1),
-        frequency INTEGER,
-        change_time_stamp TEXT
-      );
-      `);
-      data.forEach(async (habit) => {
-        await db.execAsync(
-          `INSERT OR REPLACE INTO ${Constants.localHabitsTable}
-          (habit_key, name, description, date, time, color, icon, intensity, good, frequency, change_time_stamp) VALUES
-        (${habit.habit_key}, "${habit.name}", "${habit.description}", "${habit.date}", "${habit.time}",
-         "${habit.color}", "${habit.icon}", "${habit.intensity}", "${habit.good}", "${habit.frequency}", "${habit.change_time_stamp}")`
-        );
-        console.log("Current timestamp: ", habit.change_time_stamp);
-      });
-
-      const allRows: any = await db.getAllAsync("SELECT * FROM LocalHabits");
-      console.log("All rows:", allRows);
-    } catch (error) {
-      console.error(
-        "Error inserting habits into local when there was connection:",
-        error
-      );
-    }
-  };
   const addLocalHabit = async (db: SQLite.SQLiteDatabase, habit: HabitType) => {
     await db.execAsync(
       `INSERT OR REPLACE INTO ${Constants.localHabitsTable}
@@ -153,7 +108,7 @@ export const DataProvider: React.FC<{ children: any }> = ({ children }) => {
     try {
       const db = await SQLite.openDatabaseAsync(Constants.localDBName);
       const dataLocal: HabitType[] = await db.getAllAsync(
-        "SELECT * FROM LocalHabits"
+        `SELECT * FROM ${Constants.localHabitsTable}`
       );
       const dataRemote: HabitType[] = await readHabitsDB();
 
@@ -192,9 +147,6 @@ export const DataProvider: React.FC<{ children: any }> = ({ children }) => {
       const db = await getLocalDB();
 
       createIfNotExist(db);
-      // if (createTable) {
-      //   createLocalTable(db);
-      // }
       await syncData();
       await fetchData();
       setLoading(false);

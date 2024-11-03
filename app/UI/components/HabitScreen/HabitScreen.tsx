@@ -134,7 +134,7 @@ const HabitScreen: React.FC<HabitScreenProps> = ({ navigation, route }) => {
                 margin: 8,
                 color:
                   currentHabit.color == "#ffffff"
-                    ? "#1a1a1a"
+                    ? "#ffffff"
                     : getTextColorBasedOnBackground(
                         currentHabit.color as string
                       ),
