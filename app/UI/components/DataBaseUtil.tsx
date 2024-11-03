@@ -6,7 +6,7 @@ import { Constants } from "./Constants";
 
 const BASE_URL = "http://10.0.2.2:3001"; // Use 'http://localhost:3000' for iOS
 
-const getLocalDB = async () => {
+export const getLocalDB = async () => {
   const db = await SQLite.openDatabaseAsync(Constants.localDBName, {
     useNewConnection: true,
   });
@@ -24,6 +24,7 @@ export const readHabitsDB: any = async () => {
     return null;
   }
 };
+
 export const updateDataDB: any = async (data: HabitType) => {
   console.log("Updating data in database with data:", data);
   try {

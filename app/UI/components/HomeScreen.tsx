@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { SafeAreaView, Button } from "react-native";
 import { AddButton } from "./Buttons";
 import { HabitList } from "./HabitObject";
@@ -46,7 +46,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }) => {
         await fetchData();
       }
 
-      if (data.length > 0) {
+      if (data && data.length > 0) {
         setMaxKey(data[data.length - 1]["habit_key"]);
       }
     };

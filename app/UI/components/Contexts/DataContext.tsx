@@ -2,7 +2,7 @@ import React, { createContext, useState, useEffect, useContext } from "react";
 import { Text } from "react-native";
 import { HabitType } from "../../types/habit.d";
 import { useLoadingContext } from "./LoadingContext";
-import { readHabitsDB } from "../DataBaseUtil";
+import { getLocalDB, readHabitsDB } from "../DataBaseUtil";
 import * as SQLite from "expo-sqlite";
 import { Constants } from "../Constants";
 
@@ -25,8 +25,19 @@ export const DataProvider: React.FC<{ children: any }> = ({ children }) => {
   const [data, setData] = useState<HabitType[]>([]);
   const { loading, setLoading } = useLoadingContext();
 
-  const fetchDataOffline = async () => {
-    const db = await SQLite.openDatabaseAsync(Constants.localDBName);
+  const createIfNotExist = (db: SQLite.SQLiteDatabase) => {
+    const firstRow = db
+      .getFirstAsync(`SELECT * FROM ${Constants.localHabitsTable}`)
+      .then((result) => {
+        console.log("Table exists first line: ", result);
+      })
+      .catch((error) => {
+        console.log("Table does not exist, creating table");
+        createLocalTable(db);
+      });
+  };
+
+  const fetchDataOffline = async (db: SQLite.SQLiteDatabase) => {
     const allRows: any = await db.getAllAsync(
       `SELECT * FROM ${Constants.localHabitsTable}`
     );
@@ -39,6 +50,30 @@ export const DataProvider: React.FC<{ children: any }> = ({ children }) => {
     const data = await readHabitsDB();
     setData(data);
     // loadFromDBtoLocal(db, data); // Load data to local db
+  };
+  const createLocalTable = async (db: SQLite.SQLiteDatabase) => {
+    try {
+      await db.execAsync(`
+      DROP TABLE IF EXISTS ${Constants.localHabitsTable};
+      PRAGMA journal_mode = WAL;
+      CREATE TABLE IF NOT EXISTS ${Constants.localHabitsTable} (
+        habits_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+        habit_key INTEGER,
+        name TEXT,
+        description VARCHAR(500),
+        date VARCHAR(50),
+        time VARCHAR(50),
+        color VARCHAR(50),
+        icon VARCHAR(50),
+        intensity INTEGER,
+        good VARCHAR(1),
+        frequency INTEGER,
+        change_time_stamp TEXT
+      );
+      `);
+    } catch (error) {
+      console.log("Error creating table", error);
+    }
   };
 
   const loadFromDBtoLocal = async (
@@ -147,12 +182,19 @@ export const DataProvider: React.FC<{ children: any }> = ({ children }) => {
   };
 
   const fetchData = async () => {
-    await fetchDataOffline();
+    const db = await getLocalDB();
+    await fetchDataOffline(db);
   };
 
   useEffect(() => {
     const waitFetchData = async () => {
       setLoading(true);
+      const db = await getLocalDB();
+
+      createIfNotExist(db);
+      // if (createTable) {
+      //   createLocalTable(db);
+      // }
       await syncData();
       await fetchData();
       setLoading(false);
