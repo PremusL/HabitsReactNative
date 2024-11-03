@@ -62,38 +62,41 @@ app.post("/api/updateHabits", async (req, res) => {
     intensity,
     good,
     frequency,
+    change_time_stamp,
   } = req.body;
 
-  console.log("Request to update, update");
   try {
     const query = `UPDATE habits 
        SET 
-         name = $1,
-         description = $2,
-         date = $3,
-         time = $4,
-         color = $5,
-         icon = $6,
-         intensity = $7,
-         good = $8,
-         frequency = $9,
-         change_time_stamp = $10
-       WHERE habit_key = $11`;
+         name = '${name}',
+         description = '${description}',
+         date = '${date}',
+         time = '${time}',
+         color = '${color}',
+         icon = '${icon}',
+         intensity = ${intensity},
+         good = '${good}',
+         frequency = ${frequency},
+         change_time_stamp = '${change_time_stamp}'
+       WHERE habit_key = ${habit_key}`;
+
     console.log("query", query);
 
-    const result = await client.query(query, [
-      name,
-      description,
-      date,
-      time,
-      color,
-      icon,
-      intensity,
-      good,
-      frequency,
-      change_time_stamp,
-      habit_key,
-    ]);
+    const result = await client.query(query);
+    console.log("result", result);
+    // const result = await client.query(query, [
+    //   name,
+    //   description,
+    //   date,
+    //   time,
+    //   color,
+    //   icon,
+    //   intensity,
+    //   good,
+    //   frequency,
+    //   change_time_stamp,
+    //   habit_key,
+    // ]);
     res.json({ message: "Data updated successfully" });
   } catch (error) {}
 });

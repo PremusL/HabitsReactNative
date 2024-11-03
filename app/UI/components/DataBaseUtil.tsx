@@ -42,18 +42,18 @@ export const updateDataDB: any = async (data: HabitType) => {
         change_time_stamp = '${data.change_time_stamp}'
         WHERE habit_key = ${data.habit_key};
        `;
-    console.log(query);
+
     await db.execAsync(query);
     console.log(query);
   } catch (error) {
     console.error("Failed to update local data", error);
   }
-  // try {
-  //   const response = await axios.post(`${BASE_URL}/api/updateHabits`, data);
-  //   console.log("Data updated successfully", response.data);
-  // } catch (error) {
-  //   console.error("Failed to update data", error);
-  // }
+  try {
+    const response = await axios.post(`${BASE_URL}/api/updateHabits`, data);
+    console.log("Data updated successfully", response.data);
+  } catch (error) {
+    console.log("Failed to update data", error);
+  }
 };
 
 export const deleteHabitDB = async (habit_key: string) => {
@@ -65,7 +65,7 @@ export const deleteHabitDB = async (habit_key: string) => {
       `DELETE FROM ${Constants.localHabitsTable} WHERE habit_key = ${habit_key}`
     );
   } catch (error) {
-    console.error("Failed to delete local data", error);
+    console.log("Failed to delete local data", error);
   }
   // remote
   try {
@@ -74,7 +74,7 @@ export const deleteHabitDB = async (habit_key: string) => {
     );
     console.log("Data deleted successfully", response.data);
   } catch (error) {
-    console.error("Failed to delete data", error);
+    console.log("Failed to delete data", error);
   }
 };
 
@@ -88,17 +88,16 @@ export const writeHabitDB = async (data: HabitType) => {
       (${data.habit_key}, '${data.name}', '${data.description}', '${data.date}', '${data.time}', 
       '${data.color}', '${data.icon}', ${data.intensity},
       '${data.good}', ${data.frequency}, '${data.change_time_stamp}')`;
-    console.log(query);
     await db.execAsync(query);
   } catch (error) {
-    console.error("Failed to add a habait to local data", error);
+    console.log("Failed to add a habait to local data", error);
   }
 
   // remote
-  // try {
-  //   const response = await axios.post(`${BASE_URL}/api/writeHabits`, data);
-  //   console.log("Data written successfully", response.data);
-  // } catch (error) {
-  //   console.error("Failed to write data", error);
-  // }
+  try {
+    const response = await axios.post(`${BASE_URL}/api/writeHabits`, data);
+    console.log("Data written successfully", response.data);
+  } catch (error) {
+    console.log("Failed to write data", error);
+  }
 };
