@@ -4,6 +4,7 @@ const { Client } = require("pg");
 
 const app = express();
 const port = 3001;
+const host = "192.168.1.103";
 
 const tableName = "habits";
 const tableColumns =
@@ -180,6 +181,6 @@ app.delete("/api/deleteHabits/:habit_key", async (req, res) => {
   }
 });
 
-app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
+app.listen(port, host, () => {
+  console.log(`Server running at ${host}:${port}`);
 });

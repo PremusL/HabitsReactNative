@@ -1,10 +1,11 @@
 import axios from "axios";
 import { HabitType } from "../types/habit.d";
-import { useLoadingContext } from "./Contexts/LoadingContext";
 import * as SQLite from "expo-sqlite";
 import { Constants } from "./Constants";
 
-const BASE_URL = "http://10.0.2.2:3001"; // Use 'http://localhost:3000' for iOS
+const BASE_URL = "http://192.168.1.103:3001"; // Use 'http://localhost:3000' for iOS
+
+const timeoutDuration = 5000;
 
 export const getLocalDB = async () => {
   const db = await SQLite.openDatabaseAsync(Constants.localDBName, {
@@ -49,8 +50,11 @@ export const updateDataDB: any = async (data: HabitType) => {
   } catch (error) {
     console.error("Failed to update local data", error);
   }
+  // Remote
   try {
-    const response = await axios.post(`${BASE_URL}/api/updateHabits`, data);
+    const response = await axios.post(`${BASE_URL}/api/updateHabits`, data, {
+      timeout: timeoutDuration,
+    });
     console.log("Data updated successfully", response.data);
   } catch (error) {
     console.log("Failed to update data", error);
@@ -71,7 +75,8 @@ export const deleteHabitDB = async (habit_key: string) => {
   // remote
   try {
     const response = await axios.delete(
-      `${BASE_URL}/api/deleteHabits/${habit_key}`
+      `${BASE_URL}/api/deleteHabits/${habit_key}`,
+      { timeout: timeoutDuration }
     );
     console.log("Data deleted successfully", response.data);
   } catch (error) {
@@ -93,10 +98,11 @@ export const writeHabitDB = async (data: HabitType) => {
   } catch (error) {
     console.log("Failed to add a habait to local data", error);
   }
-
   // remote
   try {
-    const response = await axios.post(`${BASE_URL}/api/writeHabits`, data);
+    const response = await axios.post(`${BASE_URL}/api/writeHabits`, data, {
+      timeout: timeoutDuration,
+    });
     console.log("Data written successfully", response.data);
   } catch (error) {
     console.log("Failed to write data", error);

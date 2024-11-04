@@ -65,13 +65,13 @@ const HabitScreen: React.FC<HabitScreenProps> = ({ navigation, route }) => {
   console.log("Current data: ", data);
   return (
     <View style={{ flex: 1 }}>
-      {!showAnother && (
+      {!showAnother && !showEdit && (
         <IncreaseFrequencyButton
           data={currentHabit}
           setShowAnother={handleSetShowAnother}
         />
       )}
-      {!showAnother && (
+      {!showAnother && !showEdit && (
         <RemoveButton
           navigation={navigation}
           whereTo="Home"

@@ -155,11 +155,9 @@ export const DataProvider: React.FC<{ children: any }> = ({ children }) => {
     console.log("Data fetched");
   }, []);
 
-  if (loading) {
-    return <Text>Loading...</Text>;
-  }
-
-  return (
+  return loading ? (
+    <Text>Loading...</Text>
+  ) : (
     <DataContext.Provider value={{ data: data, fetchData }}>
       {children}
     </DataContext.Provider>

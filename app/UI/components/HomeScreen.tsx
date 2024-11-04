@@ -29,9 +29,10 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }) => {
     // adding a habit
     const waitingSaveData = async (keyToSet: number, currentParams: any) => {
       currentParams["habit_key"] = maxKey; // Set the key to the current habit
-
+      setLoading(true);
       await writeHabitDB(currentParams);
       await fetchData();
+      setLoading(false);
     };
     // removing a habit
     const waitingRemoveData = async (remove_key: string) => {
@@ -76,7 +77,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }) => {
   }, [route.params]);
 
   useEffect(() => {
-    if (data.length > 0 && data[data.length - 1]["habit_key"] != null) {
+    if (data && data.length > 0 && data[data.length - 1]["habit_key"] != null) {
       setMaxKey(() => data[data.length - 1]["habit_key"] + 1);
       console.log("Max key is " + maxKey);
     }
