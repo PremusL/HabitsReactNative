@@ -1,5 +1,65 @@
 import { StyleSheet } from "react-native";
 
+export const profileStyles = StyleSheet.create({
+  mainPage: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#777777", // Dark background color
+    padding: 16,
+  },
+  loginContainer: {
+    width: "80%",
+    maxWidth: 400,
+    aspectRatio: 1, // Make it a square
+    padding: 16,
+    backgroundColor: "#555555", // Darker background for the container
+    borderRadius: 8,
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 8,
+    elevation: 5,
+  },
+  loggedInContainer: {
+    width: "80%",
+    maxWidth: 400,
+    aspectRatio: 1, // Make it a square
+    padding: 16,
+    backgroundColor: "#666666", // Darker background for the container
+    borderRadius: 8,
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 8,
+    elevation: 5,
+    alignItems: "center",
+  },
+  input: {
+    width: "100%",
+    padding: 12,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: "#333", // Darker border color
+    borderRadius: 8,
+    color: "#FFF", // White text color
+  },
+  welcomeText: {
+    fontSize: 24,
+    marginBottom: 16,
+    color: "#FFF", // White text color
+  },
+  loginButton: {
+    marginTop: 20,
+    marginBottom: 40,
+    backgroundColor: "#1a1a1a",
+    borderRadius: 5,
+    alignItems: "center",
+    width: 150,
+    alignSelf: "center",
+  },
+});
+
 const baseMargin = {
   marginBottom: 15,
 };
@@ -24,6 +84,15 @@ export const habitScreenStyles = StyleSheet.create({
     fontSize: 16,
     textAlign: "center",
     textWeight: "bold",
+  },
+  set_button: {
+    width: 100,
+    height: 90,
+    backgroundColor: "red",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 20,
+    color: "#fff",
   },
 });
 

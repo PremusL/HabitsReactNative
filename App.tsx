@@ -9,7 +9,7 @@ import HomeScreen from "./app/UI/components/HomeScreen";
 import HabitScreen from "./app/UI/components/HabitScreen/HabitScreen";
 import HabitCreationScreen from "./app/UI/components/HabitCreationScreen";
 import SecondScreen from "./app/UI/components/SecondScreen";
-import ProfileScreen from "./app/UI/components/ProfileScreen";
+import ProfileScreen from "./app/UI/components/ProfileScreen/ProfileScreen";
 
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Ionicons } from "@expo/vector-icons"; // You can use any icon library
