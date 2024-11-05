@@ -26,8 +26,15 @@ export const DataProvider: React.FC<{ children: any }> = ({ children }) => {
   const { loading, setLoading } = useLoadingContext();
 
   const createIfNotExist = (db: SQLite.SQLiteDatabase) => {
-    const firstRow = db
-      .getFirstAsync(`SELECT * FROM ${Constants.localHabitsTable}`)
+    db.getFirstAsync(`SELECT * FROM habit`)
+      .then((result) => {
+        console.log("Table exists first line: ", result);
+      })
+      .catch((error) => {
+        console.log("Table does not exist, creating table");
+        createLocalTable(db);
+      });
+    db.getFirstAsync(`SELECT * FROM habit_instance`)
       .then((result) => {
         console.log("Table exists first line: ", result);
       })
@@ -54,21 +61,28 @@ export const DataProvider: React.FC<{ children: any }> = ({ children }) => {
   const createLocalTable = async (db: SQLite.SQLiteDatabase) => {
     try {
       await db.execAsync(`
-      DROP TABLE IF EXISTS ${Constants.localHabitsTable};
-      PRAGMA journal_mode = WAL;
-      CREATE TABLE IF NOT EXISTS ${Constants.localHabitsTable} (
-        habits_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-        habit_key INTEGER,
+        CREATE TABLE habit (
+          habit_id INTEGER PRIMARY KEY AUTOINCREMENT,
+          habit_version INTEGER NOT NULL
+        );
+        `);
+      await db.execAsync(`
+      CREATE TABLE "habit_instance" (
+        habit_instance_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        habit_id INTEGER NOT NULL,
         name TEXT,
-        description VARCHAR(500),
-        date VARCHAR(50),
-        time VARCHAR(50),
-        color VARCHAR(50),
-        icon VARCHAR(50),
+        description TEXT,                 -- SQLite treats VARCHAR as TEXT
+        date TEXT,                        -- Use TEXT for date format
+        time TEXT,                        -- Use TEXT for time format
+        color TEXT,
+        icon TEXT,
         intensity INTEGER,
-        good VARCHAR(1),
+        good TEXT CHECK (good IN ('Y', 'N')),  -- Restrict values to 'Y' or 'N'
         frequency INTEGER,
-        change_time_stamp TEXT
+        habit_version INTEGER DEFAULT 0,
+        change_time_stamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        
+        FOREIGN KEY (habit_id) REFERENCES "habit"(habit_id) ON DELETE CASCADE
       );
       `);
     } catch (error) {
@@ -79,17 +93,17 @@ export const DataProvider: React.FC<{ children: any }> = ({ children }) => {
   const addLocalHabit = async (db: SQLite.SQLiteDatabase, habit: HabitType) => {
     await db.execAsync(
       `INSERT OR REPLACE INTO ${Constants.localHabitsTable}
-      (habit_key, name, description, date, time, color, icon, intensity, good, frequency, change_time_stamp) VALUES
-    (${habit.habit_key}, "${habit.name}", "${habit.description}", "${habit.date}", "${habit.time}",
+      (habit_id, name, description, date, time, color, icon, intensity, good, frequency, change_time_stamp) VALUES
+    (${habit.habit_id}, "${habit.name}", "${habit.description}", "${habit.date}", "${habit.time}",
      "${habit.color}", "${habit.icon}", "${habit.intensity}", "${habit.good}", "${habit.frequency}", "${habit.change_time_stamp}")`
     );
   };
   const removeLocalHabit = async (
     db: SQLite.SQLiteDatabase,
-    habit_key: string
+    habit_id: string
   ) => {
     await db.execAsync(
-      `DELETE FROM ${Constants.localHabitsTable} WHERE habit_key = ${habit_key}`
+      `DELETE FROM ${Constants.localHabitsTable} WHERE habit_id = ${habit_id}`
     );
   };
 
@@ -114,7 +128,7 @@ export const DataProvider: React.FC<{ children: any }> = ({ children }) => {
 
       dataRemote.forEach((remoteHabit: HabitType) => {
         const localhabit = dataLocal.find(
-          (habit: HabitType) => habit.habit_key === remoteHabit.habit_key
+          (habit: HabitType) => habit.habit_id === remoteHabit.habit_id
         );
         if (!localhabit) {
           addLocalHabit(db, remoteHabit);
@@ -123,12 +137,12 @@ export const DataProvider: React.FC<{ children: any }> = ({ children }) => {
       });
       dataLocal.forEach((localHabit: HabitType) => {
         const remoteHabit = dataRemote.find(
-          (habit: HabitType) => habit.habit_key === localHabit.habit_key
+          (habit: HabitType) => habit.habit_id === localHabit.habit_id
         );
         if (!remoteHabit) {
           console.log("Local habit not in remote db:", localHabit);
           // Optionally, you can add this habit to the remote database
-          removeLocalHabit(db, localHabit.habit_key.toString());
+          removeLocalHabit(db, localHabit.habit_id.toString());
         }
       });
     } catch (error) {

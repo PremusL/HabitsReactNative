@@ -7,17 +7,17 @@ export type RootStackParamList = {
     description?: { text: string };
     date?: string;
     time?: string;
-    remove?: { habit_key: number | undefined };
+    remove?: { habit_id: number | undefined };
   };
   HabitCreationScreen: {
     description?: { text: string; date?: string; time?: string };
-    remove?: { habit_key: number | undefined };
+    remove?: { habit_id: number | undefined };
   };
   HabitScreen: {
     name: string;
     date: string;
     time: string;
-    habit_key?: number | undefined;
+    habit_id?: number | undefined;
   };
 };
 

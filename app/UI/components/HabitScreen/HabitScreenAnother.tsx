@@ -21,7 +21,7 @@ import { writeHabitDB } from "../DataBaseUtil";
 import { useDataContext } from "../Contexts/DataContext";
 
 const HabitScreenAnother: React.FC<HabitScreenAnotherProps> = ({
-  habit_key,
+  habit_id,
   setShowAnother,
 }) => {
   const { data, fetchData } = useDataContext();
@@ -31,13 +31,13 @@ const HabitScreenAnother: React.FC<HabitScreenAnotherProps> = ({
   const [selectedTime, setCurrentTime] = useState(new Date());
 
   const currentHabit = data.find(
-    (habit: HabitType) => habit.habit_key === habit_key
+    (habit: HabitType) => habit.habit_id === habit_id
   );
   const currentFrequency = currentHabit?.frequency;
   if (!currentHabit || !currentFrequency) {
     throw new Error(
-      "Habit with habit_key " +
-        habit_key +
+      "Habit with habit_id " +
+        habit_id +
         " not found with freq: " +
         currentHabit?.frequency
     );
@@ -187,7 +187,7 @@ const HabitScreenAnother: React.FC<HabitScreenAnotherProps> = ({
             color: currentHabit.color,
             good: currentHabit.good,
             icon: currentHabit.icon,
-            habit_key: habit_key,
+            habit_id: habit_id,
             frequency: currentFrequency + 1,
             change_time_stamp: new Date().toISOString(),
           })

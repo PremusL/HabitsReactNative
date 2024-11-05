@@ -42,7 +42,7 @@ export const updateDataDB: any = async (data: HabitType) => {
         good = '${data.good}',
         frequency = ${data.frequency},
         change_time_stamp = '${data.change_time_stamp}'
-        WHERE habit_key = ${data.habit_key};
+        WHERE habit_id = ${data.habit_id};
        `;
 
     await db.execAsync(query);
@@ -61,13 +61,13 @@ export const updateDataDB: any = async (data: HabitType) => {
   }
 };
 
-export const deleteHabitDB = async (habit_key: string) => {
+export const deleteHabitDB = async (habit_id: string) => {
   console.log("Deleting data from database");
   // local
   try {
     const db = await getLocalDB();
     await db.execAsync(
-      `DELETE FROM ${Constants.localHabitsTable} WHERE habit_key = ${habit_key}`
+      `DELETE FROM ${Constants.localHabitsTable} WHERE habit_id = ${habit_id}`
     );
   } catch (error) {
     console.log("Failed to delete local data", error);
@@ -75,7 +75,7 @@ export const deleteHabitDB = async (habit_key: string) => {
   // remote
   try {
     const response = await axios.delete(
-      `${BASE_URL}/api/deleteHabits/${habit_key}`,
+      `${BASE_URL}/api/deleteHabits/${habit_id}`,
       { timeout: timeoutDuration }
     );
     console.log("Data deleted successfully", response.data);
@@ -89,9 +89,9 @@ export const writeHabitDB = async (data: HabitType) => {
   // local
   try {
     const db = await getLocalDB();
-    const query = `INSERT INTO ${Constants.localHabitsTable} (habit_key, name, description, date, time, 
+    const query = `INSERT INTO ${Constants.localHabitsTable} (habit_id, name, description, date, time, 
       color, icon, intensity, good, frequency, change_time_stamp) VALUES
-      (${data.habit_key}, '${data.name}', '${data.description}', '${data.date}', '${data.time}', 
+      (${data.habit_id}, '${data.name}', '${data.description}', '${data.date}', '${data.time}', 
       '${data.color}', '${data.icon}', ${data.intensity},
       '${data.good}', ${data.frequency}, '${data.change_time_stamp}')`;
     await db.execAsync(query);

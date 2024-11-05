@@ -39,15 +39,15 @@ const iconList = [
 ];
 
 const HabitScreenEdit: React.FC<HabitScreenEditProps> = ({
-  habit_key,
+  habit_id,
   setEdit,
 }) => {
   const { data, fetchData } = useDataContext();
   const currentHabit = data.find(
-    (habit: HabitType) => habit.habit_key === habit_key
+    (habit: HabitType) => habit.habit_id === habit_id
   );
   if (!currentHabit) {
-    throw new Error("Habit with habit_key " + habit_key + " not found");
+    throw new Error("Habit with habit_id " + habit_id + " not found");
   }
 
   const [name, setNameChange] = useState(currentHabit.name);
@@ -304,7 +304,7 @@ const HabitScreenEdit: React.FC<HabitScreenEditProps> = ({
             color: color,
             good: switchValue,
             icon: selectedIcon,
-            habit_key: habit_key,
+            habit_id: habit_id,
             frequency: currentHabit.frequency,
             change_time_stamp: new Date().toISOString(),
           })

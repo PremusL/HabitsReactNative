@@ -14,15 +14,15 @@ import { HabitType } from "../../types/habit.d";
 import { useDataContext } from "../Contexts/DataContext";
 
 const HabitScreenPreview: React.FC<HabitScreenPreviewProps> = ({
-  habit_key,
+  habit_id,
 }) => {
   const { data, fetchData } = useDataContext();
 
   const currentHabit = data.find(
-    (habit: HabitType) => habit.habit_key === habit_key
+    (habit: HabitType) => habit.habit_id === habit_id
   );
   if (!currentHabit) {
-    throw new Error("Habit with habit_key " + habit_key + " not found");
+    throw new Error("Habit with habit_id " + habit_id + " not found");
   }
 
   const currentDate: string = currentHabit?.date

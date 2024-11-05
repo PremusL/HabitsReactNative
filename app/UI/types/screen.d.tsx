@@ -10,15 +10,15 @@ export type RootStackParamList = {
         description?: { text: string };
         date?: string;
         time?: Date;
-        remove?: { habit_key: number | null };
+        remove?: { habit_id: number | null };
       }
     | undefined;
   HabitCreationScreen: {
     description: { text: string };
-    remove?: { habit_key?: number } | {} | undefined;
+    remove?: { habit_id?: number } | {} | undefined;
   };
   HabitScreen: {
-    habit_key: number | null;
+    habit_id: number | null;
   };
   SecondScreen: undefined;
   Profile: undefined;
@@ -70,13 +70,13 @@ export type HabitScreenNavigationProp = NativeStackNavigationProp<
 >;
 
 export interface HabitScreenEditProps {
-  habit_key: number;
+  habit_id: number;
   setEdit: (edit: boolean) => void;
 }
 export interface HabitScreenAnotherProps {
-  habit_key: number;
+  habit_id: number;
   setShowAnother: (isAnother: boolean) => void;
 }
 export interface HabitScreenPreviewProps {
-  habit_key: number;
+  habit_id: number;
 }

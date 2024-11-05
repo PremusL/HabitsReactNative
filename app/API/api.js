@@ -8,7 +8,7 @@ const host = "192.168.1.103";
 
 const tableName = "habits";
 const tableColumns =
-  "habit_key, name, description, date, time, color, icon, intensity, good, frequency, change_time_stamp";
+  "habit_id, name, description, date, time, color, icon, intensity, good, frequency, change_time_stamp";
 const selectColumns = tableColumns
   .split(", ")
   .map((column) => column)
@@ -53,7 +53,7 @@ app.get("/api/readHabits", async (req, res) => {
 app.post("/api/updateHabits", async (req, res) => {
   console.log(req.body);
   const {
-    habit_key,
+    habit_id,
     name,
     description,
     date,
@@ -79,7 +79,7 @@ app.post("/api/updateHabits", async (req, res) => {
          good = '${good}',
          frequency = ${frequency},
          change_time_stamp = '${change_time_stamp}'
-       WHERE habit_key = ${habit_key}`;
+       WHERE habit_id = ${habit_id}`;
 
     console.log("query", query);
 
@@ -96,7 +96,7 @@ app.post("/api/updateHabits", async (req, res) => {
     //   good,
     //   frequency,
     //   change_time_stamp,
-    //   habit_key,
+    //   habit_id,
     // ]);
     res.json({ message: "Data updated successfully" });
   } catch (error) {}
@@ -108,7 +108,7 @@ app.post("/api/writeHabits", async (req, res) => {
   console.log("Request to post");
   console.log("req.body", req.body);
   const {
-    habit_key,
+    habit_id,
     name,
     description,
     date,
@@ -124,7 +124,7 @@ app.post("/api/writeHabits", async (req, res) => {
   try {
     const result = await client.query(
       `INSERT INTO ${tableName} (
-        habit_key,
+        habit_id,
         name,
         description,
         date,
@@ -137,7 +137,7 @@ app.post("/api/writeHabits", async (req, res) => {
         change_time_stamp
       ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
       [
-        habit_key,
+        habit_id,
         name,
         description,
         date,
@@ -159,18 +159,18 @@ app.post("/api/writeHabits", async (req, res) => {
   }
 });
 
-app.delete("/api/deleteHabits/:habit_key", async (req, res) => {
+app.delete("/api/deleteHabits/:habit_id", async (req, res) => {
   console.log("Request to delete");
-  const { habit_key } = req.params;
+  const { habit_id } = req.params;
 
-  if (!habit_key) {
-    return res.status(400).json({ error: "habit_key is required" });
+  if (!habit_id) {
+    return res.status(400).json({ error: "habit_id is required" });
   }
 
   try {
     const result = await client.query(
-      `DELETE FROM ${tableName} WHERE habit_key = $1`,
-      [habit_key]
+      `DELETE FROM ${tableName} WHERE habit_id = $1`,
+      [habit_id]
     );
     res.json({ message: "Data deleted successfully" });
   } catch (error) {

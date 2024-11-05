@@ -45,7 +45,7 @@
 //       PRAGMA journal_mode = WAL;
 //       CREATE TABLE IF NOT EXISTS ${Constants.localHabitsTabel} (
 //         habits_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-//         habit_key INTEGER,
+//         habit_id INTEGER,
 //         name TEXT,
 //         description VARCHAR(500),
 //         date VARCHAR(50),
@@ -60,8 +60,8 @@
 //       `);
 //       dataDb.forEach(async (habit) => {
 //         await db.execAsync(
-//           `REPLACE INTO ${Constants.localHabitsTabel} (habit_key, name, description, date, time, color, icon, intensity, good, frequency) VALUES
-//         (${habit.habit_key}, "${habit.name}", "${habit.description}", "${habit.date}", "${habit.time}",
+//           `REPLACE INTO ${Constants.localHabitsTabel} (habit_id, name, description, date, time, color, icon, intensity, good, frequency) VALUES
+//         (${habit.habit_id}, "${habit.name}", "${habit.description}", "${habit.date}", "${habit.time}",
 //          "${habit.color}", "${habit.icon}", "${habit.intensity}", "${habit.good}", "${habit.frequency}")`
 //         );
 //       });

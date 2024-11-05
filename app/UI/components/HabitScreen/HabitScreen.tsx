@@ -22,15 +22,15 @@ const HabitScreen: React.FC<HabitScreenProps> = ({ navigation, route }) => {
   const [showEdit, setShowEdit] = useState(false);
   const [showAnother, setShowAnother] = useState(false);
 
-  const habit_key = route?.params.habit_key;
-  console.log(JSON.stringify(route), habit_key);
+  const habit_id = route?.params.habit_id;
+  console.log(JSON.stringify(route), habit_id);
 
   const { data, fetchData } = useDataContext();
   const currentHabit = data.find(
-    (habit: HabitType) => habit.habit_key === habit_key
+    (habit: HabitType) => habit.habit_id === habit_id
   );
   if (!currentHabit) {
-    throw new Error("Habit with habit_key " + habit_key + " not found");
+    throw new Error("Habit with habit_id " + habit_id + " not found");
   }
 
   console.log("Current habit: ", currentHabit);
@@ -75,7 +75,7 @@ const HabitScreen: React.FC<HabitScreenProps> = ({ navigation, route }) => {
         <RemoveButton
           navigation={navigation}
           whereTo="Home"
-          data={{ remove: habit_key }}
+          data={{ remove: habit_id }}
         />
       )}
       <ScrollView style={styles.habit_view}>
@@ -102,15 +102,15 @@ const HabitScreen: React.FC<HabitScreenProps> = ({ navigation, route }) => {
         </View>
         {showAnother && (
           <HabitScreenAnother
-            habit_key={habit_key}
+            habit_id={habit_id}
             setShowAnother={setShowAnother}
           />
         )}
         {!showEdit && !showAnother && (
-          <HabitScreenPreview habit_key={habit_key} />
+          <HabitScreenPreview habit_id={habit_id} />
         )}
         {showEdit && (
-          <HabitScreenEdit habit_key={habit_key} setEdit={handleSetShowEdit} />
+          <HabitScreenEdit habit_id={habit_id} setEdit={handleSetShowEdit} />
         )}
         {!showEdit && !showAnother && (
           <TouchableOpacity

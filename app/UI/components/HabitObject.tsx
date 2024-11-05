@@ -83,7 +83,7 @@ export const Habit: React.FC<HabitInterface> = ({
               }}
               onPress={() =>
                 navigation.navigate("HabitScreen", {
-                  habit_key: habit.habit_key,
+                  habit_id: habit.habit_id,
                 })
               } // send the habit object to the habit screen
             >
@@ -116,14 +116,14 @@ export const HabitList: React.FC<HabitListInterface> = ({
       <ScrollView style={scrollViewStyles.scrollViewContent}>
         {habits.map((habit) => (
           <Habit
-            key={habit.habit_key}
+            key={habit.habit_id}
             habit={habit}
             navigation={navigation}
-            isSelected={selectedHabit === habit.habit_key}
+            isSelected={selectedHabit === habit.habit_id}
             onPress={() =>
-              selectedHabit === habit.habit_key
+              selectedHabit === habit.habit_id
                 ? setSelectedHabit(null)
-                : setSelectedHabit(habit.habit_key)
+                : setSelectedHabit(habit.habit_id)
             }
           />
         ))}

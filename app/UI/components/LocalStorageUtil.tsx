@@ -69,13 +69,13 @@ const clearAll = async () => {
   }
 };
 
-export const deleteHabitLocal = async (habit_key: string) => {
+export const deleteHabitLocal = async (habit_id: string) => {
   // Naj majo export spredaj, ne pa na koncu datoteke
   console.log("Deleting data from local database");
   const db = await SQLite.openDatabaseAsync(Constants.localDBName);
   try {
     await db.execAsync(
-      `DELETE FROM ${Constants.localHabitsTabel} WHERE habit_key = ${habit_key}`
+      `DELETE FROM ${Constants.localHabitsTabel} WHERE habit_id = ${habit_id}`
     );
     console.log("Data locally deleted successfully");
   } catch (error) {
