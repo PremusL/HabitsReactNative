@@ -77,7 +77,7 @@ export const DataProvider: React.FC<{ children: any }> = ({ children }) => {
         color TEXT,
         icon TEXT,
         intensity INTEGER,
-        good TEXT CHECK (good IN ('Y', 'N')),  -- Restrict values to 'Y' or 'N'
+        good TEXT CHECK (good IN ('Y', 'N')),
         frequency INTEGER,
         habit_version INTEGER DEFAULT 0,
         change_time_stamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -92,10 +92,27 @@ export const DataProvider: React.FC<{ children: any }> = ({ children }) => {
 
   const addLocalHabit = async (db: SQLite.SQLiteDatabase, habit: HabitType) => {
     await db.execAsync(
-      `INSERT OR REPLACE INTO ${Constants.localHabitsTable}
-      (habit_id, name, description, date, time, color, icon, intensity, good, frequency, change_time_stamp) VALUES
-    (${habit.habit_id}, "${habit.name}", "${habit.description}", "${habit.date}", "${habit.time}",
-     "${habit.color}", "${habit.icon}", "${habit.intensity}", "${habit.good}", "${habit.frequency}", "${habit.change_time_stamp}")`
+      `
+      INSERT INTO ${Constants.habit}
+      (habit_id, habit_version) VALUES
+      (${habit.habit_id}, 0")
+      
+      INSERT INTO habit_instance (
+      habit_id,
+      name,
+      description,
+      date,
+      time,
+      color,
+      icon,
+      intensity,
+      good,
+      frequency,
+      habit_version
+      ) VALUES (
+       ${habit.habit_id}, "${habit.name}", "${habit.description}", "${habit.date}", "${habit.time}",
+     "${habit.color}", "${habit.icon}", "${habit.intensity}", "${habit.good}", "${habit.frequency}", 1)
+     `
     );
   };
   const removeLocalHabit = async (
@@ -103,7 +120,8 @@ export const DataProvider: React.FC<{ children: any }> = ({ children }) => {
     habit_id: string
   ) => {
     await db.execAsync(
-      `DELETE FROM ${Constants.localHabitsTable} WHERE habit_id = ${habit_id}`
+      `DELETE FROM ${Constants.habit_instance} WHERE habit_id = ${habit_id};
+       DELETE FROM ${Constants.habit} WHERE habit_id = ${habit_id};`
     );
   };
 
