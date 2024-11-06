@@ -1,86 +1,44 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { KeyValuePair } from "@react-native-async-storage/async-storage/lib/typescript/types";
 import * as SQLite from "expo-sqlite";
 import { Constants } from "./Constants";
+import { HabitType } from "../types/habit.d";
 
-const saveData = async (key: string, value: string): Promise<void> => {
-  try {
-    await AsyncStorage.setItem(key, value);
-    console.log("Saved: ", key, value);
-  } catch (error) {
-    console.error("Failed to save data", error);
-  }
+export const addHabitLocalDb = async (
+  db: SQLite.SQLiteDatabase,
+  habit: HabitType
+) => {
+  const query = `
+    INSERT INTO ${Constants.habit}
+    (version) VALUES (0);
+    
+    INSERT INTO ${Constants.habit_instance} (
+    habit_id,
+    name,
+    description,
+    date,
+    time,
+    color,
+    icon,
+    intensity,
+    good
+    ) VALUES (
+     ${habit.habit_id}, "${habit.name}", "${habit.description}", "${habit.date}", "${habit.time}",
+   "${habit.color}", "${habit.icon}", "${habit.intensity}", "${habit.good}");`;
+  await db.execAsync(query);
 };
 
-export default saveData;
-// 1. opcija mergeData function
-// 2. opcija getAll keys in pol multiget
-
-// Function to get all keys from AsyncStorage
-const getAllKeys = async (): Promise<readonly string[] | undefined> => {
-  try {
-    const keys = await AsyncStorage.getAllKeys();
-
-    return keys;
-  } catch (error) {
-    console.error("Failed to get all keys", error);
-  }
-};
-
-const multiGet = async (
-  keys: readonly string[]
-): Promise<readonly KeyValuePair[] | undefined> => {
-  try {
-    const values = await AsyncStorage.multiGet(keys);
-    // console.log("Values:", values);
-    return values;
-  } catch (error) {
-    console.error("Failed to get data", error);
-  }
-};
-
-const getData = async (key: string): Promise<string | undefined> => {
-  try {
-    const value = await AsyncStorage.getItem(key);
-    if (value !== null) {
-      console.log("Data retrieved successfully", value);
-      return value;
-    }
-  } catch (error) {
-    console.error("Failed to retrieve data", error);
-  }
-};
-
-const removeData = async (key: string) => {
-  try {
-    await AsyncStorage.removeItem(key);
-    console.log("Data removed successfully");
-  } catch (error) {
-    console.error("Failed to remove data", error);
-  }
-};
-
-const clearAll = async () => {
-  try {
-    await AsyncStorage.clear();
-    console.log("All data cleared");
-  } catch (error) {
-    console.error("Failed to clear data", error);
-  }
-};
-
-export const deleteHabitLocal = async (habit_id: string) => {
+export const deleteHabitLocalDb = async (
+  db: SQLite.SQLiteDatabase,
+  habit_id: string
+) => {
   // Naj majo export spredaj, ne pa na koncu datoteke
-  console.log("Deleting data from local database");
-  const db = await SQLite.openDatabaseAsync(Constants.localDBName);
   try {
     await db.execAsync(
-      `DELETE FROM ${Constants.localHabitsTabel} WHERE habit_id = ${habit_id}`
+      `DELETE FROM ${Constants.habit} WHERE habit_id = ${habit_id}
+       DELETE FROM ${Constants.habit_instance} WHERE habit_id = ${habit_id}
+      `
     );
     console.log("Data locally deleted successfully");
   } catch (error) {
     console.error("Failed to delete data", error);
   }
 };
-
-export { saveData, getData, removeData, getAllKeys, multiGet, clearAll };

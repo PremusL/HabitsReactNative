@@ -3,15 +3,14 @@ import { HabitType } from "./habit.d";
 
 export interface AddButtonProps {
   navigation: NavigationProp;
-  whereTo: keyof RootStackParamList;
   disabled?: boolean;
-  data?: object;
+  whereTo: string;
+  onPress?: () => void;
 }
 
 export interface RemoveButtonProps {
   navigation: NavigationProp;
-  whereTo?: keyof RootStackParamList;
-  data?: object;
+  onPress?: () => void;
 }
 
 export interface IncreaseFrequencyButtonProps {

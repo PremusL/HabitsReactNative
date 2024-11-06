@@ -26,6 +26,11 @@ import ColorPicker, {
 } from "reanimated-color-picker";
 import { CheckBox, Slider, Switch } from "@rneui/themed";
 import Icon from "react-native-vector-icons/FontAwesome";
+import { HabitType } from "../types/habit.d";
+import { addHabitLocalDb } from "./LocalStorageUtil";
+import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
+import { getLocalDB } from "./DataBaseUtil";
+
 const iconList = [
   "rocket",
   "coffee",
@@ -46,7 +51,7 @@ const HabitCreationScreen: React.FC<HabitCreationScreenProps> = ({
 }) => {
   const [text, onChangeText] = useState("");
   const [textDescription, onChangeTextDescription] = useState("");
-  const [selected, setSelectedDate] = useState("");
+  const [selectedDate, setSelectedDate] = useState("");
   const [currentTime, setCurrentTime] = useState(new Date());
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [color, setColor] = useState("#ffffff");
@@ -96,26 +101,34 @@ const HabitCreationScreen: React.FC<HabitCreationScreenProps> = ({
     console.log(hex);
     setColor(hex);
   };
+  const onPressAddButton = async (data: HabitType) => {
+    const db = await getLocalDB();
+    await addHabitLocalDb(db, data);
+  };
 
   return (
     <SafeAreaView style={styles.habit_view}>
       <AddButton
         navigation={navigation}
         whereTo="Home"
-        disabled={!selected || !text || text.length < 1 || selected.length < 1}
-        data={{
-          habit_id: null,
-          name: text,
-          description: textDescription,
-          date: selected,
-          time: timeToString(currentTime),
-          color: color,
-          icon: selectedIcon,
-          intensity: checked ? -1 : valueSlider,
-          good: switchValue ? "Y" : "N",
-          frequency: 1,
-          change_time_stamp: new Date().toString(),
-        }}
+        disabled={
+          !selectedDate || !text || text.length < 1 || selectedDate.length < 1
+        }
+        onPress={() =>
+          onPressAddButton({
+            habit_id: -1,
+            name: text,
+            description: textDescription,
+            date: selectedDate,
+            time: timeToString(currentTime),
+            color: color,
+            icon: selectedIcon,
+            intensity: checked ? -1 : valueSlider,
+            good: switchValue ? "Y" : "N",
+            version: 0,
+            change_time_stamp: undefined,
+          })
+        }
       />
       <ScrollView>
         <Text style={habitCreationScreenStyles.titleText}>
@@ -154,10 +167,12 @@ const HabitCreationScreen: React.FC<HabitCreationScreenProps> = ({
             arrowColor: "black",
           }}
         />
-        {selected ? (
+        {selectedDate ? (
           <Text style={{ fontSize: 17, marginTop: 20 }}>
             Selected date:{" "}
-            <Text style={{ fontWeight: "bold" }}>{formatDate(selected)}</Text>
+            <Text style={{ fontWeight: "bold" }}>
+              {formatDate(selectedDate)}
+            </Text>
           </Text>
         ) : null}
         {showAdvanced && (

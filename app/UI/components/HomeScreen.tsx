@@ -5,7 +5,6 @@ import { HabitList } from "./HabitObject";
 import { HomeScreenProps } from "../types/screen.d";
 import { styles } from "../style/styles";
 import { writeHabitDB, deleteHabitDB } from "./DataBaseUtil";
-import { deleteHabitLocal } from "./LocalStorageUtil";
 import { useLoadingContext } from "./Contexts/LoadingContext";
 import { useDataContext } from "./Contexts/DataContext";
 // import { useDataContext } from "./Contexts/DataContext";
@@ -36,17 +35,6 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }) => {
     };
     // removing a habit
     const waitingRemoveData = async (remove_key: string) => {
-      try {
-        setLoading(true);
-        await deleteHabitDB(remove_key);
-        await fetchData();
-        setLoading(false);
-      } catch (error) {
-        console.error("Error no connection, can't remove from the remote DB");
-        await deleteHabitLocal(remove_key);
-        await fetchData();
-      }
-
       if (data && data.length > 0) {
         setMaxKey(data[data.length - 1]["habit_id"]);
       }

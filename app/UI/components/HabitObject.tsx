@@ -114,19 +114,24 @@ export const HabitList: React.FC<HabitListInterface> = ({
   return (
     <View>
       <ScrollView style={scrollViewStyles.scrollViewContent}>
-        {habits.map((habit) => (
-          <Habit
-            key={habit.habit_id}
-            habit={habit}
-            navigation={navigation}
-            isSelected={selectedHabit === habit.habit_id}
-            onPress={() =>
-              selectedHabit === habit.habit_id
-                ? setSelectedHabit(null)
-                : setSelectedHabit(habit.habit_id)
-            }
-          />
-        ))}
+        {/* {habits ? (
+          habits.map((habit) => (
+            <Habit
+              key={habit.habit_id}
+              habit={habit}
+              navigation={navigation}
+              isSelected={selectedHabit === habit.habit_id}
+              onPress={() =>
+                selectedHabit === habit.habit_id
+                  ? setSelectedHabit(null)
+                  : setSelectedHabit(habit.habit_id)
+              }
+            />
+          ))
+        ) : (
+          <Text>{habits}</Text>
+        )} */}
+        <Text>{JSON.stringify(habits)}</Text>
       </ScrollView>
     </View>
   );

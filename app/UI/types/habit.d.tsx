@@ -4,16 +4,16 @@ import { RootStackParamList } from "./screen.d";
 
 export interface HabitType {
   habit_id: number;
-  name: string | undefined;
-  date: string | undefined;
+  name: string;
+  date: string;
   time: string | undefined;
   description: string | undefined;
   color: string | undefined;
   icon: string | undefined;
-  intensity: number | undefined;
-  good: string | undefined;
-  frequency: number | undefined;
-  change_time_stamp: string | undefined;
+  intensity: number;
+  good: string;
+  version: number;
+  change_time_stamp?: string | undefined;
 }
 
 export interface HabitInterface {

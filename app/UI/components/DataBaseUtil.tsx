@@ -2,6 +2,7 @@ import axios from "axios";
 import { HabitType } from "../types/habit.d";
 import * as SQLite from "expo-sqlite";
 import { Constants } from "./Constants";
+import { addHabitLocalDb, deleteHabitLocalDb } from "./LocalStorageUtil";
 
 const BASE_URL = "http://192.168.1.103:3001"; // Use 'http://localhost:3000' for iOS
 
@@ -30,7 +31,7 @@ export const updateDataDB: any = async (data: HabitType) => {
   console.log("Updating data in database with data:", data);
   try {
     const db = await getLocalDB();
-    const query = `UPDATE ${Constants.localHabitsTable} 
+    const query = `UPDATE ${Constants.habit_instance} 
         SET
         name = '${data.name}',
         description = '${data.description}',
@@ -40,13 +41,12 @@ export const updateDataDB: any = async (data: HabitType) => {
         icon = '${data.icon}',
         intensity = '${data.intensity}',
         good = '${data.good}',
-        frequency = ${data.frequency},
+        version = ${data.version + 1},
         change_time_stamp = '${data.change_time_stamp}'
         WHERE habit_id = ${data.habit_id};
        `;
 
     await db.execAsync(query);
-    console.log(query);
   } catch (error) {
     console.error("Failed to update local data", error);
   }
@@ -66,9 +66,7 @@ export const deleteHabitDB = async (habit_id: string) => {
   // local
   try {
     const db = await getLocalDB();
-    await db.execAsync(
-      `DELETE FROM ${Constants.localHabitsTable} WHERE habit_id = ${habit_id}`
-    );
+    deleteHabitLocalDb(db, habit_id);
   } catch (error) {
     console.log("Failed to delete local data", error);
   }
@@ -89,12 +87,7 @@ export const writeHabitDB = async (data: HabitType) => {
   // local
   try {
     const db = await getLocalDB();
-    const query = `INSERT INTO ${Constants.localHabitsTable} (habit_id, name, description, date, time, 
-      color, icon, intensity, good, frequency, change_time_stamp) VALUES
-      (${data.habit_id}, '${data.name}', '${data.description}', '${data.date}', '${data.time}', 
-      '${data.color}', '${data.icon}', ${data.intensity},
-      '${data.good}', ${data.frequency}, '${data.change_time_stamp}')`;
-    await db.execAsync(query);
+    await addHabitLocalDb(db, data);
   } catch (error) {
     console.log("Failed to add a habait to local data", error);
   }

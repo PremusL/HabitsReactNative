@@ -18,27 +18,30 @@ const AddButton: React.FC<AddButtonProps> = ({
   navigation,
   whereTo,
   disabled = false,
-  data = {},
-}) => (
-  <TouchableOpacity
-    style={[
-      buttonStyles.addButton,
-      disabled ? { backgroundColor: "grey" } : { backgroundColor: "darkgreen" },
-    ]}
-    onPress={() => navigation.navigate(whereTo, data as any)}
-    disabled={disabled}
-  >
-    <Text style={{ color: "white", fontWeight: "normal", fontSize: 24 }}>
-      +
-    </Text>
-  </TouchableOpacity>
-);
-
-const RemoveButton: React.FC<RemoveButtonProps> = ({
-  navigation,
-  whereTo = "Home",
-  data = {},
+  onPress,
 }) => {
+  return (
+    <TouchableOpacity
+      style={[
+        buttonStyles.addButton,
+        disabled
+          ? { backgroundColor: "grey" }
+          : { backgroundColor: "darkgreen" },
+      ]}
+      onPress={() => {
+        onPress;
+        navigation.navigate(whereTo as any);
+      }}
+      disabled={disabled}
+    >
+      <Text style={{ color: "white", fontWeight: "normal", fontSize: 24 }}>
+        +
+      </Text>
+    </TouchableOpacity>
+  );
+};
+
+const RemoveButton: React.FC<RemoveButtonProps> = ({ navigation, onPress }) => {
   const handleRemoveButtonPress = () => {
     Alert.alert(
       "Remove habit",
@@ -49,7 +52,10 @@ const RemoveButton: React.FC<RemoveButtonProps> = ({
         },
         {
           text: "OK",
-          onPress: () => navigation.navigate(whereTo, data as any),
+          onPress: () => {
+            onPress;
+            navigation.navigate("Home");
+          },
         },
       ],
       { cancelable: true }
