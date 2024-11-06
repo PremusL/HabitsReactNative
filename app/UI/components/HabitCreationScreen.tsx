@@ -102,8 +102,12 @@ const HabitCreationScreen: React.FC<HabitCreationScreenProps> = ({
     setColor(hex);
   };
   const onPressAddButton = async (data: HabitType) => {
-    const db = await getLocalDB();
-    await addHabitLocalDb(db, data);
+    try {
+      const db = await getLocalDB();
+      await addHabitLocalDb(db, data);
+    } catch (error) {
+      console.log("Failed to add a habit to local data", error);
+    }
   };
 
   return (

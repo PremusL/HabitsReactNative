@@ -65,6 +65,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }) => {
   }, [route.params]);
 
   useEffect(() => {
+    console.log("this is data: ", data);
     if (data && data.length > 0 && data[data.length - 1]["habit_id"] != null) {
       setMaxKey(() => data[data.length - 1]["habit_id"] + 1);
       console.log("Max key is " + maxKey);
@@ -79,7 +80,11 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }) => {
     // >
     <SafeAreaView style={styles.mainPage}>
       <Button title="fetch data" onPress={fetchData} />
-      <AddButton navigation={navigation} whereTo="HabitCreationScreen" />
+      <AddButton
+        navigation={navigation}
+        whereTo="HabitCreationScreen"
+        onPress={() => console.log("To habit creation screen")}
+      />
       {data && (
         <HabitList
           habits={data}

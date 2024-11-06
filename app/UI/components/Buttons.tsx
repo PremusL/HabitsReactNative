@@ -20,6 +20,15 @@ const AddButton: React.FC<AddButtonProps> = ({
   disabled = false,
   onPress,
 }) => {
+  const handleAddButtonPress = async () => {
+    try {
+      await onPress();
+    } catch (e) {
+      console.log("On press in addButton doesn't work", e);
+    }
+    navigation.navigate(whereTo as any);
+  };
+
   return (
     <TouchableOpacity
       style={[
@@ -29,8 +38,7 @@ const AddButton: React.FC<AddButtonProps> = ({
           : { backgroundColor: "darkgreen" },
       ]}
       onPress={() => {
-        onPress;
-        navigation.navigate(whereTo as any);
+        handleAddButtonPress();
       }}
       disabled={disabled}
     >

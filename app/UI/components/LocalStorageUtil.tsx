@@ -1,29 +1,38 @@
 import * as SQLite from "expo-sqlite";
-import { Constants } from "./Constants";
+import { Constants, HabitTypeConstants } from "./Constants";
 import { HabitType } from "../types/habit.d";
 
 export const addHabitLocalDb = async (
   db: SQLite.SQLiteDatabase,
   habit: HabitType
 ) => {
-  const query = `
+  const query1 = `
     INSERT INTO ${Constants.habit}
-    (version) VALUES (0);
-    
+    (${HabitTypeConstants.version}) VALUES (0);`;
+
+  await db.execAsync(query1);
+  const cur_id = await db.getFirstAsync(
+    `SELECT last_insert_rowid() as id from ${Constants.habit}`
+  );
+  console.log("Current id: ", cur_id.id);
+  const query2 = `
     INSERT INTO ${Constants.habit_instance} (
-    habit_id,
-    name,
-    description,
-    date,
-    time,
-    color,
-    icon,
-    intensity,
-    good
+    ${HabitTypeConstants.habit_id},
+    ${HabitTypeConstants.name},
+    ${HabitTypeConstants.description},
+    ${HabitTypeConstants.date},
+    ${HabitTypeConstants.time},
+    ${HabitTypeConstants.color},
+    ${HabitTypeConstants.icon},
+    ${HabitTypeConstants.intensity},
+    ${HabitTypeConstants.good}
     ) VALUES (
-     ${habit.habit_id}, "${habit.name}", "${habit.description}", "${habit.date}", "${habit.time}",
+     ${cur_id.id},
+     "${habit.name}", "${habit.description}", "${habit.date}", "${habit.time}",
    "${habit.color}", "${habit.icon}", "${habit.intensity}", "${habit.good}");`;
-  await db.execAsync(query);
+  await db.execAsync(query2);
+
+  // await db.execAsync(query2);
 };
 
 export const deleteHabitLocalDb = async (
