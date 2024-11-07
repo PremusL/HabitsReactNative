@@ -17,13 +17,16 @@ import HabitScreenPreview from "./HabitScreenPreview";
 import { getTextColorBasedOnBackground } from "../Util";
 import HabitScreenAnother from "./HabitScreenAnother";
 import { useDataContext } from "../Contexts/DataContext";
+import { getLocalDB } from "../DataBaseUtil";
+import { useLoadingContext } from "../Contexts/LoadingContext";
+import { deleteHabitLocalDb } from "../LocalStorageUtil";
 
 const HabitScreen: React.FC<HabitScreenProps> = ({ navigation, route }) => {
+  const { loading, setLoading } = useLoadingContext();
   const [showEdit, setShowEdit] = useState(false);
   const [showAnother, setShowAnother] = useState(false);
 
   const habit_id = route?.params.habit_id;
-  console.log(JSON.stringify(route), habit_id);
 
   const { data, fetchData } = useDataContext();
   const currentHabit = data.find(
@@ -62,7 +65,13 @@ const HabitScreen: React.FC<HabitScreenProps> = ({ navigation, route }) => {
     setShowEdit(showEdit);
   };
 
-  console.log("Current data: ", data);
+  const onPressRemoveButton = async () => {
+    const db = await getLocalDB();
+    setLoading(true);
+    await deleteHabitLocalDb(db, habit_id);
+    setLoading(false);
+  };
+
   return (
     <View style={{ flex: 1 }}>
       {!showAnother && !showEdit && (
@@ -75,7 +84,9 @@ const HabitScreen: React.FC<HabitScreenProps> = ({ navigation, route }) => {
         <RemoveButton
           navigation={navigation}
           whereTo="Home"
-          data={{ remove: habit_id }}
+          onPress={() => {
+            onPressRemoveButton();
+          }}
         />
       )}
       <ScrollView style={styles.habit_view}>

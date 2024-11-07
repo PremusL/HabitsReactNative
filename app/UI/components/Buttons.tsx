@@ -61,7 +61,7 @@ const RemoveButton: React.FC<RemoveButtonProps> = ({ navigation, onPress }) => {
         {
           text: "OK",
           onPress: () => {
-            onPress;
+            onPress();
             navigation.navigate("Home");
           },
         },

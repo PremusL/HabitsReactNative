@@ -38,10 +38,12 @@ export const deleteHabitLocalDb = async (
   // Naj majo export spredaj, ne pa na koncu datoteke
   try {
     await db.execAsync(
-      `DELETE FROM ${Constants.habit} WHERE habit_id = ${habit_id}
-       DELETE FROM ${Constants.habit_instance} WHERE habit_id = ${habit_id}
-      `
+      `DELETE FROM ${Constants.habit} WHERE habit_id = ${habit_id}`
     );
+    await db.execAsync(
+      `DELETE FROM ${Constants.habit_instance} WHERE habit_id = ${habit_id}`
+    );
+
     console.log("Data locally deleted successfully");
   } catch (error) {
     console.error("Failed to delete data", error);

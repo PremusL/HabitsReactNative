@@ -10,7 +10,8 @@ export interface AddButtonProps {
 
 export interface RemoveButtonProps {
   navigation: NavigationProp;
-  onPress?: () => void;
+  whereTo: string;
+  onPress: () => void;
 }
 
 export interface IncreaseFrequencyButtonProps {
