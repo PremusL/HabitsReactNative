@@ -8,6 +8,7 @@ import {
   SafeAreaView,
   ScrollView,
   Modal,
+  ActivityIndicator,
 } from "react-native";
 import { Calendar } from "react-native-calendars";
 import DateTimePicker, {
@@ -28,7 +29,7 @@ import { CheckBox, Slider, Switch } from "@rneui/themed";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { HabitType } from "../types/habit.d";
 import { addHabitLocalDb } from "./LocalStorageUtil";
-import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
+import { useLoadingContext } from "./Contexts/LoadingContext";
 import { getLocalDB } from "./DataBaseUtil";
 
 const iconList = [
@@ -49,6 +50,7 @@ const iconList = [
 const HabitCreationScreen: React.FC<HabitCreationScreenProps> = ({
   navigation,
 }) => {
+  const { loading, setLoading } = useLoadingContext();
   const [text, onChangeText] = useState("");
   const [textDescription, onChangeTextDescription] = useState("");
   const [selectedDate, setSelectedDate] = useState("");
@@ -104,7 +106,9 @@ const HabitCreationScreen: React.FC<HabitCreationScreenProps> = ({
   const onPressAddButton = async (data: HabitType) => {
     try {
       const db = await getLocalDB();
+      setLoading(true);
       await addHabitLocalDb(db, data);
+      setLoading(false);
     } catch (error) {
       console.log("Failed to add a habit to local data", error);
     }
@@ -112,6 +116,7 @@ const HabitCreationScreen: React.FC<HabitCreationScreenProps> = ({
 
   return (
     <SafeAreaView style={styles.habit_view}>
+      {loading && <ActivityIndicator size="large" color="#0000ff" />}
       <AddButton
         navigation={navigation}
         whereTo="Home"

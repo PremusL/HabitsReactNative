@@ -10,11 +10,7 @@ export const addHabitLocalDb = async (
     INSERT INTO ${Constants.habit}
     (${HabitTypeConstants.version}) VALUES (0);`;
 
-  await db.execAsync(query1);
-  const cur_id = await db.getFirstAsync(
-    `SELECT last_insert_rowid() as id from ${Constants.habit}`
-  );
-  console.log("Current id: ", cur_id.id);
+  const result = await db.runAsync(query1);
   const query2 = `
     INSERT INTO ${Constants.habit_instance} (
     ${HabitTypeConstants.habit_id},
@@ -27,7 +23,7 @@ export const addHabitLocalDb = async (
     ${HabitTypeConstants.intensity},
     ${HabitTypeConstants.good}
     ) VALUES (
-     ${cur_id.id},
+     ${result.lastInsertRowId},
      "${habit.name}", "${habit.description}", "${habit.date}", "${habit.time}",
    "${habit.color}", "${habit.icon}", "${habit.intensity}", "${habit.good}");`;
   await db.execAsync(query2);

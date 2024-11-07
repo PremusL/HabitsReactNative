@@ -5,7 +5,7 @@ export interface AddButtonProps {
   navigation: NavigationProp;
   disabled?: boolean;
   whereTo: string;
-  onPress: () => Promise<void>;
+  onPress: () => void;
 }
 
 export interface RemoveButtonProps {

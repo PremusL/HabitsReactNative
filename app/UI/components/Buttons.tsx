@@ -20,9 +20,9 @@ const AddButton: React.FC<AddButtonProps> = ({
   disabled = false,
   onPress,
 }) => {
-  const handleAddButtonPress = async () => {
+  const handleAddButtonPress = () => {
     try {
-      await onPress();
+      onPress();
     } catch (e) {
       console.log("On press in addButton doesn't work", e);
     }

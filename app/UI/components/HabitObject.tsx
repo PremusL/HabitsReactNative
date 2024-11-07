@@ -114,7 +114,7 @@ export const HabitList: React.FC<HabitListInterface> = ({
   return (
     <View>
       <ScrollView style={scrollViewStyles.scrollViewContent}>
-        {/* {habits ? (
+        {habits ? (
           habits.map((habit) => (
             <Habit
               key={habit.habit_id}
@@ -130,8 +130,7 @@ export const HabitList: React.FC<HabitListInterface> = ({
           ))
         ) : (
           <Text>{habits}</Text>
-        )} */}
-        <Text>{JSON.stringify(habits)}</Text>
+        )}
       </ScrollView>
     </View>
   );
