@@ -20,8 +20,10 @@ import ColorPicker, {
 } from "reanimated-color-picker";
 import { CheckBox, Slider, Switch } from "@rneui/themed";
 import { HabitType } from "../../types/habit.d";
-import { updateDataDB } from "../DataBaseUtil";
+import { updateHabitLocalDB } from "../LocalStorageUtil";
 import { useDataContext } from "../Contexts/DataContext";
+import { getLocalDB } from "../DataBaseUtil";
+import { useLoadingContext } from "../Contexts/LoadingContext";
 
 const iconList = [
   "rocket",
@@ -42,6 +44,7 @@ const HabitScreenEdit: React.FC<HabitScreenEditProps> = ({
   habit_id,
   setEdit,
 }) => {
+  const { loading, setLoading } = useLoadingContext();
   const { data, fetchData } = useDataContext();
   const currentHabit = data.find(
     (habit: HabitType) => habit.habit_id === habit_id
@@ -66,7 +69,8 @@ const HabitScreenEdit: React.FC<HabitScreenEditProps> = ({
   const [selectedIcon, setSelectedIcon] = useState(currentHabit?.icon);
 
   const waitHandleSave = async (data: HabitType) => {
-    await updateDataDB(data);
+    const db = await getLocalDB();
+    await updateHabitLocalDB(db, data);
     await fetchData();
   };
 
@@ -296,6 +300,7 @@ const HabitScreenEdit: React.FC<HabitScreenEditProps> = ({
       <TouchableOpacity
         onPress={() =>
           handleSave({
+            habit_id: habit_id,
             name: name,
             date: selectedDate,
             time: timeToString(selectedTime),
@@ -304,9 +309,7 @@ const HabitScreenEdit: React.FC<HabitScreenEditProps> = ({
             color: color,
             good: switchValue,
             icon: selectedIcon,
-            habit_id: habit_id,
-            frequency: currentHabit.frequency,
-            change_time_stamp: new Date().toISOString(),
+            version: currentHabit.version,
           })
         }
         style={{

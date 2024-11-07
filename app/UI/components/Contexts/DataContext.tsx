@@ -149,7 +149,7 @@ export const DataProvider: React.FC<{ children: any }> = ({ children }) => {
     //     );
     //     if (!remoteHabit) {
     //       console.log("Local habit not in remote db:", localHabit);
-    //       // Optionally, you can add this habit to the remote database
+
     //       removeLocalHabit(db, localHabit.habit_id.toString());
     //     }
     //   });

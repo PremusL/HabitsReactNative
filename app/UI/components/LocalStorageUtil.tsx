@@ -27,8 +27,6 @@ export const addHabitLocalDb = async (
      "${habit.name}", "${habit.description}", "${habit.date}", "${habit.time}",
    "${habit.color}", "${habit.icon}", "${habit.intensity}", "${habit.good}");`;
   await db.execAsync(query2);
-
-  // await db.execAsync(query2);
 };
 
 export const deleteHabitLocalDb = async (
@@ -47,5 +45,33 @@ export const deleteHabitLocalDb = async (
     console.log("Data locally deleted successfully");
   } catch (error) {
     console.error("Failed to delete data", error);
+  }
+};
+
+export const updateHabitLocalDB = async (
+  db: SQLite.SQLiteDatabase,
+  data: HabitType
+) => {
+  console.log("Updating data in database with data:", data);
+  try {
+    const query = `
+      UPDATE ${Constants.habit_instance}
+        SET
+        ${HabitTypeConstants.name} = '${data.name}',
+        ${HabitTypeConstants.description} = '${data.description}',
+        ${HabitTypeConstants.date} = '${data.date}',
+        ${HabitTypeConstants.time} = '${data.time}',
+        ${HabitTypeConstants.color} = '${data.color}',
+        ${HabitTypeConstants.icon} = '${data.icon}',
+        ${HabitTypeConstants.intensity} = '${data.intensity}',
+        ${HabitTypeConstants.good} = '${data.good}',
+        ${HabitTypeConstants.version} = ${data.version}
+        WHERE ${HabitTypeConstants.habit_id} = ${data.habit_id};
+       `;
+    console.group("Query", query);
+
+    await db.execAsync(query);
+  } catch (error) {
+    console.error("Failed to update local data", error);
   }
 };
