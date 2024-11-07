@@ -23,7 +23,6 @@ import { HabitType } from "../../types/habit.d";
 import { updateHabitLocalDB } from "../LocalStorageUtil";
 import { useDataContext } from "../Contexts/DataContext";
 import { getLocalDB } from "../DataBaseUtil";
-import { useLoadingContext } from "../Contexts/LoadingContext";
 
 const iconList = [
   "rocket",
@@ -44,7 +43,6 @@ const HabitScreenEdit: React.FC<HabitScreenEditProps> = ({
   habit_id,
   setEdit,
 }) => {
-  const { loading, setLoading } = useLoadingContext();
   const { data, fetchData } = useDataContext();
   const currentHabit = data.find(
     (habit: HabitType) => habit.habit_id === habit_id

@@ -28,6 +28,40 @@ export const addHabitLocalDb = async (
    "${habit.color}", "${habit.icon}", "${habit.intensity}", "${habit.good}");`;
   await db.execAsync(query2);
 };
+export const addInstanceHabitLocalDb = async (
+  db: SQLite.SQLiteDatabase,
+  habit: HabitType
+) => {
+  const query1 = `
+    UPDATE ${Constants.habit}
+    SET ${HabitTypeConstants.version} = ${habit.version}
+    WHERE ${HabitTypeConstants.habit_id} = ${habit.habit_id};`;
+
+  const query2 = `
+    INSERT INTO ${Constants.habit_instance} (
+    ${HabitTypeConstants.habit_id},
+    ${HabitTypeConstants.name},
+    ${HabitTypeConstants.description},
+    ${HabitTypeConstants.date},
+    ${HabitTypeConstants.time},
+    ${HabitTypeConstants.color},
+    ${HabitTypeConstants.icon},
+    ${HabitTypeConstants.intensity},
+    ${HabitTypeConstants.good},
+    ${HabitTypeConstants.version}
+    ) VALUES (
+     ${habit.habit_id},
+     "${habit.name}", "${habit.description}", "${habit.date}", "${habit.time}",
+   "${habit.color}", "${habit.icon}", "${habit.intensity}", "${habit.good}", ${habit.version});`;
+  console.group("Query add instance", query1);
+
+  try {
+    await db.execAsync(query1);
+    await db.execAsync(query2);
+  } catch (error) {
+    console.log("Failed to add instance to local data", error);
+  }
+};
 
 export const deleteHabitLocalDb = async (
   db: SQLite.SQLiteDatabase,

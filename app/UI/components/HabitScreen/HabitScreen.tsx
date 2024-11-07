@@ -36,8 +36,6 @@ const HabitScreen: React.FC<HabitScreenProps> = ({ navigation, route }) => {
     throw new Error("Habit with habit_id " + habit_id + " not found");
   }
 
-  console.log("Current habit: ", currentHabit);
-
   const handleUpdateFetchData = async () => {
     await updateDataDB(data);
     await fetchData();

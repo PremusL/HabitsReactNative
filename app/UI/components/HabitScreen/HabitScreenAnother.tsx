@@ -17,8 +17,9 @@ import {
 } from "@react-native-community/datetimepicker";
 import { CheckBox, Slider } from "@rneui/themed";
 import { HabitType } from "../../types/habit.d";
-import { writeHabitDB } from "../DataBaseUtil";
 import { useDataContext } from "../Contexts/DataContext";
+import { addInstanceHabitLocalDb } from "../LocalStorageUtil";
+import { getLocalDB } from "../DataBaseUtil";
 
 const HabitScreenAnother: React.FC<HabitScreenAnotherProps> = ({
   habit_id,
@@ -33,21 +34,17 @@ const HabitScreenAnother: React.FC<HabitScreenAnotherProps> = ({
   const currentHabit = data.find(
     (habit: HabitType) => habit.habit_id === habit_id
   );
-  const currentFrequency = currentHabit?.frequency;
-  if (!currentHabit || !currentFrequency) {
-    throw new Error(
-      "Habit with habit_id " +
-        habit_id +
-        " not found with freq: " +
-        currentHabit?.frequency
-    );
+  if (!currentHabit) {
+    console.error("Current Habit not found");
+    return;
   }
 
   const [checked, setChecked] = useState(currentHabit?.intensity == -1);
   const [valueSlider, setValueSlider] = useState(currentHabit?.intensity);
 
-  const handleSave = async (data: HabitType) => {
-    await writeHabitDB(data);
+  const handleUpdate = async (data: HabitType) => {
+    const db = await getLocalDB();
+    await addInstanceHabitLocalDb(db, data);
     await fetchData();
     setShowAnother(false);
   };
@@ -178,7 +175,8 @@ const HabitScreenAnother: React.FC<HabitScreenAnotherProps> = ({
       </View>
       <TouchableOpacity
         onPress={() =>
-          handleSave({
+          handleUpdate({
+            habit_id: currentHabit.habit_id,
             name: currentHabit.name,
             date: selectedDate,
             time: timeToString(selectedTime),
@@ -187,9 +185,7 @@ const HabitScreenAnother: React.FC<HabitScreenAnotherProps> = ({
             color: currentHabit.color,
             good: currentHabit.good,
             icon: currentHabit.icon,
-            habit_id: habit_id,
-            frequency: currentFrequency + 1,
-            change_time_stamp: new Date().toISOString(),
+            version: currentHabit.version + 1,
           })
         }
         style={{

@@ -46,11 +46,11 @@ export const DataProvider: React.FC<{ children: any }> = ({ children }) => {
   };
 
   const fetchDataOffline = async (db: SQLite.SQLiteDatabase) => {
-    const query0 = `
-    SELECT *
-    FROM ${Constants.habit} h
-    JOIN ${Constants.habit_instance} hi
-    ON h.${HabitTypeConstants.habit_id} = hi.${HabitTypeConstants.habit_id}`;
+    // const query0 = `
+    // SELECT *
+    // FROM ${Constants.habit} h
+    // JOIN ${Constants.habit_instance} hi
+    // ON h.${HabitTypeConstants.habit_id} = hi.${HabitTypeConstants.habit_id}`;
 
     const query = `SELECT 
     hi.${HabitTypeConstants.habit_id},
@@ -66,9 +66,11 @@ export const DataProvider: React.FC<{ children: any }> = ({ children }) => {
     hi.${HabitTypeConstants.change_time_stamp}
     FROM ${Constants.habit} h
     JOIN ${Constants.habit_instance} hi
-    ON h.${HabitTypeConstants.habit_id} = hi.${HabitTypeConstants.habit_id}`;
+    ON h.${HabitTypeConstants.habit_id} = hi.${HabitTypeConstants.habit_id}
+    WHERE h.${HabitTypeConstants.version} = hi.${HabitTypeConstants.version}
+    `;
     try {
-      const allRows: any = await db.getAllAsync(query0);
+      const allRows: any = await db.getAllAsync(query);
       setData(allRows);
       console.log("All rows:", allRows);
     } catch (error) {

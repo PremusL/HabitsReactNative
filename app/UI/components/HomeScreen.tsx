@@ -4,8 +4,6 @@ import { AddButton } from "./Buttons";
 import { HabitList } from "./HabitObject";
 import { HomeScreenProps } from "../types/screen.d";
 import { styles } from "../style/styles";
-import { writeHabitDB } from "./DataBaseUtil";
-import { useLoadingContext } from "./Contexts/LoadingContext";
 import { useDataContext } from "./Contexts/DataContext";
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }) => {
@@ -22,15 +20,6 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }) => {
     };
     waitFetchData();
   }, []);
-
-  useEffect(() => {
-    console.log("this is data: ", data);
-    if (data && data.length > 0 && data[data.length - 1]["habit_id"] != null) {
-      setMaxKey(() => data[data.length - 1]["habit_id"] + 1);
-      console.log("Max key is " + maxKey);
-    }
-    console.log("DataDB after add" + JSON.stringify(data), maxKey);
-  }, [data]);
 
   return (
     <SafeAreaView style={styles.mainPage}>
