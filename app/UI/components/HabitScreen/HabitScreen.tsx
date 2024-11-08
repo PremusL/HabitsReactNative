@@ -71,23 +71,24 @@ const HabitScreen: React.FC<HabitScreenProps> = ({ navigation, route }) => {
   };
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={styles.habit_view}>
       {!showAnother && !showEdit && (
-        <IncreaseFrequencyButton
-          data={currentHabit}
-          setShowAnother={handleSetShowAnother}
-        />
+        <>
+          <IncreaseFrequencyButton
+            data={currentHabit}
+            setShowAnother={handleSetShowAnother}
+          />
+
+          <RemoveButton
+            navigation={navigation}
+            whereTo="Home"
+            onPress={() => {
+              onPressRemoveButton();
+            }}
+          />
+        </>
       )}
-      {!showAnother && !showEdit && (
-        <RemoveButton
-          navigation={navigation}
-          whereTo="Home"
-          onPress={() => {
-            onPressRemoveButton();
-          }}
-        />
-      )}
-      <ScrollView style={styles.habit_view}>
+      <ScrollView>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <Text
             style={{
@@ -108,6 +109,10 @@ const HabitScreen: React.FC<HabitScreenProps> = ({ navigation, route }) => {
               style={{ textAlign: "center", marginBottom: 15 }}
             />
           )}
+
+          {/* {dropdownVisible && (
+            
+          )} */}
         </View>
         {showAnother && (
           <HabitScreenAnother

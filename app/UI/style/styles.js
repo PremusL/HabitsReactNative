@@ -247,6 +247,7 @@ export const styles = StyleSheet.create({
   },
   habitCard: {
     ...baseMargin,
+    marginTop: 10,
     padding: 10,
     backgroundColor: "#fff",
     borderRadius: 5,
