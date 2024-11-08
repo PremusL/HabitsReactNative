@@ -23,7 +23,6 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }) => {
 
   return (
     <SafeAreaView style={styles.mainPage}>
-      <Button title="fetch data" onPress={fetchData} />
       <AddButton
         navigation={navigation}
         whereTo="HabitCreationScreen"

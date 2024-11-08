@@ -129,7 +129,7 @@ export const habitCreationScreenStyles = StyleSheet.create({
   modal: {
     flex: 1,
     flexDirection: "column",
-    backgroundColor: "#888888",
+    backgroundColor: "#777777",
   },
   basicText: {
     ...baseMargin,
@@ -183,11 +183,11 @@ export const buttonStyles = StyleSheet.create({
   removeButton: {
     ...baseButtonStyle,
     left: 30,
-    backgroundColor: "red",
+    backgroundColor: "darkred",
   },
   frequencyButton: {
     ...baseButtonStyle,
-    backgroundColor: "blue",
+    backgroundColor: "darkblue",
   },
 });
 
@@ -205,7 +205,7 @@ export const styles = StyleSheet.create({
   mainPage: {
     flex: 1,
     flexDirection: "column",
-    backgroundColor: "#888888",
+    backgroundColor: "#777777",
   },
   addButton: {
     backgroundColor: "darkblue",

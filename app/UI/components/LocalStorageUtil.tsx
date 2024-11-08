@@ -98,9 +98,9 @@ export const updateHabitLocalDB = async (
         ${HabitTypeConstants.color} = '${data.color}',
         ${HabitTypeConstants.icon} = '${data.icon}',
         ${HabitTypeConstants.intensity} = '${data.intensity}',
-        ${HabitTypeConstants.good} = '${data.good}',
-        ${HabitTypeConstants.version} = ${data.version}
-        WHERE ${HabitTypeConstants.habit_id} = ${data.habit_id};
+        ${HabitTypeConstants.good} = '${data.good}'
+        WHERE ${HabitTypeConstants.habit_id} = ${data.habit_id}
+        AND ${HabitTypeConstants.version} = ${data.version};
        `;
     console.group("Query", query);
 

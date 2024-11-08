@@ -16,6 +16,7 @@ import { Ionicons } from "@expo/vector-icons"; // You can use any icon library
 import { LoadingProvider } from "./app/UI/components/Contexts/LoadingContext";
 
 import { DataProvider } from "./app/UI/components/Contexts/DataContext";
+import Layout from "./app/UI/layout/_layout";
 
 const Tab = createBottomTabNavigator();
 
@@ -31,7 +32,6 @@ const navigatorOptions: NativeStackNavigationOptions = {
   },
   headerTitleAlign: "center",
 };
-
 const TabNavigator = () => (
   <Tab.Navigator
     screenOptions={({ route }) => ({
@@ -50,26 +50,20 @@ const TabNavigator = () => (
           <Ionicons name={iconName} size={size} color={color} />
         ) : null;
       },
-
       headerStyle: {
-        backgroundColor: "#1a1a1a", // Set your desired color
+        backgroundColor: "#1a1a1a", // Header background color
       },
-      headerTintColor: "#fff", // Set the color of the back button and title
+      headerTintColor: "#fff", // Color of the back button and title
       headerTitleStyle: {
         fontWeight: "bold",
       },
       headerTitleAlign: "center",
 
-      activeTintColor: "white",
-      inactiveTintColor: "#888888",
-      activeBackgroundColor: "#1a1a1a",
-      inactiveBackgroundColor: "#1a1a1a",
-      style: {
-        backgroundColor: "red",
+      tabBarActiveTintColor: "darkgreen",
+      tabBarInactiveTintColor: "#888888",
+      tabBarStyle: {
+        backgroundColor: "#1a1a1a", // Tab bar background color
       },
-      // tabBarBackground: () => {
-      //   <BlurView tint="" intensity={100} />
-      // },
     })}
   >
     <Tab.Screen name="Home" component={HomeScreen} />
@@ -94,8 +88,10 @@ const App = () => (
               component={TabNavigator}
               options={{ headerShown: false }}
             />
+
             {/* <Stack.Screen name="SecondScreen" component={SecondScreen} /> */}
-            <Stack.Screen name="Profile" component={ProfileScreen} />
+
+            <Stack.Screen name="Profile" component={Layout} />
 
             <Stack.Screen
               name="HabitScreen"
