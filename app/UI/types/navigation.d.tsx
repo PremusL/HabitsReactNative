@@ -21,12 +21,4 @@ export type RootStackParamList = {
   };
 };
 
-export type HomeScreenNavigationProp = NativeStackNavigationProp<
-  RootStackParamList,
-  "Home"
->;
 export type HomeScreenRouteProp = RouteProp<RootStackParamList, "Home">;
-export type HabitScreenNavigationProp = NativeStackNavigationProp<
-  RootStackParamList,
-  "HabitScreen"
->;

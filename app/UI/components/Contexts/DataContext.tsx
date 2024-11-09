@@ -1,10 +1,11 @@
 import React, { createContext, useState, useEffect, useContext } from "react";
-import { Text } from "react-native";
+import { Text, ActivityIndicator, View } from "react-native";
 import { HabitType } from "../../types/habit.d";
 import { useLoadingContext } from "./LoadingContext";
 import { getLocalDB, readHabitsDB } from "../DataBaseUtil";
 import * as SQLite from "expo-sqlite";
 import { Constants, HabitTypeConstants } from "../Constants";
+
 import { addHabitLocalDb } from "../LocalStorageUtil";
 
 interface DataContextType {
@@ -181,7 +182,9 @@ export const DataProvider: React.FC<{ children: any }> = ({ children }) => {
   }, []);
 
   return loading ? (
-    <Text>Loading...</Text>
+    <View style={{ margin: 40 }}>
+      <ActivityIndicator size="large" color="#0000ff" />
+    </View>
   ) : (
     <DataContext.Provider value={{ data: data, fetchData }}>
       {children}

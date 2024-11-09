@@ -119,7 +119,7 @@ const HabitScreenEdit: React.FC<HabitScreenEditProps> = ({
   return (
     <View>
       <Text style={habitScreenStyles.subtitle}>Edit habit</Text>
-      <Text style={habitScreenStyles.subsectionText}>Edit the name</Text>
+      <Text style={habitScreenStyles.subsectionText}>Edit name</Text>
       <TextInput
         style={habitCreationScreenStyles.titleInput}
         onChangeText={setNameChange}
@@ -128,7 +128,7 @@ const HabitScreenEdit: React.FC<HabitScreenEditProps> = ({
         keyboardType="default"
       />
       <View>
-        <Text style={habitScreenStyles.subsectionText}>Edit the date</Text>
+        <Text style={habitScreenStyles.subsectionText}>Edit start date</Text>
       </View>
       <Calendar
         onDayPress={(day: any) => {

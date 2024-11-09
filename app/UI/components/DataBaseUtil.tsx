@@ -61,7 +61,7 @@ export const updateDataDB: any = async (data: HabitType) => {
   }
 };
 
-export const deleteHabitDB = async (habit_id: string) => {
+export const deleteHabitDB = async (habit_id: number) => {
   console.log("Deleting data from database");
   // local
   try {

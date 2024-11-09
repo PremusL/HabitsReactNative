@@ -8,12 +8,12 @@ import {
 } from "react-native";
 import { IncreaseFrequencyButton, RemoveButton } from "../Buttons";
 import { HabitScreenProps } from "../../types/screen.d";
-import Icon from "react-native-vector-icons/FontAwesome";
+
 import { HabitType } from "../../types/habit.d";
 import { updateDataDB } from "../DataBaseUtil";
 import HabitScreenEdit from "./HabitScreenEdit";
 import HabitScreenPreview from "./HabitScreenPreview";
-
+import Icon from "react-native-vector-icons/FontAwesome";
 import { getTextColorBasedOnBackground } from "../Util";
 import HabitScreenAnother from "./HabitScreenAnother";
 import { useDataContext } from "../Contexts/DataContext";
@@ -27,6 +27,9 @@ const HabitScreen: React.FC<HabitScreenProps> = ({ navigation, route }) => {
   const [showAnother, setShowAnother] = useState(false);
 
   const habit_id = route?.params.habit_id;
+  if (!habit_id) {
+    throw new Error("Habit_id not found in route params");
+  }
 
   const { data, fetchData } = useDataContext();
   const currentHabit = data.find(
@@ -88,7 +91,8 @@ const HabitScreen: React.FC<HabitScreenProps> = ({ navigation, route }) => {
           />
         </>
       )}
-      <ScrollView>
+
+      <ScrollView style={{ padding: 10 }}>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <Text
             style={{
@@ -166,7 +170,6 @@ const HabitScreen: React.FC<HabitScreenProps> = ({ navigation, route }) => {
 const styles = StyleSheet.create({
   habit_view: {
     flex: 1,
-    padding: 20,
     backgroundColor: "#cccccc",
   },
 });

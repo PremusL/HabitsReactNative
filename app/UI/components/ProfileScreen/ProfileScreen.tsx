@@ -77,7 +77,6 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
               Login
             </Text>
           </TouchableOpacity>
-          {/* <Button title="Login" onPress={handleLogin} /> */}
         </View>
       )}
     </View>

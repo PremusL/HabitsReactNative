@@ -65,7 +65,7 @@ export const addInstanceHabitLocalDb = async (
 
 export const deleteHabitLocalDb = async (
   db: SQLite.SQLiteDatabase,
-  habit_id: string
+  habit_id: number
 ) => {
   // Naj majo export spredaj, ne pa na koncu datoteke
   try {
@@ -107,5 +107,20 @@ export const updateHabitLocalDB = async (
     await db.execAsync(query);
   } catch (error) {
     console.error("Failed to update local data", error);
+  }
+};
+
+export const getHistoryLocalDb = async (
+  db: SQLite.SQLiteDatabase,
+  habit_id: number
+) => {
+  try {
+    const query = `SELECT * FROM ${Constants.habit_instance} WHERE ${HabitTypeConstants.habit_id} = ${habit_id}`;
+    const allRows: HabitType[] = await db.getAllAsync(query);
+    console.log("All rows from instance:", allRows);
+    return allRows;
+  } catch (error) {
+    console.error("Failed to get history", error);
+    return null;
   }
 };

@@ -1,5 +1,15 @@
 import { StyleSheet } from "react-native";
 
+export const historyStyles = StyleSheet.create({
+  mainPage: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#777777", // Dark background color
+    padding: 16,
+  },
+});
+
 export const profileStyles = StyleSheet.create({
   mainPage: {
     flex: 1,
