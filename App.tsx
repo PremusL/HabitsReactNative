@@ -9,7 +9,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import HomeScreen from "./app/UI/components/HomeScreen";
 import HabitScreen from "./app/UI/components/HabitScreen/HabitScreen";
 import HabitCreationScreen from "./app/UI/components/HabitCreationScreen";
-import ProfileScreen from "./app/UI/components/ProfileScreen/ProfileScreen";
+import { ProfileScreen } from "./app/UI/components/ProfileScreen/ProfileScreen";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Ionicons } from "@expo/vector-icons"; // You can use any icon library
 import { LoadingProvider } from "./app/UI/components/Contexts/LoadingContext";

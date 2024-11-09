@@ -66,6 +66,16 @@ export const profileStyles = StyleSheet.create({
     width: 150,
     alignSelf: "center",
   },
+  welcomeText: {
+    fontSize: 24,
+    marginBottom: 16,
+    color: "#FFF", // White text color
+  },
+  switchText: {
+    color: "#1E90FF",
+    marginTop: 10,
+    textAlign: "center",
+  },
 });
 
 const baseMargin = {

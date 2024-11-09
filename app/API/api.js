@@ -1,9 +1,8 @@
 const express = require("express");
 const cors = require("cors");
 const { Client } = require("pg");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const { Constants } = require("../UI/components/Constants");
 
 const app = express();
 const port = 3001;
@@ -12,6 +11,10 @@ const host = "192.168.1.103";
 const tableName = "habits";
 const tableColumns =
   "habit_id, name, description, date, time, color, icon, intensity, good, frequency, change_time_stamp";
+const userRemoteTable = '"user"';
+
+const secretKey = "your_secret_key"; // Replace with your secret key
+
 const selectColumns = tableColumns
   .split(", ")
   .map((column) => column)
@@ -195,9 +198,10 @@ app.post("/api/login", async (req, res) => {
   const { username, password } = req.body;
   try {
     const result = await client.query(
-      `SELECT * FROM ${Constants.userRemoteTable} WHERE username = $1`,
+      `SELECT * FROM ${userRemoteTable} WHERE username = $1`,
       [username]
     );
+    console.log("result", result);
     if (result.rows.length === 0) {
       return res.status(401).json({ error: "Invalid credentials" });
     }
@@ -219,12 +223,14 @@ app.post("/api/login", async (req, res) => {
 // Register endpoint
 app.post("/api/register", async (req, res) => {
   const { username, password } = req.body;
+  console.log("req.body", req.body);
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
     await client.query(
-      `INSERT INTO ${Constants.userRemoteTable} (username, password) VALUES ($1, $2)`,
+      `INSERT INTO ${userRemoteTable} (username, password) VALUES ($1, $2)`,
       [username, hashedPassword]
     );
+
     res.status(201).json({ message: "User registered successfully" });
   } catch (error) {
     console.error("Error during registration:", error);

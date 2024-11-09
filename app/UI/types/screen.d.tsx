@@ -55,9 +55,7 @@ export interface SecondScreenProps {
 export interface SecondScreenProps {
   navigation: NavigationProp;
 }
-export interface ProfileScreenProps {
-  navigation: NavigationProp;
-}
+export interface ProfileScreenProps {}
 export interface HistoryScreenProps {
   route: { params: { habit_id: number } } | any | undefined;
 }
