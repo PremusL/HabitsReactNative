@@ -1,6 +1,9 @@
 const express = require("express");
 const cors = require("cors");
 const { Client } = require("pg");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const { Constants } = require("../UI/components/Constants");
 
 const app = express();
 const port = 3001;
@@ -183,4 +186,48 @@ app.delete("/api/deleteHabits/:habit_id", async (req, res) => {
 
 app.listen(port, host, () => {
   console.log(`Server running at ${host}:${port}`);
+});
+
+//? LOGIN - REGISTER
+
+// Login endpoint
+app.post("/api/login", async (req, res) => {
+  const { username, password } = req.body;
+  try {
+    const result = await client.query(
+      `SELECT * FROM ${Constants.userRemoteTable} WHERE username = $1`,
+      [username]
+    );
+    if (result.rows.length === 0) {
+      return res.status(401).json({ error: "Invalid credentials" });
+    }
+    const user = result.rows[0];
+    const isValidPassword = await bcrypt.compare(password, user.password);
+    if (!isValidPassword) {
+      return res.status(401).json({ error: "Invalid credentials" });
+    }
+    const token = jwt.sign({ userId: user.user_id }, secretKey, {
+      expiresIn: "1h",
+    });
+    res.json({ token });
+  } catch (error) {
+    console.error("Error during login:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+// Register endpoint
+app.post("/api/register", async (req, res) => {
+  const { username, password } = req.body;
+  try {
+    const hashedPassword = await bcrypt.hash(password, 10);
+    await client.query(
+      `INSERT INTO ${Constants.userRemoteTable} (username, password) VALUES ($1, $2)`,
+      [username, hashedPassword]
+    );
+    res.status(201).json({ message: "User registered successfully" });
+  } catch (error) {
+    console.error("Error during registration:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
 });

@@ -41,7 +41,7 @@ const HistoryScreen: React.FC<HistoryScreenProps> = ({ route }) => {
   }, [data]);
 
   return (
-    <ScrollView style={styles.mainPage}>
+    <ScrollView style={historyStyles.mainPage}>
       {data ? (
         data.map((habit, index) => (
           <TouchableOpacity
@@ -86,11 +86,6 @@ const HistoryScreen: React.FC<HistoryScreenProps> = ({ route }) => {
   );
 };
 const styles = StyleSheet.create({
-  mainPage: {
-    flex: 1,
-    padding: 16,
-    backgroundColor: "#f5f5f5",
-  },
   card: {
     backgroundColor: "#fff",
     borderRadius: 8,

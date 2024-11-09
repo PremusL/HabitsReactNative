@@ -137,9 +137,6 @@ export const HabitList: React.FC<HabitListInterface> = ({
 };
 
 const scrollViewStyles = StyleSheet.create({
-  // container: {
-  //   flex: 1,
-  // },
   scrollViewContent: {
     flexGrow: 1,
     paddingBottom: 100,

@@ -10,23 +10,16 @@ import {
 } from "react-native";
 import { profileStyles } from "../../style/styles";
 import { ProfileScreenProps } from "../../types/screen.d";
+import { useLoginContext } from "../Contexts/LoginContext";
 
 const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { isLoggedIn, setLogin } = useLoginContext();
+  const [registration, setRegistration] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = () => {
-    // Implement your login logic here
-    if (username === "user" && password === "password") {
-      setIsLoggedIn(true);
-    } else {
-      alert("Invalid credentials");
-    }
-  };
-
   const handleLogout = () => {
-    setIsLoggedIn(false);
+    setLogin(false);
     setUsername("");
     setPassword("");
   };
@@ -59,8 +52,9 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
             onPress={() => handleLogin()}
             style={{
               marginTop: 20,
-              marginBottom: 40,
-              backgroundColor: "#1a1a1a",
+              marginBottom: 15,
+              backgroundColor:
+                username != "" && password != "" ? "#1a1a1a" : "#777777",
               borderRadius: 5,
               alignItems: "center",
               width: 150,
@@ -75,6 +69,29 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
               }}
             >
               Login
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => handleRegister()}
+            style={{
+              marginTop: 20,
+              marginBottom: 40,
+              backgroundColor:
+                username != "" && password != "" ? "#1a1a1a" : "#777777",
+              borderRadius: 5,
+              alignItems: "center",
+              width: 130,
+              alignSelf: "center",
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 15,
+                margin: 8,
+                color: "#ffffff",
+              }}
+            >
+              Register
             </Text>
           </TouchableOpacity>
         </View>

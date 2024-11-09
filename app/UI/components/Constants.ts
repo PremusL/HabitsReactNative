@@ -2,6 +2,9 @@ export const Constants = {
     localDBName: "localhabits.db",
     habit: "habit",
     habit_instance: "habit_instance",
+    userRemoteTable: '"user"',
+    habitRemoteTable: '"habit"',
+    habit_instanceRemoteTable: '"habit_instance"',
 };
 export const HabitTypeConstants = {
     habit_id: "habit_id",
