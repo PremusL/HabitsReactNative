@@ -13,7 +13,8 @@ const tableColumns =
   "habit_id, name, description, date, time, color, icon, intensity, good, frequency, change_time_stamp";
 const userRemoteTable = '"user"';
 
-const secretKey = "your_secret_key"; // Replace with your secret key
+// Set the secret key
+const secretKey = "BURGIR";
 
 const selectColumns = tableColumns
   .split(", ")
@@ -187,10 +188,6 @@ app.delete("/api/deleteHabits/:habit_id", async (req, res) => {
   }
 });
 
-app.listen(port, host, () => {
-  console.log(`Server running at ${host}:${port}`);
-});
-
 //? LOGIN - REGISTER
 
 // Login endpoint
@@ -230,10 +227,13 @@ app.post("/api/register", async (req, res) => {
       `INSERT INTO ${userRemoteTable} (username, password) VALUES ($1, $2)`,
       [username, hashedPassword]
     );
-
     res.status(201).json({ message: "User registered successfully" });
   } catch (error) {
     console.error("Error during registration:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
+});
+
+app.listen(port, host, () => {
+  console.log(`Server running at ${host}:${port}`);
 });

@@ -11,6 +11,7 @@ export const login = async (username: string, password: string) => {
       password,
     });
     if (response.status >= 200 && response.status < 300) {
+      console.log(response);
       return true;
     } else {
       return false;

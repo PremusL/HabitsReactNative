@@ -37,6 +37,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = () => {
   const handleLogin = async () => {
     const result = await login(username, password);
     if (result) {
+      console.log(result);
       setLogin(true);
     } else {
       console.log("Login failed");
@@ -48,7 +49,22 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = () => {
       {isLoggedIn ? (
         <View style={profileStyles.loggedInContainer}>
           <Text style={profileStyles.welcomeText}>Welcome, {username}!</Text>
-          <Button title="Logout" onPress={handleLogout} />
+          <TouchableOpacity
+            onPress={handleLogout}
+            style={{
+              marginTop: 20,
+              marginBottom: 40,
+              backgroundColor: "#1a1a1a",
+              borderRadius: 5,
+              alignItems: "center",
+              width: 150,
+              alignSelf: "center",
+            }}
+          >
+            <Text style={{ fontSize: 18, margin: 8, color: "white" }}>
+              Log Out
+            </Text>
+          </TouchableOpacity>
         </View>
       ) : (
         <>
@@ -77,7 +93,22 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = () => {
                 onChangeText={setConfirmPassword}
                 secureTextEntry
               />
-              <Button title="Register" onPress={handleRegister} />
+              <TouchableOpacity
+                onPress={handleRegister}
+                style={{
+                  marginTop: 10,
+                  marginBottom: 4,
+                  backgroundColor: "#1a1a1a",
+                  borderRadius: 5,
+                  alignItems: "center",
+                  width: 150,
+                  alignSelf: "center",
+                }}
+              >
+                <Text style={{ fontSize: 18, margin: 8, color: "white" }}>
+                  Register
+                </Text>
+              </TouchableOpacity>
               <TouchableOpacity onPress={() => setRegistration(false)}>
                 <Text style={profileStyles.switchText}>Back to Login</Text>
               </TouchableOpacity>
@@ -99,7 +130,22 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = () => {
                 onChangeText={setPassword}
                 secureTextEntry
               />
-              <Button title="Login" onPress={() => handleLogin()} />
+              <TouchableOpacity
+                onPress={handleLogin}
+                style={{
+                  marginTop: 20,
+                  marginBottom: 40,
+                  backgroundColor: "#1a1a1a",
+                  borderRadius: 5,
+                  alignItems: "center",
+                  width: 150,
+                  alignSelf: "center",
+                }}
+              >
+                <Text style={{ fontSize: 18, margin: 8, color: "white" }}>
+                  Login
+                </Text>
+              </TouchableOpacity>
               <TouchableOpacity onPress={() => setRegistration(true)}>
                 <Text style={profileStyles.switchText}>Register</Text>
               </TouchableOpacity>

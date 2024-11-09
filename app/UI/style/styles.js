@@ -72,7 +72,7 @@ export const profileStyles = StyleSheet.create({
     color: "#FFF", // White text color
   },
   switchText: {
-    color: "#1E90FF",
+    color: "#1a1a1a",
     marginTop: 10,
     textAlign: "center",
   },
