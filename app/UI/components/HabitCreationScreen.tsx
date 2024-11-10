@@ -31,6 +31,7 @@ import { HabitType } from "../types/habit.d";
 import { addHabitLocalDb } from "./LocalStorageUtil";
 import { useLoadingContext } from "./Contexts/LoadingContext";
 import { addHabitDB, getLocalDB } from "./DataBaseUtil";
+import { useUserContext } from "./Contexts/UserContext";
 
 const iconList = [
   "rocket",
@@ -51,6 +52,7 @@ const HabitCreationScreen: React.FC<HabitCreationScreenProps> = ({
   navigation,
 }) => {
   const { loading, setLoading } = useLoadingContext();
+  const { user_id, setUser } = useUserContext();
   const [text, onChangeText] = useState("");
   const [textDescription, onChangeTextDescription] = useState("");
   const [selectedDate, setSelectedDate] = useState("");
@@ -109,7 +111,7 @@ const HabitCreationScreen: React.FC<HabitCreationScreenProps> = ({
       setLoading(true);
       await addHabitLocalDb(db, data);
       setLoading(false);
-      // TODO addHabitDB()
+      await addHabitDB(user_id, data);
     } catch (error) {
       console.log("Failed to add a habit to local data", error);
     }

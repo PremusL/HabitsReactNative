@@ -10,27 +10,29 @@ import {
 } from "react-native";
 import { profileStyles } from "../../style/styles";
 import { ProfileScreenProps } from "../../types/screen.d";
-import { useLoginContext } from "../Contexts/LoginContext";
+import { useUserContext } from "../Contexts/UserContext";
 import { login, register } from "../Login/LoginUtil";
 
 export const ProfileScreen: React.FC<ProfileScreenProps> = () => {
-  const { isLoggedIn, setLogin } = useLoginContext();
+  const { user_id, setUser } = useUserContext();
   const [registration, setRegistration] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
   const handleLogout = () => {
-    setLogin(false);
+    setUser(null);
     setUsername("");
     setPassword("");
   };
   const handleRegister = async () => {
     const result = await register(username, password);
     if (result) {
-      setLogin(true);
+      console.log(result);
+      setUser(result.user_id);
     } else {
       console.log("Login failed");
+      setUser(null);
     }
   };
 
@@ -38,17 +40,18 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = () => {
     const result = await login(username, password);
     if (result) {
       console.log(result);
-      setLogin(true);
+      setUser(result.user_id);
     } else {
       console.log("Login failed");
+      setUser(null);
     }
   };
 
   return (
     <View style={profileStyles.mainPage}>
-      {isLoggedIn ? (
+      {user_id ? (
         <View style={profileStyles.loggedInContainer}>
-          <Text style={profileStyles.welcomeText}>Welcome, {username}!</Text>
+          <Text style={profileStyles.welcomeText}>Welcome: {username}!</Text>
           <TouchableOpacity
             onPress={handleLogout}
             style={{

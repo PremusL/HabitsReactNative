@@ -82,13 +82,16 @@ export const deleteHabitDB = async (habit_id: number) => {
   }
 };
 
-export const addHabitDB = async (user_id: number, data: HabitType) => {
+export const addHabitDB = async (user_id: number | null, data: HabitType) => {
   console.log("Writing data to database");
-
+  if (user_id === null) {
+    console.log("User not logged in");
+    return;
+  }
   // remote
   try {
     const response = await axios.post(
-      `${BASE_URL}/api/writeHabits/${user_id}`,
+      `${BASE_URL}/api/writeHabit/${user_id}`,
       data,
       {
         timeout: timeoutDuration,

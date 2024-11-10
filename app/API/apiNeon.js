@@ -33,9 +33,9 @@ app.post("/api/login", async (req, res) => {
       return res.status(401).json({ error: "Invalid credentials" });
     }
     const token = jwt.sign({ userId: user.user_id }, process.env.SECRET_KEY, {
-      expiresIn: "1h",
+      expiresIn: "8h",
     });
-    res.json({ token });
+    res.json({ toekn: token, user_id: user.user_id });
   } catch (error) {
     console.error("Error during login:", error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -48,10 +48,18 @@ app.post("/api/register", async (req, res) => {
   console.log("req.body", req.body);
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
-    const query = `INSERT INTO ${userRemoteTable} (username, password) VALUES ('${username}', '${hashedPassword}')`;
+    const query = `
+    INSERT INTO ${userRemoteTable} 
+    (username, password)
+    VALUES ('${username}', '${hashedPassword}')
+    RETURNING user_id;`;
     console.log("Executing query:", query);
-    await sql(query);
-    res.status(201).json({ message: "User registered successfully" });
+    const result = await sql(query);
+    const userId = result[0].user_id;
+
+    res
+      .status(201)
+      .json({ user_id: userId, message: "User registered successfully" });
   } catch (error) {
     console.error("Error during registration:", error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -76,28 +84,31 @@ app.post("/api/writeHabit/:user_id", async (req, res) => {
   try {
     const query1 = `
     INSERT INTO ${Constants.habit}
-    (${HabitTypeConstants.version}, ${HabitTypeConstants.user_id}) VALUES (0, ${user_id});`;
+    (${HabitTypeConstants.version}, ${HabitTypeConstants.user_id})
+    VALUES (0, ${user_id})
+    RETURNING ${HabitTypeConstants.habit_id};`;
 
     const result = await sql(query1);
-    console.log("result from insert into habit:", result);
-    //     const query2 = `
-    //     INSERT INTO ${Constants.habit_instance} (
-    //     ${HabitTypeConstants.habit_id},
-    //     ${HabitTypeConstants.name},
-    //     ${HabitTypeConstants.description},
-    //     ${HabitTypeConstants.date},
-    //     ${HabitTypeConstants.time},
-    //     ${HabitTypeConstants.color},
-    //     ${HabitTypeConstants.icon},
-    //     ${HabitTypeConstants.intensity},
-    //     ${HabitTypeConstants.good}
-    //     ) VALUES (
-    //      ${result.lastInsertRowId},
-    //      "${name}", "${description}", "${date}", "${time}",
-    //    "${color}", "${icon}", "${intensity}", "${good}");`;
-
-    //     await sql(query2);
-    //     res.json({ message: "Data added successfully" });
+    const habit_id = result[0].habit_id;
+    const query2 = `
+        INSERT INTO ${Constants.habit_instance} (
+        ${HabitTypeConstants.habit_id},
+        ${HabitTypeConstants.name},
+        ${HabitTypeConstants.description},
+        ${HabitTypeConstants.date},
+        ${HabitTypeConstants.time},
+        ${HabitTypeConstants.color},
+        ${HabitTypeConstants.icon},
+        ${HabitTypeConstants.intensity},
+        ${HabitTypeConstants.good},
+        ${HabitTypeConstants.version}
+        ) VALUES (
+         ${habit_id},
+         '${name}', '${description}', '${date}', '${time}',
+       '${color}', '${icon}', '${intensity}', '${good}', ${version})`;
+    console.log("Executing query:", query2);
+    await sql(query2);
+    res.json({ message: "Data added successfully" });
   } catch (error) {
     console.error("Error executing query:", error);
     if (!res.headersSent) {
