@@ -82,20 +82,18 @@ export const deleteHabitDB = async (habit_id: number) => {
   }
 };
 
-export const writeHabitDB = async (data: HabitType) => {
+export const addHabitDB = async (user_id: number, data: HabitType) => {
   console.log("Writing data to database");
-  // local
-  try {
-    const db = await getLocalDB();
-    await addHabitLocalDb(db, data);
-  } catch (error) {
-    console.log("Failed to add a habait to local data", error);
-  }
+
   // remote
   try {
-    const response = await axios.post(`${BASE_URL}/api/writeHabits`, data, {
-      timeout: timeoutDuration,
-    });
+    const response = await axios.post(
+      `${BASE_URL}/api/writeHabits/${user_id}`,
+      data,
+      {
+        timeout: timeoutDuration,
+      }
+    );
     console.log("Data written successfully", response.data);
   } catch (error) {
     console.log("Failed to write data", error);

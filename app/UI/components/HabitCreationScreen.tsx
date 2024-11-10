@@ -30,7 +30,7 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import { HabitType } from "../types/habit.d";
 import { addHabitLocalDb } from "./LocalStorageUtil";
 import { useLoadingContext } from "./Contexts/LoadingContext";
-import { getLocalDB } from "./DataBaseUtil";
+import { addHabitDB, getLocalDB } from "./DataBaseUtil";
 
 const iconList = [
   "rocket",
@@ -109,6 +109,7 @@ const HabitCreationScreen: React.FC<HabitCreationScreenProps> = ({
       setLoading(true);
       await addHabitLocalDb(db, data);
       setLoading(false);
+      // TODO addHabitDB()
     } catch (error) {
       console.log("Failed to add a habit to local data", error);
     }

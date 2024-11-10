@@ -118,6 +118,7 @@ export const getHistoryLocalDb = async (
     const query = `SELECT * FROM ${Constants.habit_instance} WHERE ${HabitTypeConstants.habit_id} = ${habit_id}`;
     const allRows: HabitType[] = await db.getAllAsync(query);
     console.log("All rows from instance:", allRows);
+
     return allRows;
   } catch (error) {
     console.error("Failed to get history", error);

@@ -5,8 +5,7 @@ import { useLoadingContext } from "./LoadingContext";
 import { getLocalDB, readHabitsDB } from "../DataBaseUtil";
 import * as SQLite from "expo-sqlite";
 import { Constants, HabitTypeConstants } from "../Constants";
-
-import { addHabitLocalDb } from "../LocalStorageUtil";
+import { useLoginContext } from "./LoginContext";
 
 interface DataContextType {
   data: HabitType[];

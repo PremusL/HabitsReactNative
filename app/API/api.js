@@ -1,20 +1,20 @@
 const express = require("express");
 const cors = require("cors");
-const { Client } = require("pg");
+const { Pool } = require("pg");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const fs = require("fs"); // Import the fs module
+require("dotenv").config("../../.env"); // Load environment variables from .env file
 
 const app = express();
-const port = 3001;
-const host = "192.168.1.103";
+const port = process.env.PORT || 3001;
+const host = process.env.HOST || "192.168.1.103";
 
 const tableName = "habits";
 const tableColumns =
   "habit_id, name, description, date, time, color, icon, intensity, good, frequency, change_time_stamp";
-const userRemoteTable = '"user"';
-
-// Set the secret key
-const secretKey = "BURGIR";
+const userRemoteTable = "users"; // Ensure this matches your database table name
+const secretKey = process.env.SECRET_KEY || "your_default_secret_key"; // Use environment variable for secret key
 
 const selectColumns = tableColumns
   .split(", ")
@@ -24,22 +24,26 @@ const selectColumns = tableColumns
 app.use(cors());
 app.use(express.json()); // To parse JSON bodies
 
-// PostgreSQL connection
-const client = new Client({
-  user: "postgres", // Replace with your PostgreSQL username
-  host: "192.168.1.103",
-  database: "postgres", // Replace with your database name
-  password: "new_password", // Replace with your PostgreSQL password
-  port: 5432,
+// PostgreSQL connection pool
+const pool = new Pool({
+  user: process.env.DB_USER,
+  host: process.env.DB_HOST,
+  database: process.env.DB_NAME,
+  password: process.env.DB_PASSWORD,
+  port: process.env.DB_PORT,
+  ssl: {
+    rejectUnauthorized: process.env.DB_SSL_REJECT_UNAUTHORIZED === "true",
+  },
 });
 
-client.connect((err) => {
-  if (err) {
-    console.error("PostgreSQL connection error:", err);
-  } else {
-    console.log("PostgreSQL connected");
-  }
+pool.on("connect", () => {
+  console.log("PostgreSQL connected");
 });
+// client
+//   .connect()
+//   .then(() => console.log("Connected to the database successfully!"))
+//   .catch((err) => console.error("Connection error", err.stack))
+//   .finally(() => client.end());
 
 // Example route to get data
 app.get("/api/readHabits", async (req, res) => {
@@ -194,11 +198,10 @@ app.delete("/api/deleteHabits/:habit_id", async (req, res) => {
 app.post("/api/login", async (req, res) => {
   const { username, password } = req.body;
   try {
-    const result = await client.query(
+    const result = await pool.query(
       `SELECT * FROM ${userRemoteTable} WHERE username = $1`,
       [username]
     );
-    console.log("result", result);
     if (result.rows.length === 0) {
       return res.status(401).json({ error: "Invalid credentials" });
     }
@@ -223,10 +226,9 @@ app.post("/api/register", async (req, res) => {
   console.log("req.body", req.body);
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
-    await client.query(
-      `INSERT INTO ${userRemoteTable} (username, password) VALUES ($1, $2)`,
-      [username, hashedPassword]
-    );
+    const query = `INSERT INTO ${userRemoteTable} (username, password) VALUES ($1, $2)`;
+    console.log("Executing query:", query);
+    await pool.query(query, [username, hashedPassword]);
     res.status(201).json({ message: "User registered successfully" });
   } catch (error) {
     console.error("Error during registration:", error);
@@ -234,6 +236,31 @@ app.post("/api/register", async (req, res) => {
   }
 });
 
-app.listen(port, host, () => {
-  console.log(`Server running at ${host}:${port}`);
+// Middleware to protect routes
+const authenticateToken = (req, res, next) => {
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
+  if (token == null) return res.sendStatus(401);
+
+  jwt.verify(token, secretKey, (err, user) => {
+    if (err) return res.sendStatus(403);
+    req.user = user;
+    next();
+  });
+};
+
+// Protected route example
+app.get("/api/protected", authenticateToken, (req, res) => {
+  res.json({ message: "This is a protected route", user: req.user });
+});
+
+// HTTPS options
+const httpsOptions = {
+  key: fs.readFileSync("server.key"),
+  cert: fs.readFileSync("server.cert"),
+};
+
+// Start HTTPS server
+https.createServer(httpsOptions, app).listen(port, host, () => {
+  console.log(`Server running at https://${host}:${port}/`);
 });

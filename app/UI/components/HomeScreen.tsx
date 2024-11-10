@@ -5,11 +5,13 @@ import { HabitList } from "./HabitObject";
 import { HomeScreenProps } from "../types/screen.d";
 import { styles } from "../style/styles";
 import { useDataContext } from "./Contexts/DataContext";
+import { useLoginContext } from "./Contexts/LoginContext";
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }) => {
   const { data, fetchData } = useDataContext();
   const [selectedHabit, setSelectedHabit] = useState<number | null>(null);
   const [maxKey, setMaxKey] = useState<number | null>(0);
+  const { isLoggedIn, setLogin } = useLoginContext();
 
   useEffect(() => {
     const waitFetchData = async () => {
@@ -28,6 +30,12 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }) => {
         whereTo="HabitCreationScreen"
         onPress={() => {}}
       />
+      {isLoggedIn && (
+        <Text style={{ position: "absolute", bottom: 20, left: 30 }}>
+          You are logged in
+        </Text>
+      )}
+
       {data && (
         <HabitList
           habits={data}

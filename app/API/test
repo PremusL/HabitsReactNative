@@ -1,0 +1,2 @@
+postgresql://habitsDB_owner:0vWKZr3neXUd@ep-aged-resonance-a2uhjeis.eu-central-1.aws.neon.tech/habitsDB?sslmode=require
+postgresql://habitsDB_owner:0vWKZr3neXUd@ep-summer-shadow-a2ivm2ug.eu-central-1.aws.neon.tech/habitsDB?sslmode=require
