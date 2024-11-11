@@ -17,8 +17,8 @@ export const getLocalDB = async () => {
 export const readHabitsDB: any = async () => {
     console.log("Reading data from database");
     try {
-        const response = await axios.get(`${BASE_URL}/api/readHabits`);
-
+        const response = await axios.get(`${BASE_URL}/api/readHabits`, {timeout: timeoutDuration});
+        console.log("Data read successfully", response.data);
         return response.data;
     } catch (error) {
         console.error("Failed to read data", error);
@@ -51,7 +51,7 @@ export const deleteHabitDB = async (habit_id: number) => {
     }
 };
 
-export const addHabitDB = async (user_id: number | null, data: HabitType) => {
+export const addHabitDb = async (user_id: number | null, data: HabitType) => {
     console.log("Writing data to database");
     if (user_id === null) {
         console.log("User not logged in");

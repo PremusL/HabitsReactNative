@@ -65,6 +65,38 @@ app.post("/api/register", async (req, res) => {
         res.status(500).json({error: "Internal Server Error"});
     }
 });
+app.get("/api/readHabits", async (req, res) => {
+    console.log("Request to read");
+
+    try {// TODO ADD USER ID
+        const query = `SELECT 
+            hi.${HabitTypeConstants.habit_id},
+            hi.${HabitTypeConstants.name},
+            hi.${HabitTypeConstants.date},
+            hi.${HabitTypeConstants.time},
+            hi.${HabitTypeConstants.description},
+            hi.${HabitTypeConstants.color},
+            hi.${HabitTypeConstants.icon},
+            hi.${HabitTypeConstants.intensity},
+            hi.${HabitTypeConstants.good},
+            hi.${HabitTypeConstants.version},
+            hi.${HabitTypeConstants.change_time_stamp}
+            FROM ${Constants.habit} h
+            JOIN ${Constants.habit_instance} hi
+            ON h.${HabitTypeConstants.habit_id} = hi.${HabitTypeConstants.habit_id}
+            WHERE h.${HabitTypeConstants.version} = hi.${HabitTypeConstants.version}
+            `;
+        console.log(query);
+        const result = await sql(query);
+        res.json(result.rows);
+    } catch (error) {
+        console.error("Error executing query:", error);
+        if (!res.headersSent) {
+            res.status(500).json({error: "Internal Server Error"});
+        }
+    }
+});
+
 
 app.post("/api/writeHabit/:user_id", async (req, res) => {
     const {user_id} = req.params;
