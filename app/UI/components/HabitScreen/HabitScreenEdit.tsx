@@ -22,7 +22,7 @@ import { CheckBox, Slider, Switch } from "@rneui/themed";
 import { HabitType } from "../../types/habit.d";
 import { updateHabitLocalDB } from "../LocalStorageUtil";
 import { useDataContext } from "../Contexts/DataContext";
-import { getLocalDB } from "../DataBaseUtil";
+import {getLocalDB, updateDataDb} from "../DataBaseUtil";
 
 const iconList = [
   "rocket",
@@ -70,6 +70,7 @@ const HabitScreenEdit: React.FC<HabitScreenEditProps> = ({
     const db = await getLocalDB();
     await updateHabitLocalDB(db, data);
     await fetchData();
+    await updateDataDb(data);
   };
 
   const handleSave = async (data: HabitType) => {

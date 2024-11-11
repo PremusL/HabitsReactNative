@@ -10,7 +10,7 @@ import { IncreaseFrequencyButton, RemoveButton } from "../Buttons";
 import { HabitScreenProps } from "../../types/screen.d";
 
 import { HabitType } from "../../types/habit.d";
-import { updateDataDB } from "../DataBaseUtil";
+import {deleteHabitDB, updateDataDB} from "../DataBaseUtil";
 import HabitScreenEdit from "./HabitScreenEdit";
 import HabitScreenPreview from "./HabitScreenPreview";
 import Icon from "react-native-vector-icons/FontAwesome";
@@ -71,6 +71,7 @@ const HabitScreen: React.FC<HabitScreenProps> = ({ navigation, route }) => {
     setLoading(true);
     await deleteHabitLocalDb(db, habit_id);
     setLoading(false);
+    await deleteHabitDB(habit_id);
   };
 
   return (

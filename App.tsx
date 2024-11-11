@@ -17,7 +17,6 @@ import { DataProvider } from "./app/UI/components/Contexts/DataContext";
 import { MenuProvider } from "react-native-popup-menu";
 import RightCornerMenu from "./app/UI/components/RightCornerMenu";
 import HistoryScreen from "./app/UI/components/HistoryScreen/HistoryScreen";
-import { LoginProvider } from "./app/UI/components/Contexts/LoginContext";
 import { UserProvider } from "./app/UI/components/Contexts/UserContext";
 
 const Tab = createBottomTabNavigator();
@@ -73,50 +72,45 @@ const TabNavigator = () => (
 const App = () => (
   <GestureHandlerRootView style={{ flex: 1 }}>
     <UserProvider>
-      <LoginProvider>
-        <LoadingProvider>
-          <DataProvider>
-            <MenuProvider>
-              <NavigationContainer>
-                <Stack.Navigator screenOptions={navigatorOptions}>
-                  <Stack.Screen
-                    name="Tabs"
-                    component={TabNavigator}
-                    options={{ headerShown: false }}
-                  />
-                  <Stack.Screen
-                    name="HabitScreen"
-                    component={HabitScreen}
-                    options={({ navigation, route }) => ({
-                      title: "Habit Screen",
-                      headerRight: () => (
-                        <RightCornerMenu
-                          navigation={navigation}
-                          route={route}
-                        />
-                      ),
-                    })}
-                  />
-                  <Stack.Screen
-                    name="HabitCreationScreen"
-                    component={HabitCreationScreen}
-                    options={({ navigation }) => ({
-                      title: "Create Habit",
-                    })}
-                  />
-                  <Stack.Screen
-                    name="HistoryScreen"
-                    component={HistoryScreen}
-                    options={({ navigation }) => ({
-                      title: "History screen",
-                    })}
-                  />
-                </Stack.Navigator>
-              </NavigationContainer>
-            </MenuProvider>
-          </DataProvider>
-        </LoadingProvider>
-      </LoginProvider>
+      <LoadingProvider>
+        <DataProvider>
+          <MenuProvider>
+            <NavigationContainer>
+              <Stack.Navigator screenOptions={navigatorOptions}>
+                <Stack.Screen
+                  name="Tabs"
+                  component={TabNavigator}
+                  options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                  name="HabitScreen"
+                  component={HabitScreen}
+                  options={({ navigation, route }) => ({
+                    title: "Habit Screen",
+                    headerRight: () => (
+                      <RightCornerMenu navigation={navigation} route={route} />
+                    ),
+                  })}
+                />
+                <Stack.Screen
+                  name="HabitCreationScreen"
+                  component={HabitCreationScreen}
+                  options={({ navigation }) => ({
+                    title: "Create Habit",
+                  })}
+                />
+                <Stack.Screen
+                  name="HistoryScreen"
+                  component={HistoryScreen}
+                  options={({ navigation }) => ({
+                    title: "History screen",
+                  })}
+                />
+              </Stack.Navigator>
+            </NavigationContainer>
+          </MenuProvider>
+        </DataProvider>
+      </LoadingProvider>
     </UserProvider>
   </GestureHandlerRootView>
 );

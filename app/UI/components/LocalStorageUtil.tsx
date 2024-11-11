@@ -27,6 +27,8 @@ export const addHabitLocalDb = async (
      "${habit.name}", "${habit.description}", "${habit.date}", "${habit.time}",
    "${habit.color}", "${habit.icon}", "${habit.intensity}", "${habit.good}");`;
   await db.execAsync(query2);
+
+  return result.lastInsertRowId;
 };
 export const addInstanceHabitLocalDb = async (
   db: SQLite.SQLiteDatabase,
