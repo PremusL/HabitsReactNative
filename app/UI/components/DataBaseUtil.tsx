@@ -39,6 +39,7 @@ export const updateDataDb: any = async (data: HabitType) => {
 
 export const deleteHabitDB = async (habit_id: number) => {
     console.log("Deleting data from database");
+    // TODO - delete just for user_id
     // remote
     try {
         const response = await axios.delete(

@@ -86,9 +86,10 @@ app.get("/api/readHabits", async (req, res) => {
             ON h.${HabitTypeConstants.habit_id} = hi.${HabitTypeConstants.habit_id}
             WHERE h.${HabitTypeConstants.version} = hi.${HabitTypeConstants.version}
             `;
-        console.log(query);
+
         const result = await sql(query);
-        res.json(result.rows);
+        console.log(result);
+        res.json(result);
     } catch (error) {
         console.error("Error executing query:", error);
         if (!res.headersSent) {
@@ -150,12 +151,12 @@ app.post("/api/writeHabit/:user_id", async (req, res) => {
 
 app.delete("/api/deleteHabit/:habit_id", async (req, res) => {
     const {habit_id} = req.params;
+
     console.log("Request to delete with habit_id:", habit_id);
 
     if (!habit_id) {
         return res.status(400).json({error: "habit_id is required"});
     }
-
     try {
         const query_habit_table = `DELETE FROM ${Constants.habit} WHERE ${HabitTypeConstants.habit_id} = ${habit_id}`;
         const query_habit_instance_table = `DELETE FROM ${Constants.habit_instance} WHERE ${HabitTypeConstants.habit_id} = ${habit_id}`;
