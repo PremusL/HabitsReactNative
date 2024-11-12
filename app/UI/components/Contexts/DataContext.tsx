@@ -101,13 +101,16 @@ export const DataProvider: React.FC<{ children: any }> = ({children}) => {
             const dataRemote: HabitType[] = await readHabitsDB();
             console.log("local", dataLocal);
             console.log("remote", dataRemote);
-
+            //TODO habit id is not the same in local and remote db
             // Sync remote habits to local
             for (const remoteHabit of dataRemote) {
                 const localHabit = dataLocal.find(habit => habit.habit_id === remoteHabit.habit_id);
+                console.log("local habit", localHabit?.habit_id);
                 if (!localHabit) {
+                    setLoading(true);
                     await addHabitLocalDb(db, remoteHabit);
                     console.log("Added habit to local db:", remoteHabit);
+                    setLoading(false);
                 }
             }
 
