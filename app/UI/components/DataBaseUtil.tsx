@@ -5,7 +5,7 @@ import {Constants} from "./Constants";
 
 const BASE_URL = "http://192.168.1.103:3001"; // Use 'http://localhost:3000' for iOS
 
-const timeoutDuration = 5000;
+const timeoutDuration = 4000;
 
 export const getLocalDB = async () => {
     const db = await SQLite.openDatabaseAsync(Constants.localDBName, {
@@ -14,10 +14,11 @@ export const getLocalDB = async () => {
     return db;
 };
 
-export const readHabitsDB: any = async () => {
+export const readHabitsDb: any = async (user_id: number) => {
     console.log("Reading data from database");
     try {
-        const response = await axios.get(`${BASE_URL}/api/readHabits`, {timeout: timeoutDuration});
+        const response = await axios.get(`${BASE_URL}/api/readHabits/${user_id}`,
+            {timeout: timeoutDuration});
         console.log("Data read successfully", response.data);
         return response.data;
     } catch (error) {
@@ -26,9 +27,9 @@ export const readHabitsDB: any = async () => {
     }
 };
 
-export const updateDataDb: any = async (data: HabitType) => {
+export const updateDataDb: any = async (user_id: number, data: HabitType) => {
     try {
-        const response = await axios.post(`${BASE_URL}/api/updateHabits`, data, {
+        const response = await axios.post(`${BASE_URL}/api/updateHabits/${user_id}`, data, {
             timeout: timeoutDuration,
         });
         console.log("Data updated successfully", response.data);
@@ -37,13 +38,25 @@ export const updateDataDb: any = async (data: HabitType) => {
     }
 };
 
-export const deleteHabitDB = async (habit_id: number) => {
+export const updateHabitRemoteDb: any = async (user_id: number, habit_id_old: number, habit_id_new: number) => {
+    try {
+        const response = await axios.post(`${BASE_URL}/api/updateHabit/${user_id}`, {habit_id_old, habit_id_new}, {
+            timeout: timeoutDuration,
+        });
+        console.log("Data updated successfully", response.data);
+    } catch (error) {
+        console.log("Failed to update data", error);
+    }
+};
+
+
+export const deleteHabitDB = async (user_id: number, habit_id: number) => {
     console.log("Deleting data from database");
     // TODO - delete just for user_id
     // remote
     try {
-        const response = await axios.delete(
-            `${BASE_URL}/api/deleteHabit/${habit_id}`,
+        const response = await axios.post(
+            `${BASE_URL}/api/deleteHabit/${user_id}`, {habit_id},
             {timeout: timeoutDuration}
         );
         console.log("Data deleted successfully", response.data);

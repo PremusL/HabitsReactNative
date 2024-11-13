@@ -2,7 +2,7 @@ import React, {createContext, useState, useEffect, useContext} from "react";
 import {Text, ActivityIndicator, View, Button} from "react-native";
 import {HabitType} from "../../types/habit.d";
 import {useLoadingContext} from "./LoadingContext";
-import {addHabitDb, getLocalDB, readHabitsDB} from "../DataBaseUtil";
+import {addHabitDb, getLocalDB, readHabitsDb, updateHabitRemoteDb} from "../DataBaseUtil";
 import * as SQLite from "expo-sqlite";
 import {Constants, HabitTypeConstants} from "../Constants";
 import {useUserContext} from "./UserContext";
@@ -33,8 +33,10 @@ export const DataProvider: React.FC<{ children: any }> = ({children}) => {
     const createIfNotExist = (db: SQLite.SQLiteDatabase) => {
 
         Promise.all([
-            db.getFirstAsync(`SELECT * FROM ${Constants.habit}`),
-            db.getFirstAsync(`SELECT * FROM ${Constants.habit_instance}`)
+            db.getFirstAsync(`SELECT *
+                              FROM ${Constants.habit}`),
+            db.getFirstAsync(`SELECT *
+                              FROM ${Constants.habit_instance}`)
         ])
             .then(([habitResult, habitInstanceResult]) => {
                 console.log("Both tables exist");
@@ -57,6 +59,7 @@ export const DataProvider: React.FC<{ children: any }> = ({children}) => {
 
     const createLocalTable = async (db: SQLite.SQLiteDatabase) => {
         try {
+            // language=SQL format=false
             await db.execAsync(`
           DROP TABLE IF EXISTS habit;
           CREATE TABLE habit (
@@ -66,22 +69,23 @@ export const DataProvider: React.FC<{ children: any }> = ({children}) => {
           `);
             await db.execAsync(
                 `DROP TABLE IF EXISTS habit_instance;
-          CREATE TABLE habit_instance (
-            habit_instance_id INTEGER PRIMARY KEY AUTOINCREMENT,
-            habit_id INTEGER NOT NULL,
-            name TEXT,
-            description TEXT,                 -- SQLite treats VARCHAR as TEXT
-            date TEXT,                        -- Use TEXT for date format
-            time TEXT,                        -- Use TEXT for time format
-            color TEXT,
-            icon TEXT,
-            intensity INTEGER,
-            good TEXT CHECK (good IN ('Y', 'N')),
-            version INTEGER DEFAULT 0,
-            change_time_stamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                CREATE TABLE habit_instance
+                (
+                    habit_instance_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    habit_id          INTEGER NOT NULL,
+                    name              TEXT,
+                    description       TEXT, -- SQLite treats VARCHAR as TEXT
+                    date              TEXT, -- Use TEXT for date format
+                    time              TEXT, -- Use TEXT for time format
+                    color             TEXT,
+                    icon              TEXT,
+                    intensity         INTEGER,
+                    good              TEXT CHECK (good IN ('Y', 'N')),
+                    version           INTEGER   DEFAULT 0,
+                    change_time_stamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
-            FOREIGN KEY (habit_id) REFERENCES habit(habit_id) ON DELETE CASCADE
-        );`
+                    FOREIGN KEY (habit_id) REFERENCES habit (habit_id) ON DELETE CASCADE
+                );`
             );
         } catch (error) {
             console.log("Error creating table", error);
@@ -98,17 +102,20 @@ export const DataProvider: React.FC<{ children: any }> = ({children}) => {
         try {
             const db = await getLocalDB();
             const dataLocal: HabitType[] = await readHabitsLocalDb(db);
-            const dataRemote: HabitType[] = await readHabitsDB();
+            const dataRemote: HabitType[] = await readHabitsDb();
             console.log("local", dataLocal);
             console.log("remote", dataRemote);
             //TODO habit id is not the same in local and remote db
             // Sync remote habits to local
+            // addHabitLocalDb adds habit_id automatically and the id added atomatically ins't the same as the one that is saved on the database
             for (const remoteHabit of dataRemote) {
                 const localHabit = dataLocal.find(habit => habit.habit_id === remoteHabit.habit_id);
-                console.log("local habit", localHabit?.habit_id);
                 if (!localHabit) {
                     setLoading(true);
-                    await addHabitLocalDb(db, remoteHabit);
+                    const habit_id_new = await addHabitLocalDb(db, remoteHabit);
+                    await updateHabitRemoteDb(remoteHabit.habit_id, habit_id_new);
+
+                    // update remote habit_id with new habit_id
                     console.log("Added habit to local db:", remoteHabit);
                     setLoading(false);
                 }
