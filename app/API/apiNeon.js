@@ -49,6 +49,15 @@ app.post("/api/register", async (req, res) => {
     const {username, password} = req.body;
     console.log("req.body", req.body);
     try {
+        const query_check_existing = `SELECT *
+                                      FROM ${userRemoteTable}
+                                      WHERE username = '${username}'`;
+
+        const result_existing = await sql(query_check_existing);
+        if (result_existing && result_existing.length > 0) {
+            return res.json({user_id: null, error: 409});
+        }
+
         const hashedPassword = await bcrypt.hash(password, 10);
         const query = `
             INSERT INTO ${userRemoteTable}
@@ -60,9 +69,10 @@ app.post("/api/register", async (req, res) => {
 
         res
             .status(201)
-            .json({user_id: userId, message: "User registered successfully"});
+            .json({user_id: userId, error: 0});
+
     } catch (error) {
-        console.error("Error during registration:", error);
+        // console.error("Error during registration:", error);
         res.status(500).json({error: "Internal Server Error"});
     }
 });

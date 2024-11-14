@@ -20,6 +20,13 @@ const HomeScreen: React.FC<HomeScreenProps> = ({navigation, route}) => {
         setRefreshing(false);
     };
 
+    useEffect(() => {
+        const waitFetchData = async () => {
+            await fetchData();
+        };
+        waitFetchData();
+    }, []);
+
     return (
         <SafeAreaView style={styles.mainPage}>
             <ScrollView
