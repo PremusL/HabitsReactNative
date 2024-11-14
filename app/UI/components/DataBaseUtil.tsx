@@ -40,7 +40,10 @@ export const updateDataDb: any = async (user_id: number, data: HabitType) => {
 
 export const updateHabitRemoteDb: any = async (user_id: number, habit_id_old: number, habit_id_new: number) => {
     try {
-        const response = await axios.post(`${BASE_URL}/api/updateHabit/${user_id}`, {habit_id_old, habit_id_new}, {
+        const response = await axios.post(`${BASE_URL}/api/updateHabit/${user_id}`, {
+            'habit_id_old': habit_id_old,
+            'habit_id_new': habit_id_new
+        }, {
             timeout: timeoutDuration,
         });
         console.log("Data updated successfully", response.data);

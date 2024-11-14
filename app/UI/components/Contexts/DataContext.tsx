@@ -29,7 +29,6 @@ export const DataProvider: React.FC<{ children: any }> = ({children}) => {
     const {loading, setLoading} = useLoadingContext();
     const {user_id, setUser} = useUserContext();
 
-
     const createIfNotExist = (db: SQLite.SQLiteDatabase) => {
 
         Promise.all([
@@ -102,7 +101,7 @@ export const DataProvider: React.FC<{ children: any }> = ({children}) => {
         try {
             const db = await getLocalDB();
             const dataLocal: HabitType[] = await readHabitsLocalDb(db);
-            const dataRemote: HabitType[] = await readHabitsDb();
+            const dataRemote: HabitType[] = await readHabitsDb(user_id);
             console.log("local", dataLocal);
             console.log("remote", dataRemote);
             //TODO habit id is not the same in local and remote db
@@ -113,7 +112,7 @@ export const DataProvider: React.FC<{ children: any }> = ({children}) => {
                 if (!localHabit) {
                     setLoading(true);
                     const habit_id_new = await addHabitLocalDb(db, remoteHabit);
-                    await updateHabitRemoteDb(remoteHabit.habit_id, habit_id_new);
+                    await updateHabitRemoteDb(user_id, remoteHabit.habit_id, habit_id_new);
 
                     // update remote habit_id with new habit_id
                     console.log("Added habit to local db:", remoteHabit);
@@ -121,14 +120,14 @@ export const DataProvider: React.FC<{ children: any }> = ({children}) => {
                 }
             }
 
-            // // Sync local habits to remote
-            // for (const localHabit of dataLocal) {
-            //     const remoteHabit = dataRemote.find(habit => habit.habit_id === localHabit.habit_id);
-            //     if (!remoteHabit) {
-            //         await addHabitDb(localHabit.habit_id, localHabit);
-            //         console.log("added habit to remote", localHabit);
-            //     }
-            // }
+            // Sync local habits to remote
+            for (const localHabit of dataLocal) {
+                const remoteHabit = dataRemote.find(habit => habit.habit_id === localHabit.habit_id);
+                if (!remoteHabit) {
+                    await addHabitDb(user_id, {...localHabit, habit_id: localHabit.habit_id});
+                    console.log("added habit to remote", localHabit);
+                }
+            }
 
             console.log("Sync completed successfully");
         } catch (error) {
@@ -138,14 +137,15 @@ export const DataProvider: React.FC<{ children: any }> = ({children}) => {
 
     const fetchData = async () => {
         const db = await getLocalDB();
+
         await fetchDataOffline(db);
+        await syncData()
     };
 
     useEffect(() => {
         const waitFetchData = async () => {
             setLoading(true);
             const db = await getLocalDB();
-
             createIfNotExist(db);
             await syncData();
             await fetchData();
@@ -153,6 +153,13 @@ export const DataProvider: React.FC<{ children: any }> = ({children}) => {
         };
         waitFetchData();
         console.log("Data fetched");
+
+        // Sync data every 10 minutes
+        const intervalId = setInterval(async () => {
+            await syncData();
+        }, 600000);
+
+        return () => clearInterval(intervalId);
     }, []);
 
     return loading ? (
@@ -162,7 +169,6 @@ export const DataProvider: React.FC<{ children: any }> = ({children}) => {
     ) : (
 
         <DataContext.Provider value={{data: data, fetchData}}>
-            <Button title="Sync" onPress={syncData}></Button>
             {children}
         </DataContext.Provider>
 

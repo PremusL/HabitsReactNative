@@ -148,7 +148,7 @@ app.post("/api/writeHabit/:user_id", async (req, res) => {
     }
 });
 
-app.delete("/api/deleteHabit/:user_id", async (req, res) => {
+app.post("/api/deleteHabit/:user_id", async (req, res) => {
     const {user_id} = req.params;
     const {habit_id} = req.body;
 

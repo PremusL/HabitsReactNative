@@ -72,7 +72,7 @@ const HabitScreenEdit: React.FC<HabitScreenEditProps> = ({
         const db = await getLocalDB();
         await updateHabitLocalDB(db, data);
         await fetchData();
-        if (user_id) await updateDataDb(data);
+        if (user_id) await updateDataDb(user_id, data);
     };
 
     const handleSave = async (data: HabitType) => {

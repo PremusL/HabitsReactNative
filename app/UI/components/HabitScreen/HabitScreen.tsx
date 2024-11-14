@@ -72,7 +72,7 @@ const HabitScreen: React.FC<HabitScreenProps> = ({navigation, route}) => {
         setLoading(true);
         await deleteHabitLocalDb(db, habit_id);
         setLoading(false);
-        if (user_id) await deleteHabitDB(habit_id);
+        if (user_id) await deleteHabitDB(user_id, habit_id);
 
     };
 
