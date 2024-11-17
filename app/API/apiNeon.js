@@ -239,6 +239,8 @@ app.post("/api/updateHabit/:user_id", async (req, res) => {
     const {habit_id_old, habit_id_new} = req.body;
     console.log("updating old:", habit_id_old, "new:", habit_id_new);
     try {
+
+
         const query_habit = `
             UPDATE ${Constants.habit}
             SET habit_id = ${habit_id_new}

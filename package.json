@@ -27,6 +27,8 @@
     "dotenv": "^16.4.5",
     "expo": "~51.0.22",
     "expo-blur": "^13.0.2",
+    "expo-constants": "^17.0.3",
+    "expo-env": "^1.1.1",
     "expo-file-system": "~17.0.1",
     "expo-router": "^3.5.23",
     "expo-sqlite": "~14.0.6",
@@ -40,6 +42,7 @@
     "react-native": "0.74.3",
     "react-native-calendars": "^1.1306.0",
     "react-native-color-picker": "^0.6.0",
+    "react-native-config": "^1.5.3",
     "react-native-dropdown-picker": "^5.4.6",
     "react-native-gesture-handler": "^2.20.0",
     "react-native-light-color-picker": "^1.0.0-rc.8",
@@ -56,6 +59,7 @@
     "@babel/core": "^7.20.0",
     "@types/react": "~18.2.45",
     "@types/react-native-sqlite-storage": "^6.0.5",
+    "react-native-dotenv": "^3.4.11",
     "typescript": "^5.1.3"
   },
   "op-sqlite": {

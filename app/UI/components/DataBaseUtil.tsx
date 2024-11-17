@@ -2,8 +2,9 @@ import axios from "axios";
 import {HabitType} from "../types/habit.d";
 import * as SQLite from "expo-sqlite";
 import {Constants} from "./Constants";
+// @ts-ignore
+import {BASE_URL} from "@env";
 
-const BASE_URL = "http://192.168.1.103:3001"; // Use 'http://localhost:3000' for iOS
 
 const timeoutDuration = 4000;
 

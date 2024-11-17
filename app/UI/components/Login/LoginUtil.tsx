@@ -1,12 +1,15 @@
 import axios from "axios";
+// @ts-ignore
+import {BASE_URL} from "@env";
 
-const BASE_URL = "http://192.168.1.103:3001"; // Use 'http://localhost:3000' for iOS
 
 const timeoutDuration = 5000;
 
 export const login = async (username: string, password: string) => {
     try {
-        const response = await axios.post(`${BASE_URL}/api/login`, {
+        const path = `${BASE_URL}/api/login`;
+        console.log("login sent", path, password);
+        const response = await axios.post(path, {
             username,
             password,
         });

@@ -4,9 +4,9 @@ import {HabitType} from "../../types/habit.d";
 import {useLoadingContext} from "./LoadingContext";
 import {addHabitDb, getLocalDB, readHabitsDb, updateHabitRemoteDb} from "../DataBaseUtil";
 import * as SQLite from "expo-sqlite";
-import {Constants, HabitTypeConstants} from "../Constants";
+import {Constants} from "../Constants";
 import {useUserContext} from "./UserContext";
-import {addHabitLocalDb, deleteHabitLocalDb, readHabitsLocalDb} from "../LocalStorageUtil";
+import {addHabitLocalDb, readHabitsLocalDb} from "../LocalStorageUtil";
 
 
 interface DataContextType {
@@ -137,9 +137,8 @@ export const DataProvider: React.FC<{ children: any }> = ({children}) => {
 
     const fetchData = async () => {
         const db = await getLocalDB();
-
         await fetchDataOffline(db);
-        await syncData()
+        await syncData();
     };
 
     useEffect(() => {
@@ -147,6 +146,7 @@ export const DataProvider: React.FC<{ children: any }> = ({children}) => {
             setLoading(true);
             const db = await getLocalDB();
             createIfNotExist(db);
+            // createLocalTable(db);
             await syncData();
             await fetchData();
             setLoading(false);

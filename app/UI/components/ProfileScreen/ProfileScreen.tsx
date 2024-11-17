@@ -22,12 +22,16 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = () => {
     const [errorMessage, setErrorMessage] = useState("");
     const [successMessage, setSuccessMessage] = useState("");
 
-    useEffect(() => {
+    const clearAll = () => {
         setUsername("");
         setPassword("");
         setConfirmPassword("");
         setErrorMessage("");
         setSuccessMessage("");
+    }
+
+    useEffect(() => {
+        clearAll();
     }, []);
 
     const handleLogout = () => {
@@ -49,8 +53,8 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = () => {
                 console.log("success: " + result);
                 setUser(result.userId);
                 setRegistration(false);
-                
-                // setSuccessMessage("Successfully registered, now you can login");
+                clearAll();
+                setSuccessMessage("Successfully registered, now you can login");
             } else if (result.user_id === null && result.error === 409) {
                 setErrorMessage("Username already exists");
                 setSuccessMessage("");

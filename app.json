@@ -3,6 +3,9 @@
     "name": "HabitsTypescript",
     "slug": "HabitsTypescript",
     "version": "1.0.0",
+    "packagerOpts": {
+      "hostType": "localhost"
+    },
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -10,6 +13,9 @@
       "image": "./assets/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
+    },
+    "extra": {
+      "BASE_URL": "@env:BASE_URL"
     },
     "ios": {
       "supportsTablet": true
@@ -24,7 +30,6 @@
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      
     ]
   }
 }

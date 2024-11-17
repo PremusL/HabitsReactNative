@@ -7,6 +7,8 @@ import {styles} from "../style/styles";
 import {useDataContext} from "./Contexts/DataContext";
 import {useUserContext} from "./Contexts/UserContext";
 import {RefreshControl} from "react-native-gesture-handler";
+import {readHabitsDb} from "./DataBaseUtil";
+
 
 const HomeScreen: React.FC<HomeScreenProps> = ({navigation, route}) => {
     const {data, fetchData} = useDataContext();
@@ -29,6 +31,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({navigation, route}) => {
 
     return (
         <SafeAreaView style={styles.mainPage}>
+            <Button title={"testLogin"} onPress={() => readHabitsDb(user_id)}/>
             <ScrollView
                 contentContainerStyle={{flexGrow: 1}}
                 refreshControl={
