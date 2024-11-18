@@ -199,7 +199,50 @@ export const updateHabitLocalSync = async (
          WHERE ${HabitTypeConstants.habit_id} = ${habit_id_old}`
     );
 
-    if (habit) {
-        await updateHabitRemoteDb(habit_id_old, habit_id_new);
+}
+export const createLocalTable = async (db: SQLite.SQLiteDatabase) => {
+    try {
+        // language=SQL format=false
+        console.log("creating table");
+        await db.execAsync(`
+            DROP TABLE IF EXISTS habit;
+            CREATE TABLE habit
+            (
+                habit_id INTEGER PRIMARY KEY,
+                version  INTEGER NOT NULL
+            );
+        `);
+
+        await db.execAsync(
+            `DROP TABLE IF EXISTS habit_instance;
+            CREATE TABLE habit_instance
+            (
+                habit_instance_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                habit_id          INTEGER NOT NULL,
+                name              TEXT,
+                description       TEXT, -- SQLite treats VARCHAR as TEXT
+                date              TEXT, -- Use TEXT for date format
+                time              TEXT, -- Use TEXT for time format
+                color             TEXT,
+                icon              TEXT,
+                intensity         INTEGER,
+                good              TEXT CHECK (good IN ('Y', 'N')),
+                version           INTEGER   DEFAULT 0,
+                change_time_stamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+                FOREIGN KEY (habit_id) REFERENCES habit (habit_id) ON DELETE CASCADE
+            );`
+        );
+    } catch (error) {
+        console.log("Error creating table", error);
     }
+};
+
+export const deleteAndCreateLocalDB = async (db: SQLite.SQLiteDatabase) => {
+    const query_habit = `DROP TABLE IF EXISTS ${Constants.habit};`;
+    const query_habit_instance = `DROP TABLE IF EXISTS ${Constants.habit_instance};`;
+    await db.execAsync(query_habit);
+    await db.execAsync(query_habit_instance);
+
+    await createLocalTable(db);
 }

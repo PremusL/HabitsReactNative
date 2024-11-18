@@ -47,10 +47,7 @@ const iconList = [
     "leaf",
     "anchor",
 ];
-
-const HabitCreationScreen: React.FC<HabitCreationScreenProps> = ({
-                                                                     navigation,
-                                                                 }) => {
+const HabitCreationScreen: React.FC<HabitCreationScreenProps> = ({navigation}) => {
     const {loading, setLoading} = useLoadingContext();
     const {user_id, setUser} = useUserContext();
     const [text, onChangeText] = useState("");
@@ -110,7 +107,7 @@ const HabitCreationScreen: React.FC<HabitCreationScreenProps> = ({
             const db = await getLocalDB();
             setLoading(true);
             let habit_id_inserted = -1;
-            if (user_id) habit_id_inserted = await addHabitDb(user_id, data);
+            await addHabitDb(user_id, data);
 
             await addHabitLocalDb(db, {...data, habit_id: habit_id_inserted});
             setLoading(false);
