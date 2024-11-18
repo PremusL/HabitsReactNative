@@ -109,9 +109,12 @@ const HabitCreationScreen: React.FC<HabitCreationScreenProps> = ({
         try {
             const db = await getLocalDB();
             setLoading(true);
-            const habit_id_inserted = await addHabitLocalDb(db, data);
+            let habit_id_inserted = -1;
+            if (user_id) habit_id_inserted = await addHabitDb(user_id, data);
+
+            await addHabitLocalDb(db, {...data, habit_id: habit_id_inserted});
             setLoading(false);
-            if (user_id) await addHabitDb(user_id, {...data, habit_id: habit_id_inserted});
+
         } catch (error) {
             console.log("Failed to add a habit to local data", error);
         }

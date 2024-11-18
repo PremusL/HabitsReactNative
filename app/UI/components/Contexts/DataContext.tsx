@@ -6,7 +6,7 @@ import {addHabitDb, getLocalDB, readHabitsDb, updateHabitRemoteDb} from "../Data
 import * as SQLite from "expo-sqlite";
 import {Constants} from "../Constants";
 import {useUserContext} from "./UserContext";
-import {addHabitLocalDb, readHabitsLocalDb} from "../LocalStorageUtil";
+import {addHabitLocalDb, readHabitsLocalDb, updateHabitLocalSync} from "../LocalStorageUtil";
 
 
 interface DataContextType {
@@ -59,13 +59,16 @@ export const DataProvider: React.FC<{ children: any }> = ({children}) => {
     const createLocalTable = async (db: SQLite.SQLiteDatabase) => {
         try {
             // language=SQL format=false
+            console.log("creating table");
             await db.execAsync(`
-          DROP TABLE IF EXISTS habit;
-          CREATE TABLE habit (
-            habit_id INTEGER PRIMARY KEY AUTOINCREMENT,
-            version INTEGER NOT NULL
-          );
-          `);
+                DROP TABLE IF EXISTS habit;
+                CREATE TABLE habit
+                (
+                    habit_id INTEGER PRIMARY KEY,
+                    version  INTEGER NOT NULL
+                );
+            `);
+
             await db.execAsync(
                 `DROP TABLE IF EXISTS habit_instance;
                 CREATE TABLE habit_instance
@@ -111,20 +114,18 @@ export const DataProvider: React.FC<{ children: any }> = ({children}) => {
                 const localHabit = dataLocal.find(habit => habit.habit_id === remoteHabit.habit_id);
                 if (!localHabit) {
                     setLoading(true);
-                    const habit_id_new = await addHabitLocalDb(db, remoteHabit);
-                    await updateHabitRemoteDb(user_id, remoteHabit.habit_id, habit_id_new);
-
-                    // update remote habit_id with new habit_id
+                    await addHabitLocalDb(db, remoteHabit);
                     console.log("Added habit to local db:", remoteHabit);
                     setLoading(false);
                 }
             }
-
             // Sync local habits to remote
             for (const localHabit of dataLocal) {
                 const remoteHabit = dataRemote.find(habit => habit.habit_id === localHabit.habit_id);
                 if (!remoteHabit) {
-                    await addHabitDb(user_id, {...localHabit, habit_id: localHabit.habit_id});
+                    const habit_id_new = await addHabitDb(user_id, localHabit);
+
+                    if (habit_id_new !== -1) await updateHabitLocalSync(db, localHabit.habit_id, habit_id_new);
                     console.log("added habit to remote", localHabit);
                 }
             }
@@ -138,16 +139,16 @@ export const DataProvider: React.FC<{ children: any }> = ({children}) => {
     const fetchData = async () => {
         const db = await getLocalDB();
         await fetchDataOffline(db);
-        await syncData();
+        // await syncData();
     };
 
     useEffect(() => {
         const waitFetchData = async () => {
             setLoading(true);
             const db = await getLocalDB();
-            createIfNotExist(db);
+            // createIfNotExist(db);
             // createLocalTable(db);
-            await syncData();
+            // await syncData();a
             await fetchData();
             setLoading(false);
         };
@@ -156,7 +157,7 @@ export const DataProvider: React.FC<{ children: any }> = ({children}) => {
 
         // Sync data every 10 minutes
         const intervalId = setInterval(async () => {
-            await syncData();
+            // await syncData();
         }, 600000);
 
         return () => clearInterval(intervalId);

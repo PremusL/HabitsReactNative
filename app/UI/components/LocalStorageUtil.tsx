@@ -1,24 +1,25 @@
 import * as SQLite from "expo-sqlite";
 import {Constants, HabitTypeConstants} from "./Constants";
 import {HabitType} from "../types/habit.d";
+import {updateHabitRemoteDb} from "./DataBaseUtil";
+
 
 export const readHabitsLocalDb = async (db: SQLite.SQLiteDatabase) => {
-    const query = `SELECT 
-    hi.${HabitTypeConstants.habit_id},
-    hi.${HabitTypeConstants.name},
-    hi.${HabitTypeConstants.date},
-    hi.${HabitTypeConstants.time},
-    hi.${HabitTypeConstants.description},
-    hi.${HabitTypeConstants.color},
-    hi.${HabitTypeConstants.icon},
-    hi.${HabitTypeConstants.intensity},
-    hi.${HabitTypeConstants.good},
-    hi.${HabitTypeConstants.version},
-    hi.${HabitTypeConstants.change_time_stamp}
-    FROM ${Constants.habit} h
-    JOIN ${Constants.habit_instance} hi
-    ON h.${HabitTypeConstants.habit_id} = hi.${HabitTypeConstants.habit_id}
-    WHERE h.${HabitTypeConstants.version} = hi.${HabitTypeConstants.version}
+    const query = `SELECT hi.${HabitTypeConstants.habit_id},
+                          hi.${HabitTypeConstants.name},
+                          hi.${HabitTypeConstants.date},
+                          hi.${HabitTypeConstants.time},
+                          hi.${HabitTypeConstants.description},
+                          hi.${HabitTypeConstants.color},
+                          hi.${HabitTypeConstants.icon},
+                          hi.${HabitTypeConstants.intensity},
+                          hi.${HabitTypeConstants.good},
+                          hi.${HabitTypeConstants.version},
+                          hi.${HabitTypeConstants.change_time_stamp}
+                   FROM ${Constants.habit} h
+                            JOIN ${Constants.habit_instance} hi
+                                 ON h.${HabitTypeConstants.habit_id} = hi.${HabitTypeConstants.habit_id}
+                   WHERE h.${HabitTypeConstants.version} = hi.${HabitTypeConstants.version}
     `;
     try {
         const allRows: any = await db.getAllAsync(query);
@@ -35,55 +36,61 @@ export const addHabitLocalDb = async (
     db: SQLite.SQLiteDatabase,
     habit: HabitType
 ) => {
+    if (habit.habit_id == -1) {
+        const habit_id_max: {
+            max_id: number
+        } | null = await db.getFirstAsync(`SELECT MAX(${HabitTypeConstants.habit_id}) as max_id
+                                           FROM ${Constants.habit}`);
+
+        habit.habit_id = habit_id_max != null ? habit_id_max.max_id + 1 : 0;
+    }
+
     const query1 = `
-    INSERT INTO ${Constants.habit}
-    (${HabitTypeConstants.version}) VALUES (0);`;
+        INSERT INTO ${Constants.habit}
+            (${HabitTypeConstants.habit_id}, ${HabitTypeConstants.version})
+        VALUES (${habit.habit_id}, 0);`; //TODO
 
-    const result = await db.runAsync(query1);
     const query2 = `
-    INSERT INTO ${Constants.habit_instance} (
-    ${HabitTypeConstants.habit_id},
-    ${HabitTypeConstants.name},
-    ${HabitTypeConstants.description},
-    ${HabitTypeConstants.date},
-    ${HabitTypeConstants.time},
-    ${HabitTypeConstants.color},
-    ${HabitTypeConstants.icon},
-    ${HabitTypeConstants.intensity},
-    ${HabitTypeConstants.good}
-    ) VALUES (
-     ${result.lastInsertRowId},
-     "${habit.name}", "${habit.description}", "${habit.date}", "${habit.time}",
-   "${habit.color}", "${habit.icon}", "${habit.intensity}", "${habit.good}");`;
-    await db.execAsync(query2);
+        INSERT INTO ${Constants.habit_instance} (${HabitTypeConstants.habit_id},
+                                                 ${HabitTypeConstants.name},
+                                                 ${HabitTypeConstants.description},
+                                                 ${HabitTypeConstants.date},
+                                                 ${HabitTypeConstants.time},
+                                                 ${HabitTypeConstants.color},
+                                                 ${HabitTypeConstants.icon},
+                                                 ${HabitTypeConstants.intensity},
+                                                 ${HabitTypeConstants.good})
+        VALUES (${habit.habit_id},
+                "${habit.name}", "${habit.description}", "${habit.date}", "${habit.time}",
+                "${habit.color}", "${habit.icon}", "${habit.intensity}", "${habit.good}");`;
 
-    return result.lastInsertRowId;
+    console.log("Query add habit", query1, query2);
+    await db.runAsync(query1);
+    await db.execAsync(query2);
 };
 export const addInstanceHabitLocalDb = async (
     db: SQLite.SQLiteDatabase,
     habit: HabitType
 ) => {
     const query1 = `
-    UPDATE ${Constants.habit}
-    SET ${HabitTypeConstants.version} = ${habit.version}
-    WHERE ${HabitTypeConstants.habit_id} = ${habit.habit_id};`;
+        UPDATE ${Constants.habit}
+        SET ${HabitTypeConstants.version} = ${habit.version}
+        WHERE ${HabitTypeConstants.habit_id} = ${habit.habit_id};`;
 
     const query2 = `
-    INSERT INTO ${Constants.habit_instance} (
-    ${HabitTypeConstants.habit_id},
-    ${HabitTypeConstants.name},
-    ${HabitTypeConstants.description},
-    ${HabitTypeConstants.date},
-    ${HabitTypeConstants.time},
-    ${HabitTypeConstants.color},
-    ${HabitTypeConstants.icon},
-    ${HabitTypeConstants.intensity},
-    ${HabitTypeConstants.good},
-    ${HabitTypeConstants.version}
-    ) VALUES (
-     ${habit.habit_id},
-     "${habit.name}", "${habit.description}", "${habit.date}", "${habit.time}",
-   "${habit.color}", "${habit.icon}", "${habit.intensity}", "${habit.good}", ${habit.version});`;
+        INSERT INTO ${Constants.habit_instance} (${HabitTypeConstants.habit_id},
+                                                 ${HabitTypeConstants.name},
+                                                 ${HabitTypeConstants.description},
+                                                 ${HabitTypeConstants.date},
+                                                 ${HabitTypeConstants.time},
+                                                 ${HabitTypeConstants.color},
+                                                 ${HabitTypeConstants.icon},
+                                                 ${HabitTypeConstants.intensity},
+                                                 ${HabitTypeConstants.good},
+                                                 ${HabitTypeConstants.version})
+        VALUES (${habit.habit_id},
+                "${habit.name}", "${habit.description}", "${habit.date}", "${habit.time}",
+                "${habit.color}", "${habit.icon}", "${habit.intensity}", "${habit.good}", ${habit.version});`;
     console.group("Query add instance", query1);
 
     try {
@@ -101,10 +108,14 @@ export const deleteHabitLocalDb = async (
     // Naj majo export spredaj, ne pa na koncu datoteke
     try {
         await db.execAsync(
-            `DELETE FROM ${Constants.habit} WHERE habit_id = ${habit_id}`
+            `DELETE
+             FROM ${Constants.habit}
+             WHERE habit_id = ${habit_id}`
         );
         await db.execAsync(
-            `DELETE FROM ${Constants.habit_instance} WHERE habit_id = ${habit_id}`
+            `DELETE
+             FROM ${Constants.habit_instance}
+             WHERE habit_id = ${habit_id}`
         );
 
         console.log("Data locally deleted successfully");
@@ -120,19 +131,18 @@ export const updateHabitLocalDB = async (
     console.log("Updating data in database with data:", data);
     try {
         const query = `
-      UPDATE ${Constants.habit_instance}
-        SET
-        ${HabitTypeConstants.name} = '${data.name}',
-        ${HabitTypeConstants.description} = '${data.description}',
-        ${HabitTypeConstants.date} = '${data.date}',
-        ${HabitTypeConstants.time} = '${data.time}',
-        ${HabitTypeConstants.color} = '${data.color}',
-        ${HabitTypeConstants.icon} = '${data.icon}',
-        ${HabitTypeConstants.intensity} = '${data.intensity}',
-        ${HabitTypeConstants.good} = '${data.good}'
-        WHERE ${HabitTypeConstants.habit_id} = ${data.habit_id}
-        AND ${HabitTypeConstants.version} = ${data.version};
-       `;
+            UPDATE ${Constants.habit_instance}
+            SET ${HabitTypeConstants.name}        = '${data.name}',
+                ${HabitTypeConstants.description} = '${data.description}',
+                ${HabitTypeConstants.date}        = '${data.date}',
+                ${HabitTypeConstants.time}        = '${data.time}',
+                ${HabitTypeConstants.color}       = '${data.color}',
+                ${HabitTypeConstants.icon}        = '${data.icon}',
+                ${HabitTypeConstants.intensity}   = '${data.intensity}',
+                ${HabitTypeConstants.good}        = '${data.good}'
+            WHERE ${HabitTypeConstants.habit_id} = ${data.habit_id}
+              AND ${HabitTypeConstants.version} = ${data.version};
+        `;
         console.group("Query", query);
 
         await db.execAsync(query);
@@ -146,7 +156,9 @@ export const getHistoryLocalDb = async (
     habit_id: number
 ) => {
     try {
-        const query = `SELECT * FROM ${Constants.habit_instance} WHERE ${HabitTypeConstants.habit_id} = ${habit_id}`;
+        const query = `SELECT *
+                       FROM ${Constants.habit_instance}
+                       WHERE ${HabitTypeConstants.habit_id} = ${habit_id}`;
         const allRows: HabitType[] = await db.getAllAsync(query);
         console.log("All rows from instance:", allRows);
 
@@ -156,3 +168,38 @@ export const getHistoryLocalDb = async (
         return null;
     }
 };
+
+
+export const updateHabitLocalSync = async (
+    db: SQLite.SQLiteDatabase,
+    habit_id_old: number,
+    habit_id_new: number
+) => {
+    const query_habit = `
+        UPDATE ${Constants.habit}
+        SET habit_id = ${habit_id_new}
+        WHERE habit_id = ${habit_id_old} RETURNING
+			*;`;
+
+    const query_habit_instance = `
+        UPDATE ${Constants.habit_instance}
+        SET habit_id = ${habit_id_new}
+        WHERE habit_id = ${habit_id_old};`;
+
+    console.log("queries", query_habit, query_habit_instance);
+
+    const result = await db.runAsync(query_habit_instance);
+    if (result.lastInsertRowId) {
+        await db.runAsync(query_habit);
+    }
+
+    const habit = await db.getFirstAsync(
+        `SELECT *
+         FROM ${Constants.habit_instance}
+         WHERE ${HabitTypeConstants.habit_id} = ${habit_id_old}`
+    );
+
+    if (habit) {
+        await updateHabitRemoteDb(habit_id_old, habit_id_new);
+    }
+}

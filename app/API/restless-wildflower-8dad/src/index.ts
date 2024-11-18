@@ -130,7 +130,7 @@ async function handleRequest(
 	if (pathname.startsWith("/api/deleteHabit") && request.method === "POST") {
 		return handleDeleteHabit(request, sql);
 	}
-	
+
 	return jsonResponse({error: "Not Found"}, 404);
 }
 
@@ -220,8 +220,15 @@ async function handleWriteHabits(
 
 		const query_habit = `
 			INSERT INTO ${Constants.habit}
-				(${HabitTypeConstants.habit_id}, ${HabitTypeConstants.user_id}, ${HabitTypeConstants.version})
-			VALUES (${habit_id}, ${user_id}, 0)`;
+				(${HabitTypeConstants.user_id}, ${HabitTypeConstants.version})
+			VALUES (${user_id}, 0)
+				RETURNING ${HabitTypeConstants.habit_id};`;
+
+
+		console.log("Executing query_HABIT:", query_habit);
+
+		const habit_id_inserted = await sql(query_habit);
+		console.log("habit_id_inserted", habit_id_inserted[0].habit_id);
 		const query_habit_instance = `
 			INSERT INTO ${Constants.habit_instance} (${HabitTypeConstants.habit_id},
 													 ${HabitTypeConstants.name},
@@ -233,14 +240,10 @@ async function handleWriteHabits(
 													 ${HabitTypeConstants.intensity},
 													 ${HabitTypeConstants.good},
 													 ${HabitTypeConstants.version})
-			VALUES (${habit_id}, '${name}', '${description}', '${date}', '${time}',
+			VALUES (${habit_id_inserted[0].habit_id}, '${name}', '${description}', '${date}', '${time}',
 					'${color}', '${icon}', '${intensity}', '${good}', ${version})`;
-
-		console.log("Executing query:", query_habit);
-
-		await sql(query_habit);
 		await sql(query_habit_instance);
-		return jsonResponse({message: "Data added successfully"});
+		return jsonResponse({habit_id: habit_id_inserted[0].habit_id, message: "Data added successfully"});
 	} catch (error) {
 		console.error("Error executing query:", error);
 		return jsonResponse({error: "Internal Server Error"}, 500);
@@ -363,7 +366,7 @@ async function handleUpdateHabit(req: Request,
 								 sql: any
 ): Promise<Response> {
 	const user_id = getUserId(new URL(req.url));
-	console.log("Request to write, user_id:", user_id);
+	console.log("Request to update, user_id:", user_id);
 
 	try {
 		const {habit_id_old, habit_id_new}: UpdateHabitType = await req.json();
