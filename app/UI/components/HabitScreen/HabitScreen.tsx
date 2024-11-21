@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {
     View,
     Text,
@@ -14,26 +14,36 @@ import {deleteHabitDB, updateDataDb} from "../DataBaseUtil";
 import HabitScreenEdit from "./HabitScreenEdit";
 import HabitScreenPreview from "./HabitScreenPreview";
 import Icon from "react-native-vector-icons/FontAwesome";
-import {getTextColorBasedOnBackground} from "../Util";
+import {getTextColorBasedOnBackground, printHabitIds} from "../Util";
 import HabitScreenAnother from "./HabitScreenAnother";
 import {useDataContext} from "../Contexts/DataContext";
 import {getLocalDB} from "../DataBaseUtil";
-import {useLoadingContext} from "../Contexts/LoadingContext";
 import {deleteHabitLocalDb} from "../LocalStorageUtil";
 import {useUserContext} from "../Contexts/UserContext";
 
 const HabitScreen: React.FC<HabitScreenProps> = ({navigation, route}) => {
-    const {loading, setLoading} = useLoadingContext();
+    // const {loading, setLoading} = useLoadingContext();
     const {user_id, setUser} = useUserContext();
     const [showEdit, setShowEdit] = useState(false);
     const [showAnother, setShowAnother] = useState(false);
+    const {data, fetchData} = useDataContext();
+
 
     const habit_id = route?.params.habit_id;
+    printHabitIds(data);
     if (!habit_id) {
         throw new Error("Habit_id not found in route params");
     }
 
-    const {data, fetchData} = useDataContext();
+    useEffect(() => {
+        const waitFetchData = async () => {
+            await fetchData();
+        };
+        // setLoading(true);
+        waitFetchData();
+        // setLoading(false);
+    }, []);
+
     const currentHabit = data.find(
         (habit: HabitType) => habit.habit_id === habit_id
     );
@@ -69,9 +79,9 @@ const HabitScreen: React.FC<HabitScreenProps> = ({navigation, route}) => {
 
     const onPressRemoveButton = async () => {
         const db = await getLocalDB();
-        setLoading(true);
+        // setLoading(true);
         await deleteHabitLocalDb(db, habit_id);
-        setLoading(false);
+        // setLoading(false);
         if (user_id) await deleteHabitDB(user_id, habit_id);
 
     };

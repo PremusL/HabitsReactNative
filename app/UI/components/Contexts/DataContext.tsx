@@ -13,6 +13,7 @@ import {
     readHabitsLocalDb,
     updateHabitLocalSync
 } from "../LocalStorageUtil";
+import {printHabitIds} from "../Util";
 
 
 interface DataContextType {
@@ -29,6 +30,33 @@ export function useDataContext() {
         throw new Error("Data was not loaded");
     }
     return dataContext;
+}
+
+const syncLocalToRemote = async (db: SQLite.SQLiteDatabase, dataLocal: HabitType[], dataRemote: HabitType[], user_id: number) => {
+    for (const localHabit of dataLocal) {
+        const remoteHabit = dataRemote.find(habit => habit.name === localHabit.name);
+        if (!remoteHabit) {
+            const habit_id_new = await addHabitDb(user_id, localHabit);
+            if (habit_id_new !== -1) await updateHabitLocalSync(db, localHabit.habit_id, habit_id_new);
+            console.log("added habit to remote", localHabit);
+        } else if (localHabit.habit_id !== remoteHabit.habit_id) {
+            await updateHabitLocalSync(db, localHabit.habit_id, remoteHabit.habit_id);
+        }
+    }
+    const dataLocalEnd: HabitType[] = await readHabitsLocalDb(db);
+    return dataLocalEnd;
+}
+
+const syncRemoteToLocal = async (db: SQLite.SQLiteDatabase, dataLocal: HabitType[], dataRemote: HabitType[]) => {
+    for (const remoteHabit of dataRemote) {
+        const localHabit = dataLocal.find(habit => habit.name === remoteHabit.name);
+        if (!localHabit) {
+            await addHabitLocalDb(db, remoteHabit);
+            console.log("Added habit to local db:", remoteHabit)
+        }
+    }
+    const dataLocalEnd: HabitType[] = await readHabitsLocalDb(db);
+    return dataLocalEnd;
 }
 
 export const DataProvider: React.FC<{ children: any }> = ({children}) => {
@@ -75,33 +103,12 @@ export const DataProvider: React.FC<{ children: any }> = ({children}) => {
             const db = await getLocalDB();
             const dataLocal: HabitType[] = await readHabitsLocalDb(db);
             const dataRemote: HabitType[] = await readHabitsDb(user_id);
-            console.log("local", dataLocal);
-            console.log("remote", dataRemote);
-            //TODO habit id is not the same in local and remote db
-            // Sync remote habits to local
-            // addHabitLocalDb adds habit_id automatically and the id added atomatically ins't the same as the one that is saved on the database
-            for (const localHabit of dataLocal) {
-                const remoteHabit = dataRemote.find(habit => habit.name === localHabit.name);
-                if (!remoteHabit) {
-                    const habit_id_new = await addHabitDb(user_id, localHabit);
-                    // if (habit_id_new !== -1) await updateHabitLocalSync(db, localHabit.habit_id, habit_id_new);
-                    console.log("added habit to remote", localHabit);
-                }
-            }
-            // await deleteAndCreateLocalDB(db);
-            for (const remoteHabit of dataRemote) {
-                const localHabit = dataLocal.find(habit => habit.name === remoteHabit.name);
-                if (!localHabit) {
-                    setLoading(true);
-                    await addHabitLocalDb(db, remoteHabit);
-                    console.log("Added habit to local db:", remoteHabit);
-                    setLoading(false);
-                }
-            }
-            // Sync local habits to remote
 
-
-            console.log("Sync completed successfully");
+            const dataLocalToRemote = await syncLocalToRemote(db, dataLocal, dataRemote, user_id);
+            console.log("Data local end", dataLocalToRemote);
+            const dataLocalFromRemote = await syncRemoteToLocal(db, dataLocalToRemote, dataRemote);
+            setData(dataLocalFromRemote);
+            printHabitIds(data);
         } catch (error) {
             console.error("Error during sync:", error);
         }
@@ -109,8 +116,8 @@ export const DataProvider: React.FC<{ children: any }> = ({children}) => {
 
     const fetchData = async () => {
         const db = await getLocalDB();
-        await fetchDataOffline(db);
         await syncData();
+        await fetchDataOffline(db);
 
     };
 

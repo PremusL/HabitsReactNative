@@ -105,12 +105,12 @@ const HabitCreationScreen: React.FC<HabitCreationScreenProps> = ({navigation}) =
     const onPressAddButton = async (data: HabitType) => {
         try {
             const db = await getLocalDB();
-            setLoading(true);
+            // setLoading(true);
             let habit_id_inserted = -1;
             await addHabitDb(user_id, data);
 
             await addHabitLocalDb(db, {...data, habit_id: habit_id_inserted});
-            setLoading(false);
+            // setLoading(false);
 
         } catch (error) {
             console.log("Failed to add a habit to local data", error);
@@ -119,7 +119,8 @@ const HabitCreationScreen: React.FC<HabitCreationScreenProps> = ({navigation}) =
 
     return (
         <SafeAreaView style={styles.habit_view}>
-            {loading && <ActivityIndicator size="large" color="#0000ff"/>}
+            {loading
+                && <ActivityIndicator size="large" color="#0000ff"/>}
             <AddButton
                 navigation={navigation}
                 whereTo="Home"

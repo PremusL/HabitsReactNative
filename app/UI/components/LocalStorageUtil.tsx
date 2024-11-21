@@ -45,6 +45,7 @@ export const addHabitLocalDb = async (
         habit.habit_id = habit_id_max != null ? habit_id_max.max_id + 1 : 0;
     }
 
+    console.group("NEW LOCAL HABIT ID:", habit.habit_id);
     const query1 = `
         INSERT INTO ${Constants.habit}
             (${HabitTypeConstants.habit_id}, ${HabitTypeConstants.version})
@@ -64,7 +65,7 @@ export const addHabitLocalDb = async (
                 "${habit.name}", "${habit.description}", "${habit.date}", "${habit.time}",
                 "${habit.color}", "${habit.icon}", "${habit.intensity}", "${habit.good}");`;
 
-    console.log("Query add habit", query1, query2);
+    // console.log("Query add habit", query1, query2);
     await db.runAsync(query1);
     await db.execAsync(query2);
 };
@@ -91,7 +92,7 @@ export const addInstanceHabitLocalDb = async (
         VALUES (${habit.habit_id},
                 "${habit.name}", "${habit.description}", "${habit.date}", "${habit.time}",
                 "${habit.color}", "${habit.icon}", "${habit.intensity}", "${habit.good}", ${habit.version});`;
-    console.group("Query add instance", query1);
+    // console.group("Query add instance", query1);
 
     try {
         await db.execAsync(query1);
@@ -143,7 +144,7 @@ export const updateHabitLocalDB = async (
             WHERE ${HabitTypeConstants.habit_id} = ${data.habit_id}
               AND ${HabitTypeConstants.version} = ${data.version};
         `;
-        console.group("Query", query);
+        // console.group("Query", query);
 
         await db.execAsync(query);
     } catch (error) {
@@ -186,53 +187,48 @@ export const updateHabitLocalSync = async (
         SET habit_id = ${habit_id_new}
         WHERE habit_id = ${habit_id_old};`;
 
-    console.log("queries", query_habit, query_habit_instance);
+    // console.log("queries", query_habit, query_habit_instance);
 
+    await db.runAsync(query_habit);
     const result = await db.runAsync(query_habit_instance);
-    if (result.lastInsertRowId) {
-        await db.runAsync(query_habit);
-    }
 
-    const habit = await db.getFirstAsync(
-        `SELECT *
-         FROM ${Constants.habit_instance}
-         WHERE ${HabitTypeConstants.habit_id} = ${habit_id_old}`
-    );
+    console.log("Data locally updated successfully");
 
 }
 export const createLocalTable = async (db: SQLite.SQLiteDatabase) => {
     try {
-        // language=SQL format=false
-        console.log("creating table");
-        await db.execAsync(`
+        // language=SQL format=false\
+        const query_habit = `
             DROP TABLE IF EXISTS habit;
             CREATE TABLE habit
             (
-                habit_id INTEGER PRIMARY KEY,
+                habit_id INTEGER NOT NULL,
                 version  INTEGER NOT NULL
             );
-        `);
+        `;
+        const query_habit_instance = `DROP TABLE IF EXISTS habit_instance;
+        CREATE TABLE habit_instance
+        (
+            habit_instance_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            habit_id          INTEGER NOT NULL,
+            name              TEXT,
+            description       TEXT, -- SQLite treats VARCHAR as TEXT
+            date              TEXT, -- Use TEXT for date format
+            time              TEXT, -- Use TEXT for time format
+            color             TEXT,
+            icon              TEXT,
+            intensity         INTEGER,
+            good              TEXT CHECK (good IN ('Y', 'N')),
+            version           INTEGER   DEFAULT 0,
+            change_time_stamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );`;
 
-        await db.execAsync(
-            `DROP TABLE IF EXISTS habit_instance;
-            CREATE TABLE habit_instance
-            (
-                habit_instance_id INTEGER PRIMARY KEY AUTOINCREMENT,
-                habit_id          INTEGER NOT NULL,
-                name              TEXT,
-                description       TEXT, -- SQLite treats VARCHAR as TEXT
-                date              TEXT, -- Use TEXT for date format
-                time              TEXT, -- Use TEXT for time format
-                color             TEXT,
-                icon              TEXT,
-                intensity         INTEGER,
-                good              TEXT CHECK (good IN ('Y', 'N')),
-                version           INTEGER   DEFAULT 0,
-                change_time_stamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
-                FOREIGN KEY (habit_id) REFERENCES habit (habit_id) ON DELETE CASCADE
-            );`
-        );
+        await db.execAsync(query_habit);
+        await db.execAsync(query_habit_instance);
+        console.log("creating table: ", query_habit, query_habit_instance);
+
+
     } catch (error) {
         console.log("Error creating table", error);
     }
