@@ -20,9 +20,10 @@ import {useDataContext} from "../Contexts/DataContext";
 import {getLocalDB} from "../DataBaseUtil";
 import {deleteHabitLocalDb} from "../LocalStorageUtil";
 import {useUserContext} from "../Contexts/UserContext";
+import {useLoadingContext} from "../Contexts/LoadingContext";
 
 const HabitScreen: React.FC<HabitScreenProps> = ({navigation, route}) => {
-    // const {loading, setLoading} = useLoadingContext();
+    const {loading, setLoading} = useLoadingContext();
     const {user_id, setUser} = useUserContext();
     const [showEdit, setShowEdit] = useState(false);
     const [showAnother, setShowAnother] = useState(false);
@@ -39,9 +40,7 @@ const HabitScreen: React.FC<HabitScreenProps> = ({navigation, route}) => {
         const waitFetchData = async () => {
             await fetchData();
         };
-        // setLoading(true);
         waitFetchData();
-        // setLoading(false);
     }, []);
 
     const currentHabit = data.find(
@@ -79,10 +78,10 @@ const HabitScreen: React.FC<HabitScreenProps> = ({navigation, route}) => {
 
     const onPressRemoveButton = async () => {
         const db = await getLocalDB();
-        // setLoading(true);
+        setLoading(true);
         await deleteHabitLocalDb(db, habit_id);
-        // setLoading(false);
         if (user_id) await deleteHabitDB(user_id, habit_id);
+        setLoading(false);
 
     };
 
