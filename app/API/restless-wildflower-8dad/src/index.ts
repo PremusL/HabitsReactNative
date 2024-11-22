@@ -119,9 +119,9 @@ async function handleRequest(
 		return handleWriteHabits(request, sql);
 	}
 
-	if (pathname.startsWith("/api/updateHabit") && request.method === "POST") {
-		return handleUpdateHabit(request, sql);
-	}
+	// if (pathname.startsWith("/api/updateHabit") && request.method === "POST") {
+	// 	return handleUpdateHabit(request, sql);
+	// }
 
 	if (pathname.startsWith("/api/updateHabits") && request.method === "POST") {
 		return handleUpdateHabits(request, sql);
@@ -275,7 +275,6 @@ async function handleReadHabits(req: Request,
 						 AND h.${HabitTypeConstants.user_id} = ${user_id};`;
 
 		const result = await sql(query);
-		console.log(result);
 		return jsonResponse(result);
 	} catch (error) {
 		console.error("Error executing query:", error);
@@ -319,7 +318,7 @@ async function handleUpdateHabits(req: Request,
 								  sql: any
 ): Promise<Response> {
 	const user_id = getUserId(new URL(req.url));
-	console.log("Request to write, user_id:", user_id);
+	console.log("Request to update, user_id:", user_id);
 
 	try {
 		const {
@@ -362,42 +361,41 @@ async function handleUpdateHabits(req: Request,
 	}
 }
 
-async function handleUpdateHabit(req: Request,
-								 sql: any
-): Promise<Response> {
-	const user_id = getUserId(new URL(req.url));
-	console.log("Request to update, user_id:", user_id);
-
-	try {
-		const {habit_id_old, habit_id_new}: UpdateHabitType = await req.json();
-		const query_habit = `
-			UPDATE ${Constants.habit}
-			SET habit_id = ${habit_id_new}
-			WHERE habit_id = ${habit_id_old}
-			  AND user_id = ${user_id};
-			RETURNING
-			*;`;
-
-
-		const query_habit_instance = `
-			UPDATE ${Constants.habit_instance}
-			SET habit_id = ${habit_id_new}
-			WHERE habit_id = ${habit_id_old};`;
-
-		console.log("queries", query_habit, query_habit_instance);
-
-		const habit_id_updated = await sql(query_habit_instance);
-		if (habit_id_updated.length > 0) {
-			await sql(query_habit);
-		}
-
-
-		return jsonResponse({message: "Data updated successfully"});
-	} catch (error) {
-		console.log("Error while updating single habit", error);
-		return jsonResponse({error: "Internal Server Error"});
-	}
-}
+// async function handleUpdateHabit(req: Request,
+// 								 sql: any
+// ): Promise<Response> {
+// 	const user_id = getUserId(new URL(req.url));
+// 	console.log("Request to update, user_id:", user_id);
+//
+// 	try {
+// 		const {habit_id_old, habit_id_new}: UpdateHabitType = await req.json();
+// 		const query_habit = `
+// 			UPDATE ${Constants.habit}
+// 			SET habit_id = ${habit_id_new}
+// 			WHERE habit_id = ${habit_id_old}
+// 			  AND user_id = ${user_id};
+// 			RETURNING
+// 			*;`;
+//
+// 		const query_habit_instance = `
+// 			UPDATE ${Constants.habit_instance}
+// 			SET habit_id = ${habit_id_new}
+// 			WHERE habit_id = ${habit_id_old};`;
+//
+// 		console.log("queries", query_habit, query_habit_instance);
+//
+// 		const habit_id_updated = await sql(query_habit_instance);
+// 		if (habit_id_updated.length > 0) {
+// 			await sql(query_habit);
+// 		}
+//
+//
+// 		return jsonResponse({message: "Data updated successfully"});
+// 	} catch (error) {
+// 		console.log("Error while updating single habit", error);
+// 		return jsonResponse({error: "Internal Server Error"});
+// 	}
+// }
 
 // Export the handler for Cloudflare Workers
 export default {

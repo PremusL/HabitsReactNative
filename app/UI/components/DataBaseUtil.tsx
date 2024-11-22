@@ -32,6 +32,7 @@ export const readHabitsDb: any = async (user_id: number) => {
 
 export const updateDataDb: any = async (user_id: number, data: HabitType) => {
     try {
+        console.log("Updating data in database with data:", data);
         const response = await axios.post(`${BASE_URL}/api/updateHabits/${user_id}`, data, {
             timeout: timeoutDuration,
         });

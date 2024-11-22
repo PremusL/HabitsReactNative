@@ -2,7 +2,7 @@ import React, {createContext, useState, useEffect, useContext} from "react";
 import {Text, ActivityIndicator, View, Button} from "react-native";
 import {HabitType} from "../../types/habit.d";
 import {useLoadingContext} from "./LoadingContext";
-import {addHabitDb, getLocalDB, readHabitsDb, updateHabitRemoteDb} from "../DataBaseUtil";
+import {addHabitDb, getLocalDB, readHabitsDb, updateDataDb, updateHabitRemoteDb} from "../DataBaseUtil";
 import * as SQLite from "expo-sqlite";
 import {Constants} from "../Constants";
 import {useUserContext} from "./UserContext";
@@ -42,6 +42,10 @@ const syncLocalToRemote = async (db: SQLite.SQLiteDatabase, dataLocal: HabitType
         } else if (localHabit.habit_id !== remoteHabit.habit_id) {
             await updateHabitLocalSync(db, localHabit.habit_id, remoteHabit.habit_id);
         }
+
+        await updateDataDb(user_id, localHabit);
+
+
     }
     const dataLocalEnd: HabitType[] = await readHabitsLocalDb(db);
     return dataLocalEnd;
@@ -97,9 +101,7 @@ export const DataProvider: React.FC<{ children: any }> = ({children}) => {
             return;
         }
         console.log("user_id found, syncing data", user_id);
-
         try {
-
             const db = await getLocalDB();
             const dataLocal: HabitType[] = await readHabitsLocalDb(db);
             const dataRemote: HabitType[] = await readHabitsDb(user_id);
@@ -115,8 +117,8 @@ export const DataProvider: React.FC<{ children: any }> = ({children}) => {
     };
 
     const fetchData = async () => {
-        const db = await getLocalDB();
         await syncData();
+        const db = await getLocalDB();
         await fetchDataOffline(db);
 
     };
