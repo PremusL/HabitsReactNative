@@ -3,9 +3,9 @@ import {HabitType} from "../types/habit.d";
 import * as SQLite from "expo-sqlite";
 import {Constants} from "./Constants";
 // @ts-ignore
-// import {BASE_URL} from "@env";
+import {BASE_URL} from "@env";
 
-const BASE_URL = "http://10.0.2.2:8787";
+// const BASE_URL = "http://10.0.2.2:8787";
 
 
 const timeoutDuration = 4000;

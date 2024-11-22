@@ -1,7 +1,7 @@
 import axios from "axios";
 // @ts-ignore
-// import {BASE_URL} from "@env";
-const BASE_URL = "http://10.0.2.2:8787";
+import {BASE_URL} from "@env";
+// const BASE_URL = "http://10.0.2.2:8787";
 
 const timeoutDuration = 5000;
 

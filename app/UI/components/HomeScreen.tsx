@@ -31,8 +31,6 @@ const HomeScreen: React.FC<HomeScreenProps> = ({navigation, route}) => {
 
     return (
         <SafeAreaView style={styles.mainPage}>
-            <Button title={"testLogin"} onPress={() => {
-            }}/>
             <ScrollView
                 contentContainerStyle={{flexGrow: 1}}
                 refreshControl={
