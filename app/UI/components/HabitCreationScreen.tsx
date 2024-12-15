@@ -160,6 +160,7 @@ const HabitCreationScreen: React.FC<HabitCreationScreenProps> = ({navigation}) =
                     </Text>
                 </View>
                 <Calendar
+                    style={{borderColor: "black", borderWidth: 2}}
                     onDayPress={(day: any) => {
                         setSelectedDate(day.dateString);
                     }}

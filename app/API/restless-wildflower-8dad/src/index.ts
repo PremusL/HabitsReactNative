@@ -102,6 +102,9 @@ async function handleRequest(
 	if (request.method === "OPTIONS") {
 		return jsonResponse(null, 204); // Return empty response for OPTIONS
 	}
+	if (pathname === "/" && request.method === "GET") {
+		return jsonResponse({message: "Hello welcome to the API"});
+	}
 
 	if (pathname === "/api/login" && request.method === "POST") {
 		return handleLogin(request, sql, JWT_SECRET);
@@ -115,9 +118,15 @@ async function handleRequest(
 		return handleReadHabits(request, sql);
 	}
 
+	if (pathname.startsWith("/api/readHabitInstances") && request.method === "GET") {
+		return handleReadHabitInstances(request, sql);
+	}
+
 	if (pathname.startsWith("/api/writeHabit") && request.method === "POST") {
 		return handleWriteHabits(request, sql);
 	}
+
+	
 
 	// if (pathname.startsWith("/api/updateHabit") && request.method === "POST") {
 	// 	return handleUpdateHabit(request, sql);
@@ -218,10 +227,12 @@ async function handleWriteHabits(
 			version
 		}: HabitType = await req.json();
 
+
+
 		const query_habit = `
 			INSERT INTO ${Constants.habit}
 				(${HabitTypeConstants.user_id}, ${HabitTypeConstants.version})
-			VALUES (${user_id}, 0)
+			VALUES (${user_id}, ${version})
 				RETURNING ${HabitTypeConstants.habit_id};`;
 
 
@@ -254,7 +265,8 @@ async function handleReadHabits(req: Request,
 								sql: any
 ): Promise<Response> {
 	const user_id = getUserId(new URL(req.url));
-	console.log("Request to write, user_id:", user_id);
+	console.log("Request to read, user_id:", user_id, req.url);
+
 
 	try {// TODO ADD USER ID
 		const query = `SELECT hi.${HabitTypeConstants.habit_id},
@@ -273,8 +285,46 @@ async function handleReadHabits(req: Request,
 									 ON h.${HabitTypeConstants.habit_id} = hi.${HabitTypeConstants.habit_id}
 					   WHERE h.${HabitTypeConstants.version} = hi.${HabitTypeConstants.version}
 						 AND h.${HabitTypeConstants.user_id} = ${user_id};`;
-
+							 
 		const result = await sql(query);
+		
+		console.log("result", query);
+		return jsonResponse(result);
+	} catch (error) {
+		console.error("Error executing query:", error);
+
+		return jsonResponse({error: "Internal Server Error"});
+	}
+}
+
+async function handleReadHabitInstances(req: Request,
+	sql: any
+): Promise<Response> {
+const user_id = getUserId(new URL(req.url));
+console.log("Request to read, user_id:", user_id, req.url);
+
+
+	try {
+		const query = `
+		SELECT hi.${HabitTypeConstants.habit_id},
+			hi.${HabitTypeConstants.name},
+			hi.${HabitTypeConstants.date},
+			hi.${HabitTypeConstants.time},
+			hi.${HabitTypeConstants.description},
+			hi.${HabitTypeConstants.color},
+			hi.${HabitTypeConstants.icon},
+			hi.${HabitTypeConstants.intensity},
+			hi.${HabitTypeConstants.good},
+			hi.${HabitTypeConstants.version},
+			hi.${HabitTypeConstants.change_time_stamp}
+		FROM ${Constants.habit} h
+		JOIN ${Constants.habit_instance} hi
+		ON h.${HabitTypeConstants.habit_id} = hi.${HabitTypeConstants.habit_id}
+			WHERE h.${HabitTypeConstants.user_id} = ${user_id};`;
+			console.log("query readInstances", query);
+	
+		const result = await sql(query);
+
 		return jsonResponse(result);
 	} catch (error) {
 		console.error("Error executing query:", error);
@@ -345,14 +395,13 @@ async function handleUpdateHabits(req: Request,
 						   version           = ${version},
 						   change_time_stamp = CURRENT_TIMESTAMP
 					   WHERE habit_id = ${habit_id}
-						 AND version = ${version}
-						 AND habit_id IN (SELECT habit_id
-										  FROM ${Constants.habit}
-										  WHERE user_id = ${user_id}); `;
+						 AND version = ${version}a
+						   FROM ${Constants.habit}
+					   WHERE user_id = ${user_id}); `;
 
 		console.log("query", query);
 
-		await sql(query);
+		await sql(query); 
 
 		return jsonResponse({message: "Data updated successfully"});
 	} catch (error) {

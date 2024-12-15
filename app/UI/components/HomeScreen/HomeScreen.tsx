@@ -1,13 +1,13 @@
 import React, {useState, useEffect} from "react";
 import {SafeAreaView, Button, Text, ScrollView} from "react-native";
-import {AddButton} from "./Buttons";
-import {HabitList} from "./HabitObject";
-import {HomeScreenProps} from "../types/screen.d";
-import {styles} from "../style/styles";
-import {useDataContext} from "./Contexts/DataContext";
-import {useUserContext} from "./Contexts/UserContext";
+import {AddButton} from "../Buttons";
+import {HabitList} from "../HabitObject";
+import {HomeScreenProps} from "../../types/screen.d";
+import {styles} from "../../style/styles";
+import {useDataContext} from "../Contexts/DataContext";
+import {useUserContext} from "../Contexts/UserContext";
 import {RefreshControl} from "react-native-gesture-handler";
-import {addHabitLocalDb} from "./LocalStorageUtil";
+import {addHabitLocalDb} from "../LocalStorageUtil";
 
 
 const HomeScreen: React.FC<HomeScreenProps> = ({navigation, route}) => {

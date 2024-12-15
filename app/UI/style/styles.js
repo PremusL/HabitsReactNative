@@ -8,6 +8,16 @@ export const historyStyles = StyleSheet.create({
     },
 });
 
+export const overviewStyles = StyleSheet.create({
+    mainPage: {
+        flex: 1,
+        flexDirection: "column",
+        backgroundColor: "#777777",
+        padding: 2
+
+    },
+});
+
 export const profileStyles = StyleSheet.create({
     mainPage: {
         flex: 1,

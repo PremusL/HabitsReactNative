@@ -1,35 +1,39 @@
 {
   "expo": {
-    "name": "HabitsTypescript",
-    "slug": "HabitsTypescript",
+    "name": "Habits",
+    "slug": "Habits-app",
     "version": "1.0.0",
     "packagerOpts": {
-      "hostType": "localhost"
+      "hostType": "app.habits.com",
+      "versionCode": 1
     },
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/habitsIcon1.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#1a5e25"
     },
     "extra": {
-      "BASE_URL": "@env:BASE_URL"
+      "BASE_URL": "@env:BASE_URL",
+      "eas": {
+        "projectId": "dad2c1ff-9705-491d-9917-423af24fe538"
+      }
     },
     "ios": {
       "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
-      }
+        "foregroundImage": "./assets/habitsIcon0.png",
+        "backgroundColor": "#888888"
+      },
+      "package": "com.maybehelol.Habitsapp"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "plugins": [
-    ]
+    "plugins": []
   }
 }

@@ -1,15 +1,14 @@
 import React, {createContext, useState, useEffect, useContext} from "react";
-import {Text, ActivityIndicator, View, Button} from "react-native";
+import {ActivityIndicator, View} from "react-native";
 import {HabitType} from "../../types/habit.d";
 import {useLoadingContext} from "./LoadingContext";
-import {addHabitDb, getLocalDB, readHabitsDb, updateDataDb, updateHabitRemoteDb} from "../DataBaseUtil";
+import {addHabitDb, getLocalDB, readHabitsDb, updateDataDb} from "../DataBaseUtil";
 import * as SQLite from "expo-sqlite";
 import {Constants} from "../Constants";
 import {useUserContext} from "./UserContext";
 import {
     addHabitLocalDb,
     createLocalTable,
-    deleteAndCreateLocalDB,
     readHabitsLocalDb,
     updateHabitLocalSync
 } from "../LocalStorageUtil";
@@ -85,8 +84,6 @@ export const DataProvider: React.FC<{ children: any }> = ({children}) => {
                 console.log("One or both tables do not exist, creating tables");
                 createLocalTable(db);
             });
-
-
     };
 
     const fetchDataOffline = async (db: SQLite.SQLiteDatabase) => {
@@ -127,7 +124,7 @@ export const DataProvider: React.FC<{ children: any }> = ({children}) => {
         const waitFetchData = async () => {
             setLoading(true);
             const db = await getLocalDB();
-            // createIfNotExist(db);
+            createIfNotExist(db);
             // createLocalTable(db);
             await syncData();
             await fetchData();
@@ -135,13 +132,6 @@ export const DataProvider: React.FC<{ children: any }> = ({children}) => {
         };
         waitFetchData();
         console.log("Data fetched");
-
-        // Sync data every 10 minutes
-        const intervalId = setInterval(async () => {
-            // await syncData();
-        }, 600000);
-
-        return () => clearInterval(intervalId);
     }, []);
 
     return loading ? (

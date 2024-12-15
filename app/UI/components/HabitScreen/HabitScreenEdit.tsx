@@ -135,6 +135,7 @@ const HabitScreenEdit: React.FC<HabitScreenEditProps> = ({
                 <Text style={habitScreenStyles.subsectionText}>Edit start date</Text>
             </View>
             <Calendar
+                style={{borderColor: "black", borderWidth: 2}}
                 onDayPress={(day: any) => {
                     setSelectedDate(day.dateString);
                 }}

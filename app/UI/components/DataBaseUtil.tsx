@@ -3,9 +3,9 @@ import {HabitType} from "../types/habit.d";
 import * as SQLite from "expo-sqlite";
 import {Constants} from "./Constants";
 // @ts-ignore
-import {BASE_URL} from "@env";
+// import {BASE_URL} from "@env";
 
-// const BASE_URL = "http://10.0.2.2:8787";
+const BASE_URL = "http://10.0.2.2:8787";
 
 
 const timeoutDuration = 4000;
@@ -29,6 +29,20 @@ export const readHabitsDb: any = async (user_id: number) => {
         return null;
     }
 };
+
+export const readHabitInstancesDb: any = async (user_id: number) => {
+    console.log("Reading data from database");
+    try {
+        const response = await axios.get(`${BASE_URL}/api/readHabitInstances/${user_id}`,
+            {timeout: timeoutDuration});
+        console.log("Data read successfully", response.data);
+        return response.data;
+    } catch (error) {
+        console.error("Failed to read data", error);
+        return null;
+    }
+};
+
 
 export const updateDataDb: any = async (user_id: number, data: HabitType) => {
     try {
@@ -86,9 +100,7 @@ export const addHabitDb = async (user_id: number | null, data: HabitType) => {
                 timeout: timeoutDuration,
             }
         );
-
         console.log("Data written successfully!@!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!", response, response.data);
-
         return response.data.habit_id;
     } catch (error) {
         console.log("Failed to write data", error);

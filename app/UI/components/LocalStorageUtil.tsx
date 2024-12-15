@@ -22,7 +22,7 @@ export const readHabitsLocalDb = async (db: SQLite.SQLiteDatabase) => {
                    WHERE h.${HabitTypeConstants.version} = hi.${HabitTypeConstants.version}
     `;
     try {
-        const allRows: any = await db.getAllAsync(query);
+        const allRows: any = await db.getAllAsync(query, {timeout: 4000});
 
         return allRows;
     } catch (error) {
