@@ -1,8 +1,6 @@
 import * as SQLite from "expo-sqlite";
 import {Constants, HabitTypeConstants} from "./Constants";
 import {HabitType} from "../types/habit.d";
-import {updateHabitRemoteDb} from "./DataBaseUtil";
-
 
 export const readHabitsLocalDb = async (db: SQLite.SQLiteDatabase) => {
     const query = `SELECT hi.${HabitTypeConstants.habit_id},
@@ -24,6 +22,31 @@ export const readHabitsLocalDb = async (db: SQLite.SQLiteDatabase) => {
     try {
         const allRows: any = await db.getAllAsync(query, {timeout: 4000});
 
+        return allRows;
+    } catch (error) {
+        console.log("Fail on offline fetch", error);
+        return null;
+    }
+}
+
+export const readInstancesHabitsLocalDb = async (db: SQLite.SQLiteDatabase) => {
+    const query = `SELECT hi.${HabitTypeConstants.habit_id},
+                          hi.${HabitTypeConstants.name},
+                          hi.${HabitTypeConstants.date},
+                          hi.${HabitTypeConstants.time},
+                          hi.${HabitTypeConstants.description},
+                          hi.${HabitTypeConstants.color},
+                          hi.${HabitTypeConstants.icon},
+                          hi.${HabitTypeConstants.intensity},
+                          hi.${HabitTypeConstants.good},
+                          hi.${HabitTypeConstants.version},
+                          hi.${HabitTypeConstants.change_time_stamp}
+                   FROM ${Constants.habit} h
+                            JOIN ${Constants.habit_instance} hi
+                                 ON h.${HabitTypeConstants.habit_id} = hi.${HabitTypeConstants.habit_id}
+    `;
+    try {
+        const allRows: any = await db.getAllAsync(query, {timeout: 4000});
         return allRows;
     } catch (error) {
         console.log("Fail on offline fetch", error);

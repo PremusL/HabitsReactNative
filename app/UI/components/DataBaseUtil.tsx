@@ -100,7 +100,7 @@ export const addHabitDb = async (user_id: number | null, data: HabitType) => {
                 timeout: timeoutDuration,
             }
         );
-        console.log("Data written successfully!@!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!", response, response.data);
+        console.log("Data written successfully!", response, response.data);
         return response.data.habit_id;
     } catch (error) {
         console.log("Failed to write data", error);
